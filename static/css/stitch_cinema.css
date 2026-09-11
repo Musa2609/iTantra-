@@ -1,4 +1,4 @@
-/* iTantra — Tactical Signal Engineering System */
+/* iTantra — 3D Signal Engineering System */
 @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@1&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 :root {
@@ -12,7 +12,7 @@
   --text-muted: #71717a;
   --signal-emerald: #10b981;
   --signal-amber: #f59e0b;
-  --signal-cyan: #06b6d4;
+  --signal-red: #ef4444;
 }
 
 /* Base Setup */
@@ -47,6 +47,17 @@ body {
   font-family: 'JetBrains Mono', ui-monospace, monospace;
 }
 
+/* 3D WebGL Canvas Layer */
+#hero-3d-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
 /* Background video & signal frame styling */
 .bg-video-container {
   position: fixed;
@@ -63,15 +74,15 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 0.35;
-  filter: contrast(1.15) brightness(0.8);
+  opacity: 0.25;
+  filter: contrast(1.2) brightness(0.75);
 }
 
 .bg-scrim {
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 50% 30%, rgba(5, 5, 5, 0.25) 0%, rgba(5, 5, 5, 0.8) 65%, rgba(5, 5, 5, 0.98) 100%),
-              linear-gradient(180deg, rgba(5, 5, 5, 0.7) 0%, rgba(5, 5, 5, 0.4) 50%, rgba(5, 5, 5, 0.98) 100%);
+  background: radial-gradient(circle at 50% 30%, rgba(5, 5, 5, 0.3) 0%, rgba(5, 5, 5, 0.85) 65%, rgba(5, 5, 5, 0.98) 100%),
+              linear-gradient(180deg, rgba(5, 5, 5, 0.7) 0%, rgba(5, 5, 5, 0.5) 50%, rgba(5, 5, 5, 0.98) 100%);
 }
 
 .bg-grain {
@@ -234,6 +245,7 @@ body {
   position: relative;
   z-index: 2;
   transition: all 0.4s ease;
+  cursor: pointer;
 }
 
 .pipeline-step-node.active-node .node-circle {
@@ -245,6 +257,73 @@ body {
 .pipeline-step-node.active-node .node-box {
   border-color: rgba(16, 185, 129, 0.5);
   background: rgba(16, 185, 129, 0.06);
+}
+
+/* PACKET ERROR SIMULATOR STYLES */
+.packet-sim-node {
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border-subtle);
+  background: rgba(10, 10, 10, 0.9);
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 11px;
+  transition: all 0.3s ease;
+}
+
+.packet-sim-node.packet-pass {
+  border-color: rgba(16, 185, 129, 0.4);
+  background: rgba(16, 185, 129, 0.08);
+  color: #10b981;
+}
+
+.packet-sim-node.packet-corrupt {
+  border-color: rgba(239, 68, 68, 0.6);
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+  animation: pulseGlow 1s infinite ease-in-out;
+}
+
+/* INTERACTIVE ARCHITECTURE TABS */
+.arch-tab-btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--border-subtle);
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--text-muted);
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 11px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.arch-tab-btn:hover {
+  border-color: var(--border-light);
+  color: var(--text-white);
+}
+
+.arch-tab-btn.arch-tab-active {
+  border-color: rgba(16, 185, 129, 0.5);
+  background: rgba(16, 185, 129, 0.1);
+  color: #ffffff;
+}
+
+/* EnCodec Quantization Step Switcher */
+.encodec-step-btn {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border-subtle);
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--text-muted);
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 11px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.encodec-step-btn.encodec-step-active {
+  border-color: rgba(16, 185, 129, 0.5);
+  background: rgba(16, 185, 129, 0.1);
+  color: #ffffff;
 }
 
 /* Motion Engineering Animations */
@@ -275,13 +354,6 @@ body {
 @keyframes pulseGlow {
   0%, 100% { opacity: 1; transform: scale(1); }
   50% { opacity: 0.4; transform: scale(0.92); }
-}
-
-@keyframes packetTravel {
-  0% { transform: translateY(0); opacity: 0; }
-  20% { opacity: 1; }
-  80% { opacity: 1; }
-  100% { transform: translateY(100%); opacity: 0; }
 }
 
 .hero-stagger-1 { animation: fadeInUpStagger 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both; }
