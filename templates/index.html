@@ -821,34 +821,34 @@
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
       // Create Parametric Signal Ribbon Geometry
-      const planeGeo = new THREE.PlaneGeometry(50, 16, 64, 32);
+      const planeGeo = new THREE.PlaneGeometry(50, 18, 80, 40);
       const mat = new THREE.MeshBasicMaterial({
         color: 0x10b981,
         wireframe: true,
         transparent: true,
-        opacity: 0.25
+        opacity: 0.55
       });
 
       signalRibbon = new THREE.Mesh(planeGeo, mat);
       scene.add(signalRibbon);
 
       // Create Particle Point Cloud for Scroll Morphing
-      const pointsCount = window.innerWidth < 768 ? 200 : 600;
+      const pointsCount = window.innerWidth < 768 ? 300 : 800;
       const pointsGeo = new THREE.BufferGeometry();
       const positions = new Float32Array(pointsCount * 3);
 
       for (let i = 0; i < pointsCount * 3; i += 3) {
-        positions[i] = (Math.random() - 0.5) * 40;
-        positions[i + 1] = (Math.random() - 0.5) * 15;
-        positions[i + 2] = (Math.random() - 0.5) * 15;
+        positions[i] = (Math.random() - 0.5) * 45;
+        positions[i + 1] = (Math.random() - 0.5) * 18;
+        positions[i + 2] = (Math.random() - 0.5) * 18;
       }
       pointsGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
 
       const pointsMat = new THREE.PointsMaterial({
-        color: 0xffffff,
-        size: 0.15,
+        color: 0x34d399,
+        size: 0.2,
         transparent: true,
-        opacity: 0.4
+        opacity: 0.6
       });
 
       pointsCloud = new THREE.Points(pointsGeo, pointsMat);
