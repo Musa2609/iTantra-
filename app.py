@@ -9,6 +9,8 @@ from communication_pipeline import process_itantra_pipeline, get_encodec_model, 
 sys.stdout.reconfigure(encoding='utf-8')
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
+app.config['TEMPLATES_AUTO_RELOAD'] = True
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
 UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), 'uploads')
 STATIC_AUDIO_FOLDER = os.path.join(os.path.dirname(__file__), 'static', 'audio')
