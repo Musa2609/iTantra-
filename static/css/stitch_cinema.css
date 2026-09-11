@@ -118,35 +118,35 @@ body {
 /* Precision Outlined Control Buttons */
 .btn-ctrl-primary {
   position: relative;
-  display: inline-flex;
-  items-center;
-  justify-content: center;
-  gap: 0.5rem;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.28);
-  color: #ffffff;
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 0.75rem; /* 12px */
-  font-weight: 600;
-  letter-spacing: 0.03em;
-  padding: 0.625rem 1.25rem; /* 10px 20px */
-  border-radius: 0.5rem; /* 8px - restrained corner radius */
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  cursor: pointer;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.5rem !important;
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.35) !important;
+  color: #ffffff !important;
+  font-family: 'JetBrains Mono', ui-monospace, monospace !important;
+  font-size: 0.75rem !important; /* 12px */
+  font-weight: 600 !important;
+  letter-spacing: 0.03em !important;
+  padding: 0.625rem 1.25rem !important; /* 10px 20px */
+  border-radius: 0.5rem !important; /* 8px - restrained corner radius */
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
+  cursor: pointer !important;
 }
 
 .btn-ctrl-primary:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.6);
-  color: #ffffff;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 4px 20px rgba(0, 0, 0, 0.5);
+  background-color: rgba(255, 255, 255, 0.16) !important;
+  border-color: rgba(255, 255, 255, 0.75) !important;
+  color: #ffffff !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 4px 20px rgba(0, 0, 0, 0.6) !important;
 }
 
 .btn-ctrl-primary:hover .cta-arrow {
-  transform: translateX(3px);
+  transform: translateX(4px) !important;
 }
 
 .btn-ctrl-primary:focus-visible {
@@ -155,38 +155,40 @@ body {
 }
 
 .btn-ctrl-primary:active:not(:disabled) {
-  transform: scale(0.98);
-  background: rgba(255, 255, 255, 0.14);
+  transform: scale(0.98) !important;
+  background-color: rgba(255, 255, 255, 0.22) !important;
 }
 
 .btn-ctrl-primary:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
+  opacity: 0.4 !important;
+  cursor: not-allowed !important;
 }
 
 .btn-ctrl-secondary {
   position: relative;
-  display: inline-flex;
-  items-center;
-  justify-content: center;
-  gap: 0.5rem;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  color: #d4d4d8;
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 0.75rem;
-  font-weight: 500;
-  letter-spacing: 0.025em;
-  padding: 0.625rem 1.25rem;
-  border-radius: 0.5rem; /* 8px - restrained corner radius */
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  cursor: pointer;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.5rem !important;
+  background-color: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid rgba(255, 255, 255, 0.22) !important;
+  color: #d4d4d8 !important;
+  font-family: 'JetBrains Mono', ui-monospace, monospace !important;
+  font-size: 0.75rem !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.025em !important;
+  padding: 0.625rem 1.25rem !important;
+  border-radius: 0.5rem !important; /* 8px - restrained corner radius */
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  cursor: pointer !important;
 }
 
 .btn-ctrl-secondary:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 255, 255, 0.32);
-  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  border-color: rgba(255, 255, 255, 0.5) !important;
+  color: #ffffff !important;
 }
 
 .btn-ctrl-secondary:focus-visible {
@@ -195,18 +197,18 @@ body {
 }
 
 .btn-ctrl-secondary:active:not(:disabled) {
-  transform: scale(0.98);
-  background: rgba(255, 255, 255, 0.1);
+  transform: scale(0.98) !important;
+  background-color: rgba(255, 255, 255, 0.16) !important;
 }
 
 .btn-ctrl-secondary:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
+  opacity: 0.4 !important;
+  cursor: not-allowed !important;
 }
 
 .cta-arrow {
-  display: inline-block;
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  display: inline-block !important;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
 /* Telemetry Pills */
