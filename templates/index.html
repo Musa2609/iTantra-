@@ -81,7 +81,7 @@
 
         <!-- RIGHT: Console Trigger & Mobile Toggle -->
         <div class="flex items-center space-x-4">
-          <button onclick="scrollToSection('console')" class="btn-primary-tactile text-xs font-semibold px-4 py-2">
+          <button onclick="scrollToSection('console')" class="btn-ctrl-primary">
             Launch Console
           </button>
           <button id="menu-toggle" onclick="openMenu()" aria-label="Open Navigation Drawer" aria-expanded="false" aria-controls="mobile-drawer" class="md:hidden w-8 h-8 rounded-lg border border-white/20 flex items-center justify-center text-white/80 active:text-white">
@@ -116,15 +116,12 @@
 
       <!-- Primary Action Buttons -->
       <div class="hero-stagger-5 mt-10 flex flex-col sm:flex-row items-center justify-center space-y-3 sm:space-y-0 sm:space-x-4 w-full max-w-md">
-        <button onclick="scrollToSection('console')" class="btn-primary-tactile w-full sm:w-auto py-3.5 px-8 text-xs font-semibold tracking-wide flex items-center justify-center space-x-2">
+        <button onclick="scrollToSection('console')" class="btn-ctrl-primary w-full sm:w-auto">
           <span>Start Transmission</span>
-          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="5" y1="12" x2="19" y2="12"></line>
-            <polyline points="12 5 19 12 12 19"></polyline>
-          </svg>
+          <span class="cta-arrow">→</span>
         </button>
 
-        <button onclick="scrollToSection('pipeline')" class="btn-secondary-tactile w-full sm:w-auto py-3.5 px-8 text-xs font-medium tracking-wide flex items-center justify-center space-x-2">
+        <button onclick="scrollToSection('pipeline')" class="btn-ctrl-secondary w-full sm:w-auto">
           <span>See Pipeline</span>
         </button>
       </div>
@@ -423,10 +420,10 @@
           </div>
 
           <div class="flex space-x-3 w-full max-w-xs">
-            <button id="btn-sample" onclick="transmitSampleAudio()" class="btn-secondary-tactile flex-1 py-2 px-3 text-[11px] font-mono">
+            <button id="btn-sample" onclick="transmitSampleAudio()" class="btn-ctrl-secondary flex-1">
               Use Sample audio.wav
             </button>
-            <label class="btn-secondary-tactile flex-1 py-2 px-3 text-[11px] font-mono cursor-pointer text-center">
+            <label class="btn-ctrl-secondary flex-1 cursor-pointer text-center">
               Upload WAV
               <input type="file" id="file-input" accept="audio/*" class="hidden" onchange="handleFileUpload(event)">
             </label>
@@ -523,7 +520,7 @@
             <p id="error-desc" class="text-xs text-neutral-300 mb-4 leading-relaxed font-mono">
               Transmission encountered an issue.
             </p>
-            <button onclick="resetAndRetry()" class="w-full py-2.5 rounded-full text-xs font-semibold btn-primary-tactile font-mono">
+            <button onclick="resetAndRetry()" class="w-full btn-ctrl-primary">
               Retry Transmission
             </button>
           </div>
@@ -728,7 +725,7 @@
     </div>
 
     <div class="pt-6 border-t border-white/10 flex flex-col space-y-3">
-      <button onclick="scrollToSection('console'); closeMenu();" class="w-full py-3 rounded-full text-xs font-semibold btn-primary-tactile font-mono">
+      <button onclick="scrollToSection('console'); closeMenu();" class="w-full btn-ctrl-primary">
         Launch Console
       </button>
       <p class="text-[10px] font-mono text-center text-neutral-500">Low-Bandwidth Multilingual Voice Communication</p>
