@@ -52,6 +52,7 @@
   <!-- Background Wave Video + Scrim Layer -->
   <div class="bg-video-container">
     <video id="hero-wave-video" autoplay loop muted playsinline class="bg-video">
+      <source src="/static/media/hero_wave.mp4" type="video/mp4">
       <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260818_072341_50851634-bbc3-4c33-9acc-7647d4db44aa.mp4" type="video/mp4">
     </video>
     <div class="bg-scrim"></div>
@@ -109,25 +110,25 @@
     <main id="hero" class="relative min-h-[85vh] flex flex-col justify-end items-center text-center px-6 pb-16 pt-24 max-w-5xl mx-auto w-full">
       
       <!-- Top Badge -->
-      <div class="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full liquid-metal-pill mb-6 shadow-lg animate-pulse-subtle">
+      <div class="hero-stagger-1 inline-flex items-center space-x-2 px-4 py-1.5 rounded-full liquid-metal-pill mb-6 shadow-lg animate-pulse-subtle">
         <span class="text-xs text-white/90">✦</span>
         <span class="text-xs font-medium tracking-wide text-neutral-200">LOW-BANDWIDTH MULTILINGUAL VOICE</span>
       </div>
 
       <!-- Masked Single H1 Headline -->
-      <h1 class="text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight leading-[1.1] text-white max-w-4xl">
-        Communicate <span class="font-serif italic font-normal text-5xl sm:text-7xl md:text-8xl text-neutral-100 px-1 animate-blur-sharp">voice</span><br>
-        <span class="text-white/90 font-medium">over extreme bandwidth limits.</span>
+      <h1 class="hero-stagger-2 text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight leading-[1.1] text-white max-w-4xl">
+        Communicate <span class="hero-stagger-3 font-serif italic font-normal text-5xl sm:text-7xl md:text-8xl text-neutral-100 px-1 animate-blur-sharp">voice</span><br>
+        <span class="hero-stagger-4 text-white/90 font-medium">over extreme bandwidth limits.</span>
       </h1>
 
       <!-- Supporting Paragraph -->
-      <p class="mt-6 text-sm sm:text-base text-neutral-400 font-normal leading-relaxed max-w-2xl mx-auto px-4">
+      <p class="hero-stagger-5 mt-6 text-sm sm:text-base text-neutral-400 font-normal leading-relaxed max-w-2xl mx-auto px-4">
         Transmit intelligible multilingual speech through extremely bandwidth-constrained links using neural speech compression and lightweight communication technology.
       </p>
 
       <!-- HERO BUTTONS (Primary & Secondary Liquid-Glass) -->
       <div class="mt-8 flex flex-col sm:flex-row items-center justify-center space-y-3 sm:space-y-0 sm:space-x-4 w-full max-w-md">
-        <button onclick="scrollToSection('demo')" class="w-full sm:w-auto py-3.5 px-8 rounded-full text-xs font-semibold tracking-wide liquid-btn-primary flex items-center justify-center space-x-2 shadow-2xl">
+        <button onclick="scrollToSection('demo')" class="hero-stagger-6 w-full sm:w-auto py-3.5 px-8 rounded-full text-xs font-semibold tracking-wide liquid-btn-primary flex items-center justify-center space-x-2 shadow-2xl">
           <span>Start Transmission</span>
           <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -135,13 +136,13 @@
           </svg>
         </button>
 
-        <button onclick="scrollToSection('how-it-works')" class="w-full sm:w-auto py-3.5 px-8 rounded-full text-xs font-medium tracking-wide liquid-btn-secondary text-neutral-200 flex items-center justify-center space-x-2">
+        <button onclick="scrollToSection('how-it-works')" class="hero-stagger-7 w-full sm:w-auto py-3.5 px-8 rounded-full text-xs font-medium tracking-wide liquid-btn-secondary text-neutral-200 flex items-center justify-center space-x-2">
           <span>See How It Works</span>
         </button>
       </div>
 
       <!-- Architectural Pill Hint -->
-      <div class="mt-8 px-4 py-1.5 rounded-full bg-white/[0.03] border border-white/[0.08] text-[10px] text-neutral-400 font-mono tracking-tight flex items-center space-x-2">
+      <div class="hero-stagger-8 mt-8 px-4 py-1.5 rounded-full bg-white/[0.03] border border-white/[0.08] text-[10px] text-neutral-400 font-mono tracking-tight flex items-center space-x-2">
         <span>EnCodec (6kbps)</span>
         <span class="text-white/30">→</span>
         <span>Packets</span>
@@ -421,7 +422,8 @@
             <!-- Reconstructed Voice Audio Player -->
             <div class="mb-4">
               <label for="audio-player" class="text-xs text-neutral-400 font-medium block mb-1.5">Reconstructed Voice Output (24kHz)</label>
-              <audio id="audio-player" controls class="w-full h-11 accent-white rounded-xl"></audio>
+              <audio id="audio-player" controls class="w-full h-11 accent-white rounded-xl mb-2.5"></audio>
+              <canvas id="waveform-canvas" width="600" height="44" class="w-full h-11 rounded-xl bg-black/80 border border-white/10 shadow-inner"></canvas>
             </div>
 
             <!-- Metrics Grid -->
@@ -947,6 +949,51 @@
       }
     }
 
+    let animFrameId = null;
+    function initWaveformVisualizer() {
+      const canvas = document.getElementById('waveform-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const audio = document.getElementById('audio-player');
+
+      function draw() {
+        const width = canvas.width;
+        const height = canvas.height;
+        ctx.clearRect(0, 0, width, height);
+        
+        const isPlaying = audio && !audio.paused && !audio.ended;
+        const time = Date.now() * 0.006;
+        
+        if (isPlaying) {
+          ctx.lineWidth = 2;
+          ctx.strokeStyle = '#34d399'; // emerald accent line
+          ctx.beginPath();
+          for (let x = 0; x < width; x++) {
+            const amp = Math.sin(x * 0.04 + time) * 10 + Math.cos(x * 0.02 - time * 1.4) * 6;
+            const y = height / 2 + Math.sin(x * 0.07 + time * 1.8) * amp;
+            if (x === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+          }
+          ctx.stroke();
+          animFrameId = requestAnimationFrame(draw);
+        } else {
+          ctx.lineWidth = 1.5;
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+          ctx.beginPath();
+          ctx.moveTo(0, height / 2);
+          ctx.lineTo(width, height / 2);
+          ctx.stroke();
+        }
+      }
+
+      if (audio) {
+        audio.onplay = () => { cancelAnimationFrame(animFrameId); draw(); };
+        audio.onpause = () => { cancelAnimationFrame(animFrameId); draw(); };
+        audio.onended = () => { cancelAnimationFrame(animFrameId); draw(); };
+      }
+      draw();
+    }
+
     function displaySuccessResults(data) {
       document.getElementById('results-panel').classList.remove('hidden');
       document.getElementById('card-success').classList.remove('hidden');
@@ -962,7 +1009,11 @@
 
       const player = document.getElementById('audio-player');
       player.src = data.reconstructed_audio_url + '?t=' + new Date().getTime();
-      player.play().catch(() => {});
+      player.play().then(() => {
+        initWaveformVisualizer();
+      }).catch(() => {
+        initWaveformVisualizer();
+      });
     }
 
     function displayErrorResults(errMsg) {
@@ -993,6 +1044,10 @@
         });
       }
     }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      initWaveformVisualizer();
+    });
   </script>
 </body>
 </html>

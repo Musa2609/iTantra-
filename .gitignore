@@ -7,3 +7,4 @@ env/
 venv/
 uploads/
 scratch/
+static/audio/reconstructed_*.wav

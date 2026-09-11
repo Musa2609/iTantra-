@@ -149,7 +149,18 @@
   transform: scale(0.98);
 }
 
-/* Keyframe Animations */
+/* Emil Kowalski Motion Engineering Timeline */
+@keyframes fadeInUpStagger {
+  0% {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @keyframes blurToSharp {
   0% {
     filter: blur(12px);
@@ -163,8 +174,17 @@
   }
 }
 
+.hero-stagger-1 { animation: fadeInUpStagger 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both; }
+.hero-stagger-2 { animation: fadeInUpStagger 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.35s both; }
+.hero-stagger-3 { animation: fadeInUpStagger 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.5s both; }
+.hero-stagger-4 { animation: fadeInUpStagger 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.65s both; }
+.hero-stagger-5 { animation: fadeInUpStagger 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.95s both; }
+.hero-stagger-6 { animation: fadeInUpStagger 0.8s cubic-bezier(0.16, 1, 0.3, 1) 1.1s both; }
+.hero-stagger-7 { animation: fadeInUpStagger 0.8s cubic-bezier(0.16, 1, 0.3, 1) 1.2s both; }
+.hero-stagger-8 { animation: fadeInUpStagger 0.8s cubic-bezier(0.16, 1, 0.3, 1) 1.4s both; }
+
 .animate-blur-sharp {
-  animation: blurToSharp 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: blurToSharp 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.8s both;
 }
 
 /* Scroll reveal classes */
@@ -190,6 +210,15 @@
 .faq-answer.open {
   max-height: 400px;
   opacity: 1;
+}
+
+/* Canvas Waveform Visualizer */
+#waveform-canvas {
+  width: 100%;
+  height: 64px;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 12px;
+  border: 1px solid var(--border-light);
 }
 
 /* Motion Accessibility Overrides */
