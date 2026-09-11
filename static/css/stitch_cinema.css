@@ -9,6 +9,12 @@
   --border-subtle: rgba(255, 255, 255, 0.08);
 }
 
+/* Accessibility Focus Rings */
+:focus-visible {
+  outline: 2px solid #ffffff !important;
+  outline-offset: 3px !important;
+}
+
 /* Background video styling */
 .bg-video-container {
   position: fixed;
@@ -143,7 +149,7 @@
   transform: scale(0.98);
 }
 
-/* Animations */
+/* Keyframe Animations */
 @keyframes blurToSharp {
   0% {
     filter: blur(12px);
@@ -184,6 +190,23 @@
 .faq-answer.open {
   max-height: 400px;
   opacity: 1;
+}
+
+/* Motion Accessibility Overrides */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .bg-video {
+    display: none;
+  }
+  .reveal-on-scroll {
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }
 
 /* Custom Scrollbar */

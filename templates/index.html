@@ -5,6 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>iTantra — Low-Bandwidth Multilingual Voice Communication</title>
   
+  <meta name="description" content="iTantra enables multilingual voice communication over extremely bandwidth-constrained links using neural speech compression.">
+  <meta property="og:title" content="iTantra — Low-Bandwidth Multilingual Voice Communication">
+  <meta property="og:description" content="Transmit intelligible multilingual speech through bandwidth-constrained links using Meta EnCodec neural compression.">
+  <meta property="og:type" content="website">
+
+  <!-- Custom SVG Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+  
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -60,7 +68,7 @@
       <div class="max-w-7xl mx-auto flex items-center justify-between">
         
         <!-- LEFT: Brand Logo -->
-        <div class="flex items-center space-x-3 cursor-pointer" onclick="scrollToSection('hero')">
+        <div class="flex items-center space-x-3 cursor-pointer" onclick="scrollToSection('hero')" tabindex="0" role="button" aria-label="iTantra Home">
           <div class="w-9 h-9 rounded-xl liquid-metal-pill flex items-center justify-center p-1.5 shadow-lg border border-white/20">
             <svg viewBox="0 0 24 24" fill="none" class="w-full h-full text-white" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M4 10v4" /><path d="M8 7v10" /><path d="M12 3v18" /><path d="M16 8v8" /><path d="M20 11v2" />
@@ -70,7 +78,7 @@
         </div>
 
         <!-- CENTER: Liquid-Metal Pill Navigation Bar (Desktop) -->
-        <nav class="hidden md:flex items-center space-x-6 px-5 py-2 rounded-full liquid-metal-pill text-xs font-medium tracking-wide text-white/70">
+        <nav class="hidden md:flex items-center space-x-6 px-5 py-2 rounded-full liquid-metal-pill text-xs font-medium tracking-wide text-white/70" aria-label="Main Navigation">
           <button onclick="scrollToSection('how-it-works')" class="hover:text-white transition-colors">How It Works</button>
           <span class="text-white/20">•</span>
           <button onclick="scrollToSection('technology')" class="hover:text-white transition-colors">Technology</button>
@@ -87,7 +95,7 @@
           <button onclick="scrollToSection('demo')" class="text-xs font-semibold px-4 py-2 rounded-full liquid-btn-primary shadow-lg">
             Start Transmission
           </button>
-          <button id="menu-toggle" onclick="openMenu()" aria-label="Open Navigation" class="md:hidden w-9 h-9 rounded-full liquid-border flex items-center justify-center text-white/80 active:text-white">
+          <button id="menu-toggle" onclick="openMenu()" aria-label="Open Navigation Drawer" aria-expanded="false" aria-controls="mobile-drawer" class="md:hidden w-9 h-9 rounded-full liquid-border flex items-center justify-center text-white/80 active:text-white">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7h16M4 17h16" />
             </svg>
@@ -98,7 +106,7 @@
     </header>
 
     <!-- HERO SECTION (Bottom-Centered Cinematic Composition) -->
-    <section id="hero" class="relative min-h-[85vh] flex flex-col justify-end items-center text-center px-6 pb-16 pt-24 max-w-5xl mx-auto w-full">
+    <main id="hero" class="relative min-h-[85vh] flex flex-col justify-end items-center text-center px-6 pb-16 pt-24 max-w-5xl mx-auto w-full">
       
       <!-- Top Badge -->
       <div class="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full liquid-metal-pill mb-6 shadow-lg animate-pulse-subtle">
@@ -106,7 +114,7 @@
         <span class="text-xs font-medium tracking-wide text-neutral-200">LOW-BANDWIDTH MULTILINGUAL VOICE</span>
       </div>
 
-      <!-- Masked H1 Headline -->
+      <!-- Masked Single H1 Headline -->
       <h1 class="text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight leading-[1.1] text-white max-w-4xl">
         Communicate <span class="font-serif italic font-normal text-5xl sm:text-7xl md:text-8xl text-neutral-100 px-1 animate-blur-sharp">voice</span><br>
         <span class="text-white/90 font-medium">over extreme bandwidth limits.</span>
@@ -143,7 +151,7 @@
         <span>ggwave</span>
       </div>
 
-    </section>
+    </main>
 
     <!-- SECTION 1: HOW IT WORKS (Animated 11-Stage Pipeline) -->
     <section id="how-it-works" class="py-24 px-6 max-w-7xl mx-auto w-full reveal-on-scroll">
@@ -158,77 +166,77 @@
         <div class="liquid-border rounded-2xl p-4 flex flex-col justify-between min-h-[130px]">
           <span class="text-[10px] font-mono text-neutral-500">STAGE 01</span>
           <div>
-            <h4 class="text-sm font-bold text-white">Voice Input</h4>
+            <h3 class="text-sm font-bold text-white">Voice Input</h3>
             <p class="text-[11px] text-neutral-400 mt-1">Raw audio capture</p>
           </div>
         </div>
         <div class="liquid-border rounded-2xl p-4 flex flex-col justify-between min-h-[130px]">
           <span class="text-[10px] font-mono text-neutral-500">STAGE 02</span>
           <div>
-            <h4 class="text-sm font-bold text-white">EnCodec</h4>
+            <h3 class="text-sm font-bold text-white">EnCodec</h3>
             <p class="text-[11px] text-neutral-400 mt-1">Neural compression (6kbps)</p>
           </div>
         </div>
         <div class="liquid-border rounded-2xl p-4 flex flex-col justify-between min-h-[130px]">
           <span class="text-[10px] font-mono text-neutral-500">STAGE 03</span>
           <div>
-            <h4 class="text-sm font-bold text-white">Compressed Speech</h4>
+            <h3 class="text-sm font-bold text-white">Compressed Speech</h3>
             <p class="text-[11px] text-neutral-400 mt-1">VQ codebook indices</p>
           </div>
         </div>
         <div class="liquid-border rounded-2xl p-4 flex flex-col justify-between min-h-[130px]">
           <span class="text-[10px] font-mono text-neutral-500">STAGE 04</span>
           <div>
-            <h4 class="text-sm font-bold text-white">Serialization</h4>
+            <h3 class="text-sm font-bold text-white">Serialization</h3>
             <p class="text-[11px] text-neutral-400 mt-1">Binary byte stream</p>
           </div>
         </div>
         <div class="liquid-border rounded-2xl p-4 flex flex-col justify-between min-h-[130px]">
           <span class="text-[10px] font-mono text-neutral-500">STAGE 05</span>
           <div>
-            <h4 class="text-sm font-bold text-white">Packetization</h4>
+            <h3 class="text-sm font-bold text-white">Packetization</h3>
             <p class="text-[11px] text-neutral-400 mt-1">256-byte sequence frames</p>
           </div>
         </div>
         <div class="liquid-border rounded-2xl p-4 flex flex-col justify-between min-h-[130px]">
           <span class="text-[10px] font-mono text-neutral-500">STAGE 06</span>
           <div>
-            <h4 class="text-sm font-bold text-white">CRC32 Checksum</h4>
+            <h3 class="text-sm font-bold text-white">CRC32 Checksum</h3>
             <p class="text-[11px] text-neutral-400 mt-1">Data integrity check</p>
           </div>
         </div>
         <div class="liquid-border rounded-2xl p-4 flex flex-col justify-between min-h-[130px]">
           <span class="text-[10px] font-mono text-neutral-500">STAGE 07</span>
           <div>
-            <h4 class="text-sm font-bold text-white">ggwave</h4>
+            <h3 class="text-sm font-bold text-white">ggwave</h3>
             <p class="text-[11px] text-neutral-400 mt-1">Lightweight acoustic link</p>
           </div>
         </div>
         <div class="liquid-border rounded-2xl p-4 flex flex-col justify-between min-h-[130px]">
           <span class="text-[10px] font-mono text-neutral-500">STAGE 08</span>
           <div>
-            <h4 class="text-sm font-bold text-white">Receiver</h4>
+            <h3 class="text-sm font-bold text-white">Receiver</h3>
             <p class="text-[11px] text-neutral-400 mt-1">Software loopback</p>
           </div>
         </div>
         <div class="liquid-border rounded-2xl p-4 flex flex-col justify-between min-h-[130px]">
           <span class="text-[10px] font-mono text-neutral-500">STAGE 09</span>
           <div>
-            <h4 class="text-sm font-bold text-white">Reassembly</h4>
+            <h3 class="text-sm font-bold text-white">Reassembly</h3>
             <p class="text-[11px] text-neutral-400 mt-1">Sequence reordering</p>
           </div>
         </div>
         <div class="liquid-border rounded-2xl p-4 flex flex-col justify-between min-h-[130px]">
           <span class="text-[10px] font-mono text-neutral-500">STAGE 10</span>
           <div>
-            <h4 class="text-sm font-bold text-white">EnCodec Decoder</h4>
+            <h3 class="text-sm font-bold text-white">EnCodec Decoder</h3>
             <p class="text-[11px] text-neutral-400 mt-1">VQ synthesis</p>
           </div>
         </div>
         <div class="liquid-border rounded-2xl p-4 flex flex-col justify-between min-h-[130px] col-span-2 md:col-span-2 border-emerald-500/40">
           <span class="text-[10px] font-mono text-emerald-400">FINAL STAGE</span>
           <div>
-            <h4 class="text-sm font-bold text-white">Reconstructed Voice</h4>
+            <h3 class="text-sm font-bold text-white">Reconstructed Voice</h3>
             <p class="text-[11px] text-emerald-400 mt-1">24kHz Intelligible Speech Output</p>
           </div>
         </div>
@@ -304,8 +312,8 @@
             <select id="select-language" class="w-full bg-black/80 border border-white/15 rounded-xl px-4 py-2.5 text-xs font-medium text-white focus:outline-none focus:border-white/40">
               <option value="hi" selected>Hindi (हिंदी)</option>
               <option value="gu">Gujarati (ગુજરાતી)</option>
-              <option value="mr">Marathi (મરાઠી)</option>
-              <option value="kn">Kannada (<ctrl42><ctrl42>)</option>
+              <option value="mr">Marathi (मરાઠી)</option>
+              <option value="kn">Kannada (ಕನ್ನಡ)</option>
               <option value="ml">Malayalam (മലയാളം)</option>
               <option value="ta">Tamil (தமிழ்)</option>
               <option value="te">Telugu (తెలుగు)</option>
@@ -412,7 +420,7 @@
 
             <!-- Reconstructed Voice Audio Player -->
             <div class="mb-4">
-              <label class="text-xs text-neutral-400 font-medium block mb-1.5">Reconstructed Voice Output (24kHz)</label>
+              <label for="audio-player" class="text-xs text-neutral-400 font-medium block mb-1.5">Reconstructed Voice Output (24kHz)</label>
               <audio id="audio-player" controls class="w-full h-11 accent-white rounded-xl"></audio>
             </div>
 
@@ -536,7 +544,7 @@
       <div class="space-y-3">
         <!-- Q1 -->
         <div class="liquid-border rounded-2xl p-4">
-          <button onclick="toggleFAQ(1)" class="w-full flex items-center justify-between text-left font-medium text-sm text-white focus:outline-none">
+          <button onclick="toggleFAQ(1)" class="w-full flex items-center justify-between text-left font-medium text-sm text-white focus:outline-none" aria-expanded="false" aria-controls="faq-ans-1">
             <span>1. What is iTantra?</span>
             <span id="faq-icon-1" class="text-neutral-400 font-mono text-base">+</span>
           </button>
@@ -547,7 +555,7 @@
 
         <!-- Q2 -->
         <div class="liquid-border rounded-2xl p-4">
-          <button onclick="toggleFAQ(2)" class="w-full flex items-center justify-between text-left font-medium text-sm text-white focus:outline-none">
+          <button onclick="toggleFAQ(2)" class="w-full flex items-center justify-between text-left font-medium text-sm text-white focus:outline-none" aria-expanded="false" aria-controls="faq-ans-2">
             <span>2. Why does iTantra use EnCodec?</span>
             <span id="faq-icon-2" class="text-neutral-400 font-mono text-base">+</span>
           </button>
@@ -558,7 +566,7 @@
 
         <!-- Q3 -->
         <div class="liquid-border rounded-2xl p-4">
-          <button onclick="toggleFAQ(3)" class="w-full flex items-center justify-between text-left font-medium text-sm text-white focus:outline-none">
+          <button onclick="toggleFAQ(3)" class="w-full flex items-center justify-between text-left font-medium text-sm text-white focus:outline-none" aria-expanded="false" aria-controls="faq-ans-3">
             <span>3. What is ggwave?</span>
             <span id="faq-icon-3" class="text-neutral-400 font-mono text-base">+</span>
           </button>
@@ -569,7 +577,7 @@
 
         <!-- Q4 -->
         <div class="liquid-border rounded-2xl p-4">
-          <button onclick="toggleFAQ(4)" class="w-full flex items-center justify-between text-left font-medium text-sm text-white focus:outline-none">
+          <button onclick="toggleFAQ(4)" class="w-full flex items-center justify-between text-left font-medium text-sm text-white focus:outline-none" aria-expanded="false" aria-controls="faq-ans-4">
             <span>4. Why is packetization required?</span>
             <span id="faq-icon-4" class="text-neutral-400 font-mono text-base">+</span>
           </button>
@@ -580,7 +588,7 @@
 
         <!-- Q5 -->
         <div class="liquid-border rounded-2xl p-4">
-          <button onclick="toggleFAQ(5)" class="w-full flex items-center justify-between text-left font-medium text-sm text-white focus:outline-none">
+          <button onclick="toggleFAQ(5)" class="w-full flex items-center justify-between text-left font-medium text-sm text-white focus:outline-none" aria-expanded="false" aria-controls="faq-ans-5">
             <span>5. What does CRC32 do?</span>
             <span id="faq-icon-5" class="text-neutral-400 font-mono text-base">+</span>
           </button>
@@ -591,7 +599,7 @@
 
         <!-- Q6 -->
         <div class="liquid-border rounded-2xl p-4">
-          <button onclick="toggleFAQ(6)" class="w-full flex items-center justify-between text-left font-medium text-sm text-white focus:outline-none">
+          <button onclick="toggleFAQ(6)" class="w-full flex items-center justify-between text-left font-medium text-sm text-white focus:outline-none" aria-expanded="false" aria-controls="faq-ans-6">
             <span>6. Does iTantra convert speech to text?</span>
             <span id="faq-icon-6" class="text-neutral-400 font-mono text-base">+</span>
           </button>
@@ -602,7 +610,7 @@
 
         <!-- Q7 -->
         <div class="liquid-border rounded-2xl p-4">
-          <button onclick="toggleFAQ(7)" class="w-full flex items-center justify-between text-left font-medium text-sm text-white focus:outline-none">
+          <button onclick="toggleFAQ(7)" class="w-full flex items-center justify-between text-left font-medium text-sm text-white focus:outline-none" aria-expanded="false" aria-controls="faq-ans-7">
             <span>7. Which languages are supported?</span>
             <span id="faq-icon-7" class="text-neutral-400 font-mono text-base">+</span>
           </button>
@@ -613,7 +621,7 @@
 
         <!-- Q8 -->
         <div class="liquid-border rounded-2xl p-4">
-          <button onclick="toggleFAQ(8)" class="w-full flex items-center justify-between text-left font-medium text-sm text-white focus:outline-none">
+          <button onclick="toggleFAQ(8)" class="w-full flex items-center justify-between text-left font-medium text-sm text-white focus:outline-none" aria-expanded="false" aria-controls="faq-ans-8">
             <span>8. How does iTantra work under low bandwidth?</span>
             <span id="faq-icon-8" class="text-neutral-400 font-mono text-base">+</span>
           </button>
@@ -624,7 +632,7 @@
 
         <!-- Q9 -->
         <div class="liquid-border rounded-2xl p-4">
-          <button onclick="toggleFAQ(9)" class="w-full flex items-center justify-between text-left font-medium text-sm text-white focus:outline-none">
+          <button onclick="toggleFAQ(9)" class="w-full flex items-center justify-between text-left font-medium text-sm text-white focus:outline-none" aria-expanded="false" aria-controls="faq-ans-9">
             <span>9. How is the voice reconstructed?</span>
             <span id="faq-icon-9" class="text-neutral-400 font-mono text-base">+</span>
           </button>
@@ -635,7 +643,7 @@
 
         <!-- Q10 -->
         <div class="liquid-border rounded-2xl p-4">
-          <button onclick="toggleFAQ(10)" class="w-full flex items-center justify-between text-left font-medium text-sm text-white focus:outline-none">
+          <button onclick="toggleFAQ(10)" class="w-full flex items-center justify-between text-left font-medium text-sm text-white focus:outline-none" aria-expanded="false" aria-controls="faq-ans-10">
             <span>10. Software loopback vs physical acoustic transmission?</span>
             <span id="faq-icon-10" class="text-neutral-400 font-mono text-base">+</span>
           </button>
@@ -711,15 +719,14 @@
     let audioChunks = [];
     let isRecording = false;
 
-    // Smooth Scroll to Section
+    // Relative API Base URL
+    const API_BASE = '';
+
     function scrollToSection(id) {
       const el = document.getElementById(id);
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth' });
-      }
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
     }
 
-    // Scroll Progress Bar & IntersectionObserver Reveal
     window.addEventListener('scroll', () => {
       const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
       const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
@@ -737,18 +744,21 @@
 
     document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
 
-    // Mobile Menu Controls
     function openMenu() {
       const drawer = document.getElementById('mobile-drawer');
+      const toggle = document.getElementById('menu-toggle');
       drawer.classList.remove('hidden');
       drawer.classList.add('flex');
+      if (toggle) toggle.setAttribute('aria-expanded', 'true');
       document.body.style.overflow = 'hidden';
     }
 
     function closeMenu() {
       const drawer = document.getElementById('mobile-drawer');
+      const toggle = document.getElementById('menu-toggle');
       drawer.classList.add('hidden');
       drawer.classList.remove('flex');
+      if (toggle) toggle.setAttribute('aria-expanded', 'false');
       document.body.style.overflow = 'auto';
     }
 
@@ -756,17 +766,19 @@
       if (e.key === 'Escape') closeMenu();
     });
 
-    // FAQ Accordion Toggle
     function toggleFAQ(idx) {
       const ans = document.getElementById(`faq-ans-${idx}`);
       const icon = document.getElementById(`faq-icon-${idx}`);
+      const btn = ans ? ans.previousElementSibling : null;
       
       if (ans.classList.contains('open')) {
         ans.classList.remove('open');
         icon.innerText = '+';
+        if (btn) btn.setAttribute('aria-expanded', 'false');
       } else {
         ans.classList.add('open');
         icon.innerText = '−';
+        if (btn) btn.setAttribute('aria-expanded', 'true');
       }
     }
 
@@ -787,7 +799,6 @@
       }
     }
 
-    // Microphone Recording
     async function toggleRecording() {
       const recBtn = document.getElementById('btn-record');
       const statusText = document.getElementById('recording-status');
@@ -891,7 +902,7 @@
       }
 
       try {
-        const response = await fetch('/api/transmit', {
+        const response = await fetch(`${API_BASE}/api/transmit`, {
           method: 'POST',
           body: formData
         });
