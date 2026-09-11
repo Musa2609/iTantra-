@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-black text-white antialiased">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>iTantra — Low-Bandwidth Multilingual Voice</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@1&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            serif: ['"Instrument Serif"', 'serif'],
+          },
+          colors: {
+            neutral: {
+              950: '#050505',
+              900: '#0a0a0a',
+              850: '#121212',
+              800: '#181818',
+            }
+          },
+          animation: {
+            'shimmer': 'shimmer 3s infinite linear',
+            'pulse-subtle': 'pulseSubtle 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'spin-slow': 'spin 8s linear infinite',
+          },
+          keyframes: {
+            shimmer: {
+              '0%': { backgroundPosition: '-200% 0' },
+              '100%': { backgroundPosition: '200% 0' }
+            },
+            pulseSubtle: {
+              '0%, 100%': { opacity: '0.85', transform: 'scale(1)' },
+              '50%': { opacity: '1', transform: 'scale(1.02)' }
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Liquid-metal & Glass styling preserved 100% from Stitch */
+    .liquid-border {
+      position: relative;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.03) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.7), inset 0 1px 1px 0 rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+    
+    .liquid-metal-pill {
+      background: radial-gradient(120% 120% at 50% 0%, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.02) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.3), 0 8px 32px -4px rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+
+    .liquid-btn-primary {
+      background: linear-gradient(180deg, #ffffff 0%, #d8d8d8 100%);
+      color: #000000;
+      box-shadow: 0 0 25px rgba(255, 255, 255, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+      transition: all 0.25s ease;
+    }
+
+    .liquid-btn-primary:active {
+      transform: scale(0.98);
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+    }
+
+    .liquid-btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.15);
+      transition: all 0.25s ease;
+    }
+
+    .liquid-btn-secondary:active {
+      background: rgba(255, 255, 255, 0.1);
+      transform: scale(0.98);
+    }
+
+    .bg-grain {
+      background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 0);
+      background-size: 24px 24px;
+    }
+
+    .radial-glow {
+      background: radial-gradient(circle at 50% 35%, rgba(255, 255, 255, 0.08) 0%, rgba(0, 0, 0, 0) 70%);
+    }
+
+    .neural-wave-glow {
+      background: radial-gradient(ellipse 80% 40% at 50% 50%, rgba(255, 255, 255, 0.06), transparent);
+    }
+
+    /* Custom select styling */
+    select option {
+      background-color: #0d0d0d;
+      color: #ffffff;
+    }
+  </style>
+</head>
+<body class="h-full w-full bg-black text-white selection:bg-white selection:text-black overflow-x-hidden font-sans relative flex flex-col justify-between p-0 m-0 min-h-screen">
+
+  <!-- Background Layer: Glow + Grain -->
+  <div class="fixed inset-0 pointer-events-none z-0">
+    <div class="absolute inset-0 bg-black"></div>
+    <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[340px] h-[340px] rounded-full radial-glow blur-3xl opacity-60"></div>
+    <div class="absolute inset-0 bg-grain opacity-30"></div>
+    <div class="absolute top-1/3 left-0 right-0 h-48 neural-wave-glow opacity-40"></div>
+  </div>
+
+  <!-- Mobile App Frame Container -->
+  <div class="relative z-10 flex flex-col justify-between min-h-screen max-w-lg mx-auto px-5 pt-4 pb-6 w-full safe-area-inset">
+
+    <!-- HEADER / APP NAVIGATION -->
+    <header class="w-full flex items-center justify-between pt-1">
+      <div class="flex items-center space-x-2.5 cursor-pointer" onclick="showLandingView()">
+        <div class="w-8 h-8 rounded-xl liquid-metal-pill flex items-center justify-center p-1.5 shadow-lg border border-white/20">
+          <svg viewBox="0 0 24 24" fill="none" class="w-full h-full text-white" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 10v4" /><path d="M8 7v10" /><path d="M12 3v18" /><path d="M16 8v8" /><path d="M20 11v2" />
+          </svg>
+        </div>
+        <span class="font-bold text-lg tracking-tight text-white/95">iTantra</span>
+      </div>
+
+      <div class="flex items-center space-x-2">
+        <button id="cta-header" onclick="showTransmissionView()" class="text-xs font-semibold px-3 py-1.5 rounded-full liquid-btn-primary shadow-sm active:scale-95 transition-transform">
+          Try iTantra
+        </button>
+        <button id="menu-toggle" aria-label="Open Navigation" class="w-8 h-8 rounded-full liquid-border flex items-center justify-center text-white/80 active:text-white">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7h16M4 17h16" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- CENTER NAVIGATION PILL -->
+    <div class="flex justify-center mt-3 mb-2">
+      <nav class="liquid-metal-pill px-3 py-1 rounded-full flex items-center space-x-4 text-[11px] font-medium tracking-wide text-white/70">
+        <button onclick="showLandingView()" class="hover:text-white transition-colors">Home</button>
+        <span class="text-white/20">•</span>
+        <button onclick="showTransmissionView()" class="hover:text-white transition-colors">Transmission</button>
+        <span class="text-white/20">•</span>
+        <a href="#technology" class="hover:text-white transition-colors">Technology</a>
+        <span class="text-white/20">•</span>
+        <a href="#about" class="hover:text-white transition-colors">About</a>
+      </nav>
+    </div>
+
+    <!-- LANDING VIEW SECTION -->
+    <main id="view-landing" class="flex flex-col items-center text-center my-auto py-2 transition-all duration-300">
+      <div class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full liquid-metal-pill mb-4 shadow-sm animate-pulse-subtle">
+        <span class="text-[10px] text-white/90">✦</span>
+        <span class="text-[11px] font-medium tracking-wide text-neutral-200">Low-Bandwidth Voice Communication</span>
+      </div>
+
+      <h1 class="text-3xl sm:text-4xl font-bold tracking-tight leading-[1.15] text-white px-1">
+        Communicate <span class="font-serif italic font-normal text-4xl sm:text-5xl text-neutral-100 tracking-normal px-1">voice</span><br>
+        <span class="text-white/90 font-medium">over extreme bandwidth limits.</span>
+      </h1>
+
+      <p class="mt-3 text-xs sm:text-sm text-neutral-400 font-normal leading-relaxed max-w-[360px] mx-auto px-2">
+        Transmit intelligible multilingual speech through extremely bandwidth-constrained links using neural speech compression and lightweight communication technology.
+      </p>
+
+      <div class="mt-6 flex flex-col w-full max-w-[320px] space-y-2.5">
+        <button onclick="showTransmissionView()" class="w-full py-3 px-6 rounded-full text-xs font-semibold tracking-wide liquid-btn-primary flex items-center justify-center space-x-2 shadow-lg">
+          <span>Start Transmission</span>
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </button>
+
+        <button onclick="showTechnologyModal()" class="w-full py-3 px-6 rounded-full text-xs font-medium tracking-wide liquid-btn-secondary text-neutral-200 flex items-center justify-center space-x-2">
+          <span>See How It Works</span>
+        </button>
+      </div>
+
+      <div class="mt-4 px-3 py-1 rounded-md bg-white/[0.03] border border-white/[0.06] text-[9px] text-neutral-400 font-mono tracking-tight flex items-center space-x-1">
+        <span>EnCodec</span>
+        <span class="text-white/30">→</span>
+        <span>Packets</span>
+        <span class="text-white/30">→</span>
+        <span>CRC32</span>
+        <span class="text-white/30">→</span>
+        <span>ggwave</span>
+      </div>
+    </main>
+
+    <!-- TRANSMISSION VIEW WORKSPACE -->
+    <main id="view-transmission" class="hidden flex-col items-center w-full my-auto py-2 transition-all duration-300">
+      
+      <!-- Top Title Header -->
+      <div class="w-full text-left mb-3 flex items-center justify-between">
+        <div>
+          <span class="text-[10px] text-neutral-400 font-mono uppercase tracking-wider">iTantra Engine</span>
+          <h2 class="text-lg font-bold text-white tracking-tight">Voice Transmission Terminal</h2>
+        </div>
+        <div id="status-badge" class="px-2.5 py-1 rounded-full liquid-metal-pill text-[10px] font-mono text-emerald-400 border border-emerald-500/30 flex items-center space-x-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+          <span>Engine Ready</span>
+        </div>
+      </div>
+
+      <!-- Controls Card (Language & Bitrate) -->
+      <div class="w-full liquid-border rounded-2xl p-4 mb-3 text-left">
+        <div class="grid grid-cols-2 gap-3 mb-3">
+          <!-- Language Selector -->
+          <div>
+            <label class="text-[10px] text-neutral-400 font-medium block mb-1">Target Language</label>
+            <select id="select-language" class="w-full bg-black/60 border border-white/15 rounded-xl px-3 py-2 text-xs font-medium text-white focus:outline-none focus:border-white/40">
+              <option value="hi" selected>Hindi (हिंदी)</option>
+              <option value="gu">Gujarati (ગુજરાતી)</option>
+              <option value="mr">Marathi (मराठी)</option>
+              <option value="kn">Kannada (ಕನ್ನಡ)</option>
+              <option value="ml">Malayalam (മലയാളം)</option>
+              <option value="ta">Tamil (தமிழ்)</option>
+              <option value="te">Telugu (తెలుగు)</option>
+              <option value="or">Odia (ଓଡ଼ିଆ)</option>
+              <option value="bn">Bengali (বাংলা)</option>
+              <option value="en">English</option>
+            </select>
+          </div>
+
+          <!-- Bitrate Selector -->
+          <div>
+            <label class="text-[10px] text-neutral-400 font-medium block mb-1">EnCodec Bitrate</label>
+            <select id="select-bitrate" class="w-full bg-black/60 border border-white/15 rounded-xl px-3 py-2 text-xs font-medium text-white focus:outline-none focus:border-white/40">
+              <option value="6.0" selected>6.0 kbps (Optimal)</option>
+              <option value="24.0">24.0 kbps (High)</option>
+              <option value="12.0">12.0 kbps (Medium)</option>
+              <option value="3.0">3.0 kbps (Low)</option>
+              <option value="1.5">1.5 kbps (Ultra-Low)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Mode Selector -->
+        <div>
+          <label class="text-[10px] text-neutral-400 font-medium block mb-1">Transmission Mode</label>
+          <div class="grid grid-cols-2 gap-2">
+            <button id="mode-software" onclick="setMode('software_loopback')" class="py-1.5 px-3 rounded-xl text-[11px] font-medium border text-white bg-white/10 border-white/30 transition-all">
+              Software Loopback (Verified PASS)
+            </button>
+            <button id="mode-physical" onclick="setMode('physical_acoustic')" class="py-1.5 px-3 rounded-xl text-[11px] font-medium border text-neutral-400 border-white/10 hover:border-white/20 transition-all">
+              Physical Acoustic (Experimental)
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recording / Input Audio Action Card -->
+      <div class="w-full liquid-border rounded-2xl p-5 mb-3 flex flex-col items-center justify-center text-center">
+        <div class="relative mb-3">
+          <button id="btn-record" onclick="toggleRecording()" class="w-16 h-16 rounded-full liquid-metal-pill border border-white/30 flex items-center justify-center text-white active:scale-95 transition-all shadow-xl">
+            <svg id="mic-icon" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 016 0v6a3 3 0 01-3 3z" />
+            </svg>
+          </button>
+        </div>
+
+        <div id="recording-status" class="text-xs font-semibold text-white tracking-wide mb-1">
+          Click Microphone to Record
+        </div>
+        <p class="text-[10px] text-neutral-400 mb-3">Speak up to 10 seconds of voice audio</p>
+
+        <!-- Divider with OR -->
+        <div class="flex items-center w-full max-w-xs mb-3">
+          <div class="flex-grow border-t border-white/10"></div>
+          <span class="px-2 text-[9px] text-neutral-500 uppercase tracking-wider font-mono">OR</span>
+          <div class="flex-grow border-t border-white/10"></div>
+        </div>
+
+        <!-- Sample Audio Fallback Action -->
+        <div class="flex space-x-2 w-full max-w-xs">
+          <button onclick="transmitSampleAudio()" class="flex-1 py-2 px-3 rounded-full text-xs font-medium liquid-btn-secondary text-neutral-200">
+            Use Sample audio.wav
+          </button>
+          <label class="flex-1 py-2 px-3 rounded-full text-xs font-medium liquid-btn-secondary text-neutral-200 cursor-pointer text-center">
+            Upload WAV
+            <input type="file" id="file-input" accept="audio/*" class="hidden" onchange="handleFileUpload(event)">
+          </label>
+        </div>
+      </div>
+
+      <!-- Real Pipeline Visualization -->
+      <div class="w-full liquid-border rounded-2xl p-4 mb-3 text-left">
+        <span class="text-[10px] text-neutral-400 font-mono uppercase tracking-wider block mb-2">Real Pipeline Execution</span>
+        <div class="grid grid-cols-4 gap-1.5 text-center text-[10px] font-mono">
+          <div id="pipe-enc" class="p-1.5 rounded-lg border border-white/10 bg-white/5 text-neutral-400">1. EnCodec</div>
+          <div id="pipe-ser" class="p-1.5 rounded-lg border border-white/10 bg-white/5 text-neutral-400">2. Packets</div>
+          <div id="pipe-crc" class="p-1.5 rounded-lg border border-white/10 bg-white/5 text-neutral-400">3. CRC32</div>
+          <div id="pipe-rec" class="p-1.5 rounded-lg border border-white/10 bg-white/5 text-neutral-400">4. Reconstruct</div>
+        </div>
+      </div>
+
+      <!-- Results Panel (Metrics + Player + ASR) -->
+      <div id="results-panel" class="hidden w-full space-y-3">
+        <!-- Reconstructed Audio Player -->
+        <div class="w-full liquid-border rounded-2xl p-4 text-left">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-semibold text-emerald-400 flex items-center space-x-1.5">
+              <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+              <span>Reconstructed Voice Ready</span>
+            </span>
+            <span id="res-latency" class="text-[10px] text-neutral-400 font-mono">—</span>
+          </div>
+          <audio id="audio-player" controls class="w-full h-10 accent-white rounded-lg"></audio>
+        </div>
+
+        <!-- Metrics Grid -->
+        <div class="grid grid-cols-3 gap-2 text-center">
+          <div class="liquid-border rounded-xl p-2">
+            <span id="m-bitrate" class="text-xs font-bold text-white tracking-tight">6.0 kbps</span>
+            <span class="text-[8px] text-neutral-400 block mt-0.5">Target Bitrate</span>
+          </div>
+          <div class="liquid-border rounded-xl p-2">
+            <span id="m-ratio" class="text-xs font-bold text-white tracking-tight">235.0x</span>
+            <span class="text-[8px] text-neutral-400 block mt-0.5">Compression</span>
+          </div>
+          <div class="liquid-border rounded-xl p-2">
+            <span id="m-crc" class="text-xs font-bold text-emerald-400 tracking-tight">PASS</span>
+            <span class="text-[8px] text-neutral-400 block mt-0.5">CRC32 Status</span>
+          </div>
+        </div>
+
+        <!-- ASR Secondary Result Panel -->
+        <div class="w-full liquid-border rounded-2xl p-4 text-left">
+          <span class="text-[10px] text-neutral-400 font-mono uppercase tracking-wider block mb-1">AI4Bharat IndicConformer ASR</span>
+          <div id="asr-output" class="text-sm font-medium text-neutral-100 bg-black/40 border border-white/10 rounded-xl p-3">
+            —
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- BOTTOM STATS FOOTER -->
+    <footer class="w-full mt-auto pt-2">
+      <div class="grid grid-cols-3 gap-2 w-full max-w-md mx-auto">
+        <div class="liquid-border rounded-xl p-2.5 flex flex-col items-center justify-center text-center">
+          <span class="text-base font-bold text-white tracking-tight leading-none">6 kbps</span>
+          <span class="text-[9px] text-neutral-400 mt-1 font-medium leading-tight">Target speech bitrate</span>
+        </div>
+        <div class="liquid-border rounded-xl p-2.5 flex flex-col items-center justify-center text-center">
+          <span class="text-base font-bold text-white tracking-tight leading-none">125 pkts</span>
+          <span class="text-[9px] text-neutral-400 mt-1 font-medium leading-tight">Verified software transmission</span>
+        </div>
+        <div class="liquid-border rounded-xl p-2.5 flex flex-col items-center justify-center text-center">
+          <span class="text-base font-bold text-white tracking-tight leading-none">CRC32</span>
+          <span class="text-[9px] text-neutral-400 mt-1 font-medium leading-tight">Error detection enabled</span>
+        </div>
+      </div>
+      <div class="mt-3 text-center">
+        <span class="text-[9px] text-neutral-600 uppercase tracking-widest font-mono">Neural Speech Transmission • iTantra</span>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- Technology Modal -->
+  <div id="tech-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-2xl hidden flex-col justify-center p-6">
+    <div class="liquid-border rounded-2xl p-6 max-w-md mx-auto w-full text-left">
+      <h3 class="text-lg font-bold text-white mb-2">How iTantra Works</h3>
+      <p class="text-xs text-neutral-300 leading-relaxed mb-4">
+        iTantra enables low-bandwidth multilingual voice communication by combining Meta EnCodec neural compression with lightweight packetization & AI4Bharat IndicConformer speech recognition.
+      </p>
+      <div class="text-[10px] font-mono text-neutral-400 space-y-1 mb-4">
+        <div>1. Voice Audio → EnCodec Neural Encoder</div>
+        <div>2. Discrete VQ Codes Serialization</div>
+        <div>3. Packetization + CRC32 Error Protection</div>
+        <div>4. Transmission Channel</div>
+        <div>5. Packet Reassembly & EnCodec Decoder</div>
+        <div>6. Reconstructed 24kHz Voice Output</div>
+      </div>
+      <button onclick="closeTechnologyModal()" class="w-full py-2.5 rounded-full text-xs font-semibold liquid-btn-primary">
+        Close Overview
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Menu Drawer -->
+  <div id="mobile-drawer" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-2xl hidden flex-col justify-between p-6">
+    <div class="flex items-center justify-between pb-6 border-b border-white/10">
+      <div class="flex items-center space-x-2">
+        <div class="w-7 h-7 rounded-lg liquid-metal-pill flex items-center justify-center p-1 border border-white/20">
+          <svg viewBox="0 0 24 24" fill="none" class="w-full h-full text-white" stroke="currentColor" stroke-width="2">
+            <path d="M4 10v4" /><path d="M8 7v10" /><path d="M12 3v18" /><path d="M16 8v8" /><path d="M20 11v2" />
+          </svg>
+        </div>
+        <span class="font-bold text-base text-white">iTantra</span>
+      </div>
+      <button id="menu-close" aria-label="Close Navigation" class="w-8 h-8 rounded-full liquid-border flex items-center justify-center text-white/80">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <div class="flex flex-col space-y-6 py-8 text-center text-lg font-medium text-neutral-300">
+      <button onclick="showLandingView(); closeMenu();" class="hover:text-white py-1">Home</button>
+      <button onclick="showTransmissionView(); closeMenu();" class="hover:text-white py-1">Start Transmission</button>
+      <button onclick="showTechnologyModal(); closeMenu();" class="hover:text-white py-1">Technology</button>
+    </div>
+
+    <div class="pt-6 border-t border-white/10 flex flex-col space-y-3">
+      <button onclick="showTransmissionView(); closeMenu();" class="w-full py-3 rounded-full text-xs font-semibold liquid-btn-primary">
+        Try iTantra
+      </button>
+      <p class="text-[10px] text-center text-neutral-500">Low-Bandwidth Multilingual Voice Communication</p>
+    </div>
+  </div>
+
+  <script>
+    let currentMode = 'software_loopback';
+    let mediaRecorder = null;
+    let audioChunks = [];
+    let isRecording = false;
+
+    // View Navigation Logic
+    function showLandingView() {
+      document.getElementById('view-landing').classList.remove('hidden');
+      document.getElementById('view-landing').classList.add('flex');
+      document.getElementById('view-transmission').classList.add('hidden');
+      document.getElementById('view-transmission').classList.remove('flex');
+    }
+
+    function showTransmissionView() {
+      document.getElementById('view-landing').classList.add('hidden');
+      document.getElementById('view-landing').classList.remove('flex');
+      document.getElementById('view-transmission').classList.remove('hidden');
+      document.getElementById('view-transmission').classList.add('flex');
+    }
+
+    function showTechnologyModal() {
+      document.getElementById('tech-modal').classList.remove('hidden');
+      document.getElementById('tech-modal').classList.add('flex');
+    }
+
+    function closeTechnologyModal() {
+      document.getElementById('tech-modal').classList.add('hidden');
+      document.getElementById('tech-modal').classList.remove('flex');
+    }
+
+    function closeMenu() {
+      const drawer = document.getElementById('mobile-drawer');
+      drawer.classList.add('hidden');
+      drawer.classList.remove('flex');
+    }
+
+    const menuToggle = document.getElementById('menu-toggle');
+    const menuClose = document.getElementById('menu-close');
+    const mobileDrawer = document.getElementById('mobile-drawer');
+
+    if (menuToggle && menuClose && mobileDrawer) {
+      menuToggle.addEventListener('click', () => {
+        mobileDrawer.classList.remove('hidden');
+        mobileDrawer.classList.add('flex');
+      });
+      menuClose.addEventListener('click', closeMenu);
+    }
+
+    function setMode(mode) {
+      currentMode = mode;
+      const swBtn = document.getElementById('mode-software');
+      const physBtn = document.getElementById('mode-physical');
+
+      if (mode === 'software_loopback') {
+        swBtn.className = 'py-1.5 px-3 rounded-xl text-[11px] font-medium border text-white bg-white/10 border-white/30 transition-all';
+        physBtn.className = 'py-1.5 px-3 rounded-xl text-[11px] font-medium border text-neutral-400 border-white/10 hover:border-white/20 transition-all';
+      } else {
+        physBtn.className = 'py-1.5 px-3 rounded-xl text-[11px] font-medium border text-white bg-white/10 border-white/30 transition-all';
+        swBtn.className = 'py-1.5 px-3 rounded-xl text-[11px] font-medium border text-neutral-400 border-white/10 hover:border-white/20 transition-all';
+      }
+    }
+
+    // Microphone Recording
+    async function toggleRecording() {
+      const recBtn = document.getElementById('btn-record');
+      const statusText = document.getElementById('recording-status');
+
+      if (!isRecording) {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          mediaRecorder = new MediaRecorder(stream);
+          audioChunks = [];
+
+          mediaRecorder.ondataavailable = (event) => {
+            if (event.data.size > 0) audioChunks.push(event.data);
+          };
+
+          mediaRecorder.onstop = async () => {
+            const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+            sendAudioToPipeline(audioBlob);
+          };
+
+          mediaRecorder.start();
+          isRecording = true;
+          recBtn.classList.add('border-red-500', 'animate-pulse');
+          statusText.innerText = "Recording... Click again to Stop";
+        } catch (err) {
+          alert("Microphone access permission denied or unavailable.");
+        }
+      } else {
+        if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+          mediaRecorder.stop();
+        }
+        isRecording = false;
+        recBtn.classList.remove('border-red-500', 'animate-pulse');
+        statusText.innerText = "Processing Audio...";
+      }
+    }
+
+    function handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (file) {
+        sendAudioToPipeline(file);
+      }
+    }
+
+    function transmitSampleAudio() {
+      sendAudioToPipeline(null);
+    }
+
+    async function sendAudioToPipeline(audioBlob) {
+      const language = document.getElementById('select-language').value;
+      const bitrate = document.getElementById('select-bitrate').value;
+      const statusBadge = document.getElementById('status-badge');
+      const statusText = document.getElementById('recording-status');
+
+      statusBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-spin"></span> Processing...`;
+      statusText.innerText = "Transmitting through EnCodec Pipeline...";
+
+      animatePipelineStages();
+
+      const formData = new FormData();
+      formData.append('language', language);
+      formData.append('bitrate', bitrate);
+      formData.append('mode', currentMode);
+
+      if (audioBlob) {
+        formData.append('audio', audioBlob, 'recorded_audio.wav');
+      }
+
+      try {
+        const response = await fetch('/api/transmit', {
+          method: 'POST',
+          body: formData
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.status === 'SUCCESS') {
+          displayPipelineResults(data);
+          statusBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span> Transmission PASS`;
+          statusText.innerText = "Click Microphone to Record";
+        } else {
+          alert("Pipeline Error: " + (data.error || "Transmission failed"));
+          statusBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-red-400"></span> Failed`;
+          statusText.innerText = "Error encountered during processing";
+        }
+      } catch (err) {
+        alert("Server network error: " + err.message);
+        statusBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-red-400"></span> Error`;
+      }
+    }
+
+    function animatePipelineStages() {
+      const p1 = document.getElementById('pipe-enc');
+      const p2 = document.getElementById('pipe-ser');
+      const p3 = document.getElementById('pipe-crc');
+      const p4 = document.getElementById('pipe-rec');
+
+      [p1, p2, p3, p4].forEach(p => p.className = 'p-1.5 rounded-lg border border-white/10 bg-white/5 text-neutral-400');
+
+      setTimeout(() => p1.className = 'p-1.5 rounded-lg border border-emerald-500/50 bg-emerald-500/10 text-emerald-400 font-bold', 100);
+      setTimeout(() => p2.className = 'p-1.5 rounded-lg border border-emerald-500/50 bg-emerald-500/10 text-emerald-400 font-bold', 400);
+      setTimeout(() => p3.className = 'p-1.5 rounded-lg border border-emerald-500/50 bg-emerald-500/10 text-emerald-400 font-bold', 700);
+      setTimeout(() => p4.className = 'p-1.5 rounded-lg border border-emerald-500/50 bg-emerald-500/10 text-emerald-400 font-bold', 1000);
+    }
+
+    function displayPipelineResults(data) {
+      document.getElementById('results-panel').classList.remove('hidden');
+
+      document.getElementById('m-bitrate').innerText = `${data.bitrate_kbps} kbps`;
+      document.getElementById('m-ratio').innerText = data.compression_ratio;
+      document.getElementById('m-crc').innerText = data.crc_status;
+
+      document.getElementById('res-latency').innerText = `${data.processing_latency_ms} ms`;
+      document.getElementById('asr-output').innerText = data.asr_transcription || "—";
+
+      const player = document.getElementById('audio-player');
+      player.src = data.reconstructed_audio_url + '?t=' + new Date().getTime();
+      player.play().catch(() => {});
+    }
+  </script>
+</body>
+</html>
