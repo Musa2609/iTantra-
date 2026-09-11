@@ -1,0 +1,202 @@
+/* iTantra — Cinematic Deep-Tech Design System */
+
+:root {
+  --bg-black: #000000;
+  --text-white: #ffffff;
+  --text-muted: #9a9a9a;
+  --text-secondary: #d8d8d8;
+  --border-light: rgba(255, 255, 255, 0.14);
+  --border-subtle: rgba(255, 255, 255, 0.08);
+}
+
+/* Background video styling */
+.bg-video-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.bg-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.55;
+  filter: contrast(1.1) brightness(0.8);
+}
+
+.bg-scrim {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 30%, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.85) 80%),
+              linear-gradient(180deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.4) 40%, rgba(0, 0, 0, 0.95) 100%);
+}
+
+.bg-grain {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 0);
+  background-size: 28px 28px;
+  opacity: 0.4;
+}
+
+/* Scroll progress indicator */
+.scroll-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.2), #ffffff, rgba(255,255,255,0.2));
+  z-index: 100;
+  width: 0%;
+  transition: width 0.1s ease-out;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+}
+
+/* Stitch Liquid-Metal & Glass Elements */
+.liquid-metal-pill {
+  background: radial-gradient(120% 120% at 50% 0%, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.02) 100%);
+  border: 1px solid var(--border-light);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.3), 0 8px 32px -4px rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.liquid-border {
+  position: relative;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.02) 100%);
+  border: 1px solid var(--border-light);
+  box-shadow: 0 8px 32px -2px rgba(0, 0, 0, 0.8), inset 0 1px 1px 0 rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.liquid-border:hover {
+  border-color: rgba(255, 255, 255, 0.28);
+  box-shadow: 0 12px 40px -2px rgba(0, 0, 0, 0.9), inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.35);
+}
+
+.liquid-btn-primary {
+  position: relative;
+  background: linear-gradient(180deg, #ffffff 0%, #d8d8d8 100%);
+  color: #000000;
+  box-shadow: 0 0 30px rgba(255, 255, 255, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+.liquid-btn-primary::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(60deg, transparent 30%, rgba(255, 255, 255, 0.6) 50%, transparent 70%);
+  transform: rotate(25deg) translateX(-100%);
+  transition: transform 0.6s ease;
+}
+
+.liquid-btn-primary:hover:not(:disabled)::after {
+  transform: rotate(25deg) translateX(100%);
+}
+
+.liquid-btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 0 45px rgba(255, 255, 255, 0.5), inset 0 1px 0 rgba(255, 255, 255, 1);
+}
+
+.liquid-btn-primary:active:not(:disabled) {
+  transform: scale(0.98);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+}
+
+.liquid-btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.liquid-btn-secondary {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-light);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.15);
+  transition: all 0.25s ease;
+}
+
+.liquid-btn-secondary:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.liquid-btn-secondary:active:not(:disabled) {
+  background: rgba(255, 255, 255, 0.18);
+  transform: scale(0.98);
+}
+
+/* Animations */
+@keyframes blurToSharp {
+  0% {
+    filter: blur(12px);
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  100% {
+    filter: blur(0px);
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-blur-sharp {
+  animation: blurToSharp 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Scroll reveal classes */
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal-on-scroll.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* FAQ Accordion Styling */
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+  opacity: 0;
+}
+
+.faq-answer.open {
+  max-height: 400px;
+  opacity: 1;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #000000;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
