@@ -1,23 +1,29 @@
 <!DOCTYPE html>
 <html lang="en" class="h-full bg-black text-white antialiased selection:bg-white selection:text-black">
+
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>iTantra — Low-Bandwidth Neural Voice Communication</title>
-  
-  <meta name="description" content="iTantra transmits 24kHz speech through bandwidth-constrained links using Meta EnCodec neural quantization, 256-byte sequence packetization, and acoustic data protocols.">
+
+  <meta name="description"
+    content="iTantra transmits 24kHz speech through bandwidth-constrained links using Meta EnCodec neural quantization, 256-byte sequence packetization, and acoustic data protocols.">
   <meta property="og:title" content="iTantra — Low-Bandwidth Multilingual Voice Communication">
-  <meta property="og:description" content="Transmit 24kHz intelligible speech across 6.0 kbps links using neural vector quantization and sequence-numbered packetization.">
+  <meta property="og:description"
+    content="Transmit 24kHz intelligible speech across 6.0 kbps links using neural vector quantization and sequence-numbered packetization.">
   <meta property="og:type" content="website">
 
   <!-- Custom Favicon -->
   <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
-  
+
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@1&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  
+  <link
+    href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@1&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet">
+
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -40,6 +46,7 @@
   <!-- Custom Deep-Tech Stylesheet -->
   <link rel="stylesheet" href="/static/css/stitch_cinema.css">
 </head>
+
 <body class="h-full w-full bg-[#050505] text-white font-sans relative overflow-x-hidden p-0 m-0 min-h-screen">
 
   <!-- Scroll Progress Indicator -->
@@ -49,7 +56,9 @@
   <div class="bg-video-container">
     <video id="hero-wave-video" autoplay loop muted playsinline class="bg-video">
       <source src="/static/media/hero_wave.mp4" type="video/mp4">
-      <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260818_072341_50851634-bbc3-4c33-9acc-7647d4db44aa.mp4" type="video/mp4">
+      <source
+        src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260818_072341_50851634-bbc3-4c33-9acc-7647d4db44aa.mp4"
+        type="video/mp4">
     </video>
     <div class="bg-scrim"></div>
   </div>
@@ -63,24 +72,36 @@
     <!-- HEADER (Clean 3-Column Navigation) -->
     <header class="sticky top-0 z-40 w-full px-6 py-4 backdrop-blur-xl border-b border-white/10 bg-[#050505]/80">
       <div class="max-w-7xl mx-auto flex items-center justify-between">
-        
+
         <!-- LEFT: Brand Mark -->
-        <div class="flex items-center space-x-3 cursor-pointer" onclick="scrollToSection('hero')" tabindex="0" role="button" aria-label="iTantra Home">
-          <div class="w-8 h-8 rounded-lg bg-white/10 border border-white/20 flex items-center justify-center p-1.5 shadow-sm">
-            <svg viewBox="0 0 24 24" fill="none" class="w-full h-full text-white" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M4 10v4" /><path d="M8 7v10" /><path d="M12 3v18" /><path d="M16 8v8" /><path d="M20 11v2" />
+        <div class="flex items-center space-x-3 cursor-pointer" onclick="scrollToSection('hero')" tabindex="0"
+          role="button" aria-label="iTantra Home">
+          <div
+            class="w-8 h-8 rounded-lg bg-white/10 border border-white/20 flex items-center justify-center p-1.5 shadow-sm">
+            <svg viewBox="0 0 24 24" fill="none" class="w-full h-full text-white" stroke="currentColor"
+              stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 10v4" />
+              <path d="M8 7v10" />
+              <path d="M12 3v18" />
+              <path d="M16 8v8" />
+              <path d="M20 11v2" />
             </svg>
           </div>
           <span class="font-bold text-lg tracking-tight text-white">iTantra</span>
         </div>
 
         <!-- CENTER: Navigation Items -->
-        <nav class="hidden md:flex items-center space-x-8 text-xs font-medium text-neutral-400 font-mono" aria-label="Main Navigation">
+        <nav class="hidden md:flex items-center space-x-8 text-xs font-medium text-neutral-400 font-mono"
+          aria-label="Main Navigation">
           <button onclick="scrollToSection('pipeline')" class="hover:text-white transition-colors">Pipeline</button>
-          <button onclick="scrollToSection('error-simulator')" class="hover:text-white transition-colors">Packet Simulator</button>
-          <button onclick="scrollToSection('encodec-viz')" class="hover:text-white transition-colors">EnCodec Quant</button>
-          <button onclick="scrollToSection('architecture')" class="hover:text-white transition-colors">Architecture Map</button>
-          <button onclick="scrollToSection('console')" class="hover:text-white transition-colors">Transmission Console</button>
+          <button onclick="scrollToSection('error-simulator')" class="hover:text-white transition-colors">Packet
+            Simulator</button>
+          <button onclick="scrollToSection('encodec-viz')" class="hover:text-white transition-colors">EnCodec
+            Quant</button>
+          <button onclick="scrollToSection('architecture')" class="hover:text-white transition-colors">Architecture
+            Map</button>
+          <button onclick="scrollToSection('console')" class="hover:text-white transition-colors">Transmission
+            Console</button>
         </nav>
 
         <!-- RIGHT: Console Trigger & Mobile Toggle -->
@@ -88,7 +109,9 @@
           <button onclick="scrollToSection('console')" class="btn-ctrl-primary">
             Launch Console
           </button>
-          <button id="menu-toggle" onclick="openMenu()" aria-label="Open Navigation Drawer" aria-expanded="false" aria-controls="mobile-drawer" class="md:hidden w-8 h-8 rounded-lg border border-white/20 flex items-center justify-center text-white/80 active:text-white">
+          <button id="menu-toggle" onclick="openMenu()" aria-label="Open Navigation Drawer" aria-expanded="false"
+            aria-controls="mobile-drawer"
+            class="md:hidden w-8 h-8 rounded-lg border border-white/20 flex items-center justify-center text-white/80 active:text-white">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7h16M4 17h16" />
             </svg>
@@ -99,8 +122,9 @@
     </header>
 
     <!-- HERO SECTION (WITH THREE.JS 3D SIGNAL RIBBON) -->
-    <main id="hero" class="relative min-h-[85vh] flex flex-col justify-end items-center text-center px-6 pb-20 pt-28 max-w-5xl mx-auto w-full">
-      
+    <main id="hero"
+      class="relative min-h-[85vh] flex flex-col justify-end items-center text-center px-6 pb-20 pt-28 max-w-5xl mx-auto w-full">
+
       <!-- Three.js Procedural 3D WebGL Signal Ribbon Canvas -->
       <canvas id="hero-3d-canvas"></canvas>
 
@@ -109,22 +133,28 @@
         <!-- Telemetry Badge -->
         <div class="hero-stagger-1 inline-flex items-center space-x-2 px-3.5 py-1 rounded-full pill-badge mb-8">
           <span class="w-2 h-2 rounded-full bg-emerald-400 animate-signal-pulse"></span>
-          <span class="text-[11px] font-mono text-neutral-300 tracking-wider uppercase">RESILIENT NEURAL VOICE PIPELINE</span>
+          <span class="text-[11px] font-mono text-neutral-300 tracking-wider uppercase">RESILIENT NEURAL VOICE
+            PIPELINE</span>
         </div>
 
         <!-- Icon Headline -->
-        <h1 class="hero-stagger-2 text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight leading-[1.08] text-white max-w-4xl">
-          Communicate <span class="hero-stagger-3 font-serif-italic font-normal text-5xl sm:text-7xl md:text-8xl text-neutral-200 px-1 animate-blur-sharp">voice</span><br>
+        <h1
+          class="hero-stagger-2 text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight leading-[1.08] text-white max-w-4xl">
+          Communicate <span
+            class="hero-stagger-3 font-serif-italic font-normal text-5xl sm:text-7xl md:text-8xl text-neutral-200 px-1 animate-blur-sharp">voice</span><br>
           <span class="text-white/90 font-medium">over extreme bandwidth limits.</span>
         </h1>
 
         <!-- Technical Description -->
-        <p class="hero-stagger-4 mt-6 text-sm sm:text-base text-neutral-400 font-normal leading-relaxed max-w-2xl mx-auto">
-          Transmit 24kHz intelligible speech across 6.0 kbps links using neural speech quantization, 256-byte sequence packetization, and acoustic data protocols.
+        <p
+          class="hero-stagger-4 mt-6 text-sm sm:text-base text-neutral-400 font-normal leading-relaxed max-w-2xl mx-auto">
+          Transmit 24kHz intelligible speech across 6.0 kbps links using neural speech quantization, 256-byte sequence
+          packetization, and acoustic data protocols.
         </p>
 
         <!-- Primary Action Buttons -->
-        <div class="hero-stagger-5 mt-10 flex flex-col sm:flex-row items-center justify-center space-y-3 sm:space-y-0 sm:space-x-4 w-full max-w-md">
+        <div
+          class="hero-stagger-5 mt-10 flex flex-col sm:flex-row items-center justify-center space-y-3 sm:space-y-0 sm:space-x-4 w-full max-w-md">
           <button onclick="scrollToSection('console')" class="btn-ctrl-primary w-full sm:w-auto">
             <span>Start Transmission</span>
             <span class="cta-arrow">→</span>
@@ -136,7 +166,8 @@
         </div>
 
         <!-- Architecture Telemetry Pill -->
-        <div class="mt-12 px-4 py-2 rounded-full border border-white/10 bg-black/60 text-[10px] text-neutral-400 font-mono tracking-tight flex items-center space-x-2">
+        <div
+          class="mt-12 px-4 py-2 rounded-full border border-white/10 bg-black/60 text-[10px] text-neutral-400 font-mono tracking-tight flex items-center space-x-2">
           <span>EnCodec (6.0 kbps)</span>
           <span class="text-white/30">→</span>
           <span>Packets (256B)</span>
@@ -154,121 +185,271 @@
     <!-- SECTION 1: CONTINUOUS VISUAL COMMUNICATION PIPELINE -->
     <section id="pipeline" class="py-24 px-6 max-w-4xl mx-auto w-full reveal-on-scroll">
       <div class="text-left mb-12 border-b border-white/10 pb-6">
-        <span class="text-[10px] font-mono text-emerald-400 uppercase tracking-widest block mb-1">01 / End-to-End Pipeline</span>
+        <span class="text-[10px] font-mono text-emerald-400 uppercase tracking-widest block mb-1">01 / End-to-End
+          Pipeline</span>
         <h2 class="text-2xl sm:text-4xl font-bold text-white tracking-tight">Continuous Signal Transmission System</h2>
-        <p class="text-xs text-neutral-400 mt-2">Scroll or click stages to trace speech transformation from raw PCM audio through neural codebooks and packet frames to 24kHz output speech.</p>
+        <p class="text-xs text-neutral-400 mt-2">Scroll to follow the central signal path as speech transforms from raw
+          PCM audio through neural vector codebooks, sequence packetization, and CRC32 verification back to 24kHz output
+          speech.</p>
       </div>
 
-      <!-- Single Continuous Signal Timeline -->
-      <div class="relative pl-12 space-y-6">
-        <!-- Connecting Signal Line -->
+      <!-- Single Continuous Signal Timeline with Central Line Structure -->
+      <div class="relative pl-10 sm:pl-12 space-y-6">
+        <!-- Connecting Central Signal Track Line -->
         <div class="pipeline-connector-line"></div>
+        <div id="pipeline-pulse-light" class="pipeline-pulse-dot"></div>
 
         <!-- Stage 01 -->
-        <div class="pipeline-step-node active-node flex items-start space-x-4" id="pipe-node-1" onclick="selectPipelineNode(1)">
-          <div class="node-circle w-6 h-6 rounded-full border-2 border-white/30 bg-[#050505] flex items-center justify-center text-[10px] font-mono font-bold text-white shrink-0 mt-0.5">1</div>
+        <div class="pipeline-step-node active-node flex items-start space-x-4" id="pipe-node-1"
+          onclick="selectPipelineNode(1)">
+          <div
+            class="node-circle w-6 h-6 rounded-full border-2 border-white/30 bg-[#050505] flex items-center justify-center text-[10px] font-mono font-bold text-white shrink-0 mt-0.5">
+            1</div>
           <div class="node-box tech-panel rounded-xl p-4 flex-grow text-left">
-            <span class="text-[9px] font-mono text-neutral-400 block mb-0.5">STAGE 01 // INPUT</span>
-            <h3 class="text-sm font-bold text-white">Voice Audio Input</h3>
-            <p class="text-xs text-neutral-400 mt-1">Raw microphone capture (24kHz PCM signal data).</p>
+            <div class="flex items-center justify-between">
+              <span class="text-[9px] font-mono text-neutral-400 block mb-0.5">STAGE 01 // INPUT</span>
+              <span class="text-[9px] font-mono text-neutral-400">24,000 Hz PCM</span>
+            </div>
+            <h3 class="text-sm font-bold text-white">Voice Audio Input Waveform</h3>
+            <p class="text-xs text-neutral-400 mt-1 mb-3">Raw microphone capture generating uncompressed PCM audio
+              signal.</p>
+
+            <!-- Micro-Visualizer 01: Raw PCM Waveform -->
+            <div class="w-full h-8 bg-[#050505] rounded-md border border-white/10 p-1 flex items-center justify-center">
+              <svg viewBox="0 0 300 24" fill="none" class="w-full h-full text-white/80" stroke="currentColor"
+                stroke-width="1.5">
+                <path
+                  d="M0 12 Q 15 2, 30 12 T 60 12 T 90 22 T 120 12 T 150 2 T 180 12 T 210 20 T 240 12 T 270 4 T 300 12" />
+              </svg>
+            </div>
           </div>
         </div>
 
         <!-- Stage 02 -->
         <div class="pipeline-step-node flex items-start space-x-4" id="pipe-node-2" onclick="selectPipelineNode(2)">
-          <div class="node-circle w-6 h-6 rounded-full border-2 border-white/30 bg-[#050505] flex items-center justify-center text-[10px] font-mono font-bold text-white shrink-0 mt-0.5">2</div>
+          <div
+            class="node-circle w-6 h-6 rounded-full border-2 border-white/30 bg-[#050505] flex items-center justify-center text-[10px] font-mono font-bold text-white shrink-0 mt-0.5">
+            2</div>
           <div class="node-box tech-panel rounded-xl p-4 flex-grow text-left">
-            <span class="text-[9px] font-mono text-emerald-400 block mb-0.5">STAGE 02 // NEURAL QUANTIZATION</span>
-            <h3 class="text-sm font-bold text-white">Meta EnCodec Encoder</h3>
-            <p class="text-xs text-neutral-400 mt-1">Quantizes 24kHz speech into discrete Vector Quantization (VQ) codebook indices at target 6.0 kbps bandwidth.</p>
+            <div class="flex items-center justify-between">
+              <span class="text-[9px] font-mono text-emerald-400 block mb-0.5">STAGE 02 // NEURAL QUANTIZATION</span>
+              <span class="text-[9px] font-mono text-emerald-400">6.0 kbps Target</span>
+            </div>
+            <h3 class="text-sm font-bold text-white">Meta EnCodec Encoder (Waveform Compresses)</h3>
+            <p class="text-xs text-neutral-400 mt-1 mb-3">Residual Vector Quantization (RVQ) squashes speech amplitude
+              into discrete latent codebook stages.</p>
+
+            <!-- Micro-Visualizer 02: Compressed Envelope -->
+            <div class="w-full h-8 bg-[#050505] rounded-md border border-white/10 p-1 flex items-center justify-center">
+              <svg viewBox="0 0 300 24" fill="none" class="w-full h-full text-emerald-400" stroke="currentColor"
+                stroke-width="1.5">
+                <path
+                  d="M0 12 Q 15 7, 30 12 T 60 12 T 90 16 T 120 12 T 150 7 T 180 12 T 210 15 T 240 12 T 270 8 T 300 12" />
+              </svg>
+            </div>
           </div>
         </div>
 
         <!-- Stage 03 -->
         <div class="pipeline-step-node flex items-start space-x-4" id="pipe-node-3" onclick="selectPipelineNode(3)">
-          <div class="node-circle w-6 h-6 rounded-full border-2 border-white/30 bg-[#050505] flex items-center justify-center text-[10px] font-mono font-bold text-white shrink-0 mt-0.5">3</div>
+          <div
+            class="node-circle w-6 h-6 rounded-full border-2 border-white/30 bg-[#050505] flex items-center justify-center text-[10px] font-mono font-bold text-white shrink-0 mt-0.5">
+            3</div>
           <div class="node-box tech-panel rounded-xl p-4 flex-grow text-left">
-            <span class="text-[9px] font-mono text-neutral-400 block mb-0.5">STAGE 03 // REPRESENTATION</span>
-            <h3 class="text-sm font-bold text-white">Compressed Code Tensors</h3>
-            <p class="text-xs text-neutral-400 mt-1">Compact VQ index matrices representing acoustic features with up to 18x–235x data reduction.</p>
+            <div class="flex items-center justify-between">
+              <span class="text-[9px] font-mono text-neutral-400 block mb-0.5">STAGE 03 // REPRESENTATION</span>
+              <span class="text-[9px] font-mono text-neutral-400">(1, 8, N) Tensor</span>
+            </div>
+            <h3 class="text-sm font-bold text-white">Discrete Codebook Points</h3>
+            <p class="text-xs text-neutral-400 mt-1 mb-3">Continuous audio becomes discrete integer indices referencing
+              1,024 vector codebook entries.</p>
+
+            <!-- Micro-Visualizer 03: VQ Codebook Grid Points -->
+            <div
+              class="w-full h-8 bg-[#050505] rounded-md border border-white/10 px-3 flex items-center justify-between font-mono text-[10px] text-emerald-400">
+              <span>[384]</span><span>[102]</span><span>[941]</span><span>[045]</span><span>[612]</span><span>[820]</span><span>[119]</span>
+            </div>
           </div>
         </div>
 
         <!-- Stage 04 -->
         <div class="pipeline-step-node flex items-start space-x-4" id="pipe-node-4" onclick="selectPipelineNode(4)">
-          <div class="node-circle w-6 h-6 rounded-full border-2 border-white/30 bg-[#050505] flex items-center justify-center text-[10px] font-mono font-bold text-white shrink-0 mt-0.5">4</div>
+          <div
+            class="node-circle w-6 h-6 rounded-full border-2 border-white/30 bg-[#050505] flex items-center justify-center text-[10px] font-mono font-bold text-white shrink-0 mt-0.5">
+            4</div>
           <div class="node-box tech-panel rounded-xl p-4 flex-grow text-left">
-            <span class="text-[9px] font-mono text-neutral-400 block mb-0.5">STAGE 04 // SERIALIZATION</span>
-            <h3 class="text-sm font-bold text-white">Binary Byte Buffer</h3>
-            <p class="text-xs text-neutral-400 mt-1">Encodes codebook tensors and scale metadata into a compact binary byte payload stream.</p>
+            <div class="flex items-center justify-between">
+              <span class="text-[9px] font-mono text-neutral-400 block mb-0.5">STAGE 04 // SERIALIZATION</span>
+              <span class="text-[9px] font-mono text-neutral-400">Binary Stream</span>
+            </div>
+            <h3 class="text-sm font-bold text-white">Binary Byte Representation</h3>
+            <p class="text-xs text-neutral-400 mt-1 mb-3">Encodes integer codebook indices and scale factors into
+              compact binary payload bytes.</p>
+
+            <!-- Micro-Visualizer 04: Binary Byte String -->
+            <div
+              class="w-full h-8 bg-[#050505] rounded-md border border-white/10 px-3 flex items-center justify-center font-mono text-[10px] text-neutral-300 tracking-wider">
+              01001001 01010100 01000001 01001110 00000001
+            </div>
           </div>
         </div>
 
         <!-- Stage 05 -->
         <div class="pipeline-step-node flex items-start space-x-4" id="pipe-node-5" onclick="selectPipelineNode(5)">
-          <div class="node-circle w-6 h-6 rounded-full border-2 border-white/30 bg-[#050505] flex items-center justify-center text-[10px] font-mono font-bold text-white shrink-0 mt-0.5">5</div>
+          <div
+            class="node-circle w-6 h-6 rounded-full border-2 border-white/30 bg-[#050505] flex items-center justify-center text-[10px] font-mono font-bold text-white shrink-0 mt-0.5">
+            5</div>
           <div class="node-box tech-panel rounded-xl p-4 flex-grow text-left">
-            <span class="text-[9px] font-mono text-neutral-400 block mb-0.5">STAGE 05 // FRAMING</span>
-            <h3 class="text-sm font-bold text-white">Packetization</h3>
-            <p class="text-xs text-neutral-400 mt-1">Splits binary payload into 256-byte chunks, prepending a 16-byte header (`ITAN` magic, packet ID, total count, CRC32, chunk length).</p>
+            <div class="flex items-center justify-between">
+              <span class="text-[9px] font-mono text-neutral-400 block mb-0.5">STAGE 05 // FRAMING</span>
+              <span class="text-[9px] font-mono text-neutral-400">256B Payload Chunks</span>
+            </div>
+            <h3 class="text-sm font-bold text-white">Packetization (Payload Splits into Packets)</h3>
+            <p class="text-xs text-neutral-400 mt-1 mb-3">Splits binary payload into 256-byte chunks with 16-byte
+              sequence header (`ITAN` magic, packet ID, count).</p>
+
+            <!-- Micro-Visualizer 05: Split Packets -->
+            <div
+              class="w-full h-8 bg-[#050505] rounded-md border border-white/10 px-2 flex items-center justify-around font-mono text-[9px]">
+              <span class="px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">PKT #001
+                (256B)</span>
+              <span class="px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">PKT #002
+                (256B)</span>
+              <span class="px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">PKT #003
+                (256B)</span>
+            </div>
           </div>
         </div>
 
         <!-- Stage 06 -->
         <div class="pipeline-step-node flex items-start space-x-4" id="pipe-node-6" onclick="selectPipelineNode(6)">
-          <div class="node-circle w-6 h-6 rounded-full border-2 border-white/30 bg-[#050505] flex items-center justify-center text-[10px] font-mono font-bold text-white shrink-0 mt-0.5">6</div>
+          <div
+            class="node-circle w-6 h-6 rounded-full border-2 border-white/30 bg-[#050505] flex items-center justify-center text-[10px] font-mono font-bold text-white shrink-0 mt-0.5">
+            6</div>
           <div class="node-box tech-panel rounded-xl p-4 flex-grow text-left">
-            <span class="text-[9px] font-mono text-emerald-400 block mb-0.5">STAGE 06 // INTEGRITY</span>
-            <h3 class="text-sm font-bold text-white">CRC32 Checksum Verification</h3>
-            <p class="text-xs text-neutral-400 mt-1">Calculates 32-bit checksum per chunk to enable packet-by-packet error detection at the receiver.</p>
+            <div class="flex items-center justify-between">
+              <span class="text-[9px] font-mono text-emerald-400 block mb-0.5">STAGE 06 // INTEGRITY</span>
+              <span class="text-[9px] font-mono text-emerald-400">uint32 Checksum</span>
+            </div>
+            <h3 class="text-sm font-bold text-white">CRC32 Verification Occurs</h3>
+            <p class="text-xs text-neutral-400 mt-1 mb-3">Computes 32-bit zlib checksum per chunk to enable
+              packet-by-packet error detection at receiver.</p>
+
+            <!-- Micro-Visualizer 06: CRC32 Checksum Badge -->
+            <div
+              class="w-full h-8 bg-[#050505] rounded-md border border-white/10 px-3 flex items-center justify-between font-mono text-[10px]">
+              <span class="text-neutral-400">Polynomial Calculation: zlib.crc32(chunk)</span>
+              <span class="text-emerald-400 font-bold">0x94B2C81F ✓ PASS</span>
+            </div>
           </div>
         </div>
 
         <!-- Stage 07 -->
         <div class="pipeline-step-node flex items-start space-x-4" id="pipe-node-7" onclick="selectPipelineNode(7)">
-          <div class="node-circle w-6 h-6 rounded-full border-2 border-white/30 bg-[#050505] flex items-center justify-center text-[10px] font-mono font-bold text-white shrink-0 mt-0.5">7</div>
+          <div
+            class="node-circle w-6 h-6 rounded-full border-2 border-white/30 bg-[#050505] flex items-center justify-center text-[10px] font-mono font-bold text-white shrink-0 mt-0.5">
+            7</div>
           <div class="node-box tech-panel rounded-xl p-4 flex-grow text-left">
-            <span class="text-[9px] font-mono text-neutral-400 block mb-0.5">STAGE 07 // TRANSMISSION</span>
-            <h3 class="text-sm font-bold text-white">ggwave Protocol Link</h3>
-            <p class="text-xs text-neutral-400 mt-1">Transmits framed binary payload via verified software loopback channel or acoustic audio tones.</p>
+            <div class="flex items-center justify-between">
+              <span class="text-[9px] font-mono text-neutral-400 block mb-0.5">STAGE 07 // TRANSMISSION</span>
+              <span class="text-[9px] font-mono text-neutral-400">Acoustic / Loopback</span>
+            </div>
+            <h3 class="text-sm font-bold text-white">Transmission Waveform</h3>
+            <p class="text-xs text-neutral-400 mt-1 mb-3">Packets enter transmission link channel via verified software
+              loopback or acoustic FSK sound tones.</p>
+
+            <!-- Micro-Visualizer 07: Carrier Wave -->
+            <div class="w-full h-8 bg-[#050505] rounded-md border border-white/10 p-1 flex items-center justify-center">
+              <svg viewBox="0 0 300 24" fill="none" class="w-full h-full text-emerald-400" stroke="currentColor"
+                stroke-width="1.5">
+                <path
+                  d="M0 12 L 20 12 L 25 2 L 30 22 L 35 12 L 55 12 L 60 2 L 65 22 L 70 12 L 120 12 L 125 2 L 130 22 L 135 12 L 300 12" />
+              </svg>
+            </div>
           </div>
         </div>
 
         <!-- Stage 08 -->
         <div class="pipeline-step-node flex items-start space-x-4" id="pipe-node-8" onclick="selectPipelineNode(8)">
-          <div class="node-circle w-6 h-6 rounded-full border-2 border-white/30 bg-[#050505] flex items-center justify-center text-[10px] font-mono font-bold text-white shrink-0 mt-0.5">8</div>
+          <div
+            class="node-circle w-6 h-6 rounded-full border-2 border-white/30 bg-[#050505] flex items-center justify-center text-[10px] font-mono font-bold text-white shrink-0 mt-0.5">
+            8</div>
           <div class="node-box tech-panel rounded-xl p-4 flex-grow text-left">
-            <span class="text-[9px] font-mono text-neutral-400 block mb-0.5">STAGE 08 // RECEIVER</span>
-            <h3 class="text-sm font-bold text-white">Receiver Ingestion Node</h3>
-            <p class="text-xs text-neutral-400 mt-1">Ingests packet frames, parses 16-byte headers, and validates CRC32 checksum integrity.</p>
+            <div class="flex items-center justify-between">
+              <span class="text-[9px] font-mono text-neutral-400 block mb-0.5">STAGE 08 // RECEIVER</span>
+              <span class="text-[9px] font-mono text-neutral-400">Ingestion Node</span>
+            </div>
+            <h3 class="text-sm font-bold text-white">Receiver Ingests Packets</h3>
+            <p class="text-xs text-neutral-400 mt-1 mb-3">Receiver ingests incoming packet frame stream, validates
+              16-byte magic headers, and parses packet IDs.</p>
+
+            <!-- Micro-Visualizer 08: Ingestion Buffer -->
+            <div
+              class="w-full h-8 bg-[#050505] rounded-md border border-white/10 px-3 flex items-center justify-between font-mono text-[10px]">
+              <span class="text-neutral-400">RX Ingest Buffer: 4 Frames</span>
+              <span class="text-emerald-400">Magic `ITAN` Verified ✓</span>
+            </div>
           </div>
         </div>
 
         <!-- Stage 09 -->
         <div class="pipeline-step-node flex items-start space-x-4" id="pipe-node-9" onclick="selectPipelineNode(9)">
-          <div class="node-circle w-6 h-6 rounded-full border-2 border-white/30 bg-[#050505] flex items-center justify-center text-[10px] font-mono font-bold text-white shrink-0 mt-0.5">9</div>
+          <div
+            class="node-circle w-6 h-6 rounded-full border-2 border-white/30 bg-[#050505] flex items-center justify-center text-[10px] font-mono font-bold text-white shrink-0 mt-0.5">
+            9</div>
           <div class="node-box tech-panel rounded-xl p-4 flex-grow text-left">
-            <span class="text-[9px] font-mono text-neutral-400 block mb-0.5">STAGE 09 // REASSEMBLY</span>
-            <h3 class="text-sm font-bold text-white">Sequence Reassembly</h3>
-            <p class="text-xs text-neutral-400 mt-1">Reorders sequence-numbered packets, discards corrupted chunks, and deserializes VQ code tensors.</p>
+            <div class="flex items-center justify-between">
+              <span class="text-[9px] font-mono text-neutral-400 block mb-0.5">STAGE 09 // REASSEMBLY</span>
+              <span class="text-[9px] font-mono text-neutral-400">Sequence Reordering</span>
+            </div>
+            <h3 class="text-sm font-bold text-white">Packets Reassemble</h3>
+            <p class="text-xs text-neutral-400 mt-1 mb-3">Reorders packet stream by sequence number, discards corrupted
+              chunks, and deserializes VQ tensors.</p>
+
+            <!-- Micro-Visualizer 09: Packet Sequence Reassembly -->
+            <div
+              class="w-full h-8 bg-[#050505] rounded-md border border-white/10 px-3 flex items-center justify-around font-mono text-[10px] text-emerald-400">
+              <span>[001] →</span><span>[002] →</span><span>[003] →</span><span>[004] →</span><span>[005]
+                Complete</span>
+            </div>
           </div>
         </div>
 
         <!-- Stage 10 -->
         <div class="pipeline-step-node flex items-start space-x-4" id="pipe-node-10" onclick="selectPipelineNode(10)">
-          <div class="node-circle w-6 h-6 rounded-full border-2 border-white/30 bg-[#050505] flex items-center justify-center text-[10px] font-mono font-bold text-white shrink-0 mt-0.5">10</div>
+          <div
+            class="node-circle w-6 h-6 rounded-full border-2 border-white/30 bg-[#050505] flex items-center justify-center text-[10px] font-mono font-bold text-white shrink-0 mt-0.5">
+            10</div>
           <div class="node-box tech-panel rounded-xl p-4 flex-grow text-left">
-            <span class="text-[9px] font-mono text-neutral-400 block mb-0.5">STAGE 10 // SYNTHESIS</span>
-            <h3 class="text-sm font-bold text-white">EnCodec Decoder</h3>
-            <p class="text-xs text-neutral-400 mt-1">Synthesizes discrete VQ code tensors back into 24kHz audio waveform signal.</p>
+            <div class="flex items-center justify-between">
+              <span class="text-[9px] font-mono text-neutral-400 block mb-0.5">STAGE 10 // SYNTHESIS</span>
+              <span class="text-[9px] font-mono text-neutral-400">Neural Decoder</span>
+            </div>
+            <h3 class="text-sm font-bold text-white">Waveform Reconstructs</h3>
+            <p class="text-xs text-neutral-400 mt-1 mb-3">EnCodec neural decoder synthesizes discrete VQ code tensors
+              back into 24kHz audio waveform signal.</p>
+
+            <!-- Micro-Visualizer 10: Waveform Reconstruction -->
+            <div class="w-full h-8 bg-[#050505] rounded-md border border-white/10 p-1 flex items-center justify-center">
+              <svg viewBox="0 0 300 24" fill="none" class="w-full h-full text-emerald-400" stroke="currentColor"
+                stroke-width="1.5">
+                <path
+                  d="M0 12 Q 15 3, 30 12 T 60 12 T 90 21 T 120 12 T 150 3 T 180 12 T 210 19 T 240 12 T 270 5 T 300 12" />
+              </svg>
+            </div>
           </div>
         </div>
 
         <!-- Stage 11 (Final) -->
         <div class="pipeline-step-node flex items-start space-x-4" id="pipe-node-11" onclick="selectPipelineNode(11)">
-          <div class="node-circle w-6 h-6 rounded-full border-2 border-emerald-400 bg-emerald-400 flex items-center justify-center text-[10px] font-mono font-bold text-[#050505] shrink-0 mt-0.5">✓</div>
+          <div
+            class="node-circle w-6 h-6 rounded-full border-2 border-emerald-400 bg-emerald-400 flex items-center justify-center text-[10px] font-mono font-bold text-[#050505] shrink-0 mt-0.5">
+            ✓</div>
           <div class="node-box tech-panel rounded-xl p-4 flex-grow text-left border-emerald-500/40 bg-emerald-500/5">
-            <span class="text-[9px] font-mono text-emerald-400 block mb-0.5">FINAL STAGE // OUTPUT</span>
+            <div class="flex items-center justify-between">
+              <span class="text-[9px] font-mono text-emerald-400 block mb-0.5">FINAL STAGE // OUTPUT</span>
+              <span class="text-[9px] font-mono text-emerald-400 font-bold">24kHz Audio Restored</span>
+            </div>
             <h3 class="text-sm font-bold text-white">Reconstructed Voice Speech</h3>
             <p class="text-xs text-emerald-400 font-semibold mt-1">24kHz Intelligible Speech Restored for playback.</p>
           </div>
@@ -279,12 +460,14 @@
 
     <!-- SECTION 2: INTERACTIVE PACKET ERROR SIMULATOR -->
     <section id="error-simulator" class="py-24 px-6 max-w-5xl mx-auto w-full reveal-on-scroll">
-      <div class="text-left mb-10 border-b border-white/10 pb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+      <div
+        class="text-left mb-10 border-b border-white/10 pb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
-          <span class="text-[10px] font-mono text-emerald-400 uppercase tracking-widest block mb-1">02 / Conceptual Demonstration</span>
+          <span class="text-[10px] font-mono text-emerald-400 uppercase tracking-widest block mb-1">02 / Conceptual
+            Demonstration</span>
           <h2 class="text-2xl sm:text-4xl font-bold text-white tracking-tight">Interactive Packet Error Simulator</h2>
         </div>
-        <button onclick="triggerPacketErrorSim()" class="btn-ctrl-primary">
+        <button onclick="triggerPacketErrorSim()" class="btn-ctrl-danger">
           <span>[ SIMULATE ERROR ]</span>
         </button>
       </div>
@@ -330,22 +513,27 @@
         </div>
 
         <p class="text-xs text-neutral-400 leading-relaxed font-mono">
-          Click <span class="text-white font-bold">[ SIMULATE ERROR ]</span> to inject a simulated bit corruption on Packet #004. The receiver computes the CRC32 checksum, detects the byte mismatch, rejects the corrupted frame, and requests packet reassembly.
+          Click <span class="text-white font-bold">[ SIMULATE ERROR ]</span> to inject a simulated bit corruption on
+          Packet #004. The receiver computes the CRC32 checksum, detects the byte mismatch, rejects the corrupted frame,
+          and requests packet reassembly.
         </p>
       </div>
     </section>
 
     <!-- SECTION 3: ENCODEC NEURAL QUANTIZATION VISUALIZER -->
     <section id="encodec-viz" class="py-24 px-6 max-w-5xl mx-auto w-full reveal-on-scroll">
-      <div class="text-left mb-10 border-b border-white/10 pb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+      <div
+        class="text-left mb-10 border-b border-white/10 pb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
-          <span class="text-[10px] font-mono text-emerald-400 uppercase tracking-widest block mb-1">03 / Conceptual Quantization Visualizer</span>
+          <span class="text-[10px] font-mono text-emerald-400 uppercase tracking-widest block mb-1">03 / Conceptual
+            Quantization Visualizer</span>
           <h2 class="text-2xl sm:text-4xl font-bold text-white tracking-tight">Speech Quantization States</h2>
         </div>
-        
+
         <!-- Mode Switcher Buttons -->
         <div class="flex flex-wrap gap-2">
-          <button onclick="setEncodecStep(1)" id="enc-step-1" class="encodec-step-btn encodec-step-active">1. 24kHz Raw PCM</button>
+          <button onclick="setEncodecStep(1)" id="enc-step-1" class="encodec-step-btn encodec-step-active">1. 24kHz Raw
+            PCM</button>
           <button onclick="setEncodecStep(2)" id="enc-step-2" class="encodec-step-btn">2. Neural Quant</button>
           <button onclick="setEncodecStep(3)" id="enc-step-3" class="encodec-step-btn">3. VQ Matrix</button>
           <button onclick="setEncodecStep(4)" id="enc-step-4" class="encodec-step-btn">4. 6.0kbps Payload</button>
@@ -354,7 +542,8 @@
 
       <!-- Canvas Render & Description Box -->
       <div class="tech-panel rounded-2xl p-6 sm:p-8 text-left border-white/15">
-        <canvas id="encodec-viz-canvas" width="800" height="120" class="w-full h-28 rounded-xl bg-[#050505] border border-white/10 mb-4"></canvas>
+        <canvas id="encodec-viz-canvas" width="800" height="120"
+          class="w-full h-28 rounded-xl bg-[#050505] border border-white/10 mb-4"></canvas>
 
         <div class="flex items-center justify-between font-mono text-xs">
           <span id="enc-state-title" class="text-white font-bold">State 1: 24kHz Raw PCM Audio Signal</span>
@@ -368,15 +557,18 @@
 
     <!-- SECTION 4: INTERACTIVE SIGNAL ARCHITECTURE MAP -->
     <section id="architecture" class="py-24 px-6 max-w-6xl mx-auto w-full reveal-on-scroll">
-      <div class="text-left mb-10 border-b border-white/10 pb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+      <div
+        class="text-left mb-10 border-b border-white/10 pb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
-          <span class="text-[10px] font-mono text-emerald-400 uppercase tracking-widest block mb-1">04 / Architecture Map</span>
+          <span class="text-[10px] font-mono text-emerald-400 uppercase tracking-widest block mb-1">04 / Architecture
+            Map</span>
           <h2 class="text-2xl sm:text-4xl font-bold text-white tracking-tight">Interactive Technology Explorer</h2>
         </div>
-        
+
         <!-- Component Tab Buttons -->
         <div class="flex flex-wrap gap-2">
-          <button onclick="selectArchTab('encodec')" id="arch-tab-encodec" class="arch-tab-btn arch-tab-active">EnCodec</button>
+          <button onclick="selectArchTab('encodec')" id="arch-tab-encodec"
+            class="arch-tab-btn arch-tab-active">EnCodec</button>
           <button onclick="selectArchTab('packet')" id="arch-tab-packet" class="arch-tab-btn">Packetization</button>
           <button onclick="selectArchTab('crc')" id="arch-tab-crc" class="arch-tab-btn">CRC32</button>
           <button onclick="selectArchTab('ggwave')" id="arch-tab-ggwave" class="arch-tab-btn">ggwave</button>
@@ -384,33 +576,79 @@
         </div>
       </div>
 
-      <!-- Tab Content Display Card -->
-      <div class="tech-panel rounded-2xl p-8 text-left border-white/15">
-        <div class="flex items-center justify-between mb-4 border-b border-white/10 pb-3 font-mono">
-          <span id="arch-card-title" class="text-sm font-bold text-white">Meta EnCodec Neural Speech Quantization</span>
-          <span id="arch-card-tag" class="text-xs text-emerald-400">6.0 kbps Target Bandwidth</span>
-        </div>
-        
-        <p id="arch-card-body" class="text-xs text-neutral-300 leading-relaxed font-mono mb-6">
-          EnCodec uses Residual Vector Quantization (RVQ) codebooks to compress 24kHz voice audio into discrete indices, reducing data size by up to 235x while preserving speech intelligibility across bandwidth-constrained links.
-        </p>
+      <!-- Single Explorable System Flow Schematic Diagram -->
+      <div class="tech-panel rounded-2xl p-6 sm:p-8 text-left border-white/15">
+        <div class="text-[10px] font-mono text-neutral-400 mb-3 uppercase tracking-wider">iTantra Unified System Flow
+          Schematic</div>
 
-        <div id="arch-card-specs" class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center font-mono text-[11px]">
-          <div class="tech-panel rounded-lg p-3">
-            <span class="text-neutral-400 block text-[9px]">SAMPLING RATE</span>
-            <span class="text-white font-bold block mt-1">24,000 Hz</span>
+        <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 text-center font-mono text-xs mb-6">
+          <div id="arch-node-encodec" onclick="selectArchTab('encodec')"
+            class="p-3 rounded-xl border border-emerald-500/50 bg-emerald-500/10 text-white cursor-pointer transition-all">
+            <span class="text-[9px] text-emerald-400 block mb-1">01 / QUANTIZER</span>
+            <span class="font-bold">Meta EnCodec</span>
+            <span class="block text-[8px] text-neutral-400 mt-1">6.0 kbps RVQ</span>
           </div>
-          <div class="tech-panel rounded-lg p-3">
-            <span class="text-neutral-400 block text-[9px]">TARGET BANDWIDTH</span>
-            <span class="text-emerald-400 font-bold block mt-1">6.0 kbps</span>
+
+          <div id="arch-node-packet" onclick="selectArchTab('packet')"
+            class="p-3 rounded-xl border border-white/10 bg-white/5 text-neutral-300 cursor-pointer transition-all hover:border-white/30">
+            <span class="text-[9px] text-neutral-400 block mb-1">02 / FRAMING</span>
+            <span class="font-bold">Packetization</span>
+            <span class="block text-[8px] text-neutral-400 mt-1">256B Chunks</span>
           </div>
-          <div class="tech-panel rounded-lg p-3">
-            <span class="text-neutral-400 block text-[9px]">CODEBOOK SHAPE</span>
-            <span class="text-white font-bold block mt-1">(1, 8, N_frames)</span>
+
+          <div id="arch-node-crc" onclick="selectArchTab('crc')"
+            class="p-3 rounded-xl border border-white/10 bg-white/5 text-neutral-300 cursor-pointer transition-all hover:border-white/30">
+            <span class="text-[9px] text-neutral-400 block mb-1">03 / INTEGRITY</span>
+            <span class="font-bold">CRC32 Checksum</span>
+            <span class="block text-[8px] text-neutral-400 mt-1">uint32 Verification</span>
           </div>
-          <div class="tech-panel rounded-lg p-3">
-            <span class="text-neutral-400 block text-[9px]">QUANTIZATION</span>
-            <span class="text-emerald-400 font-bold block mt-1">Vector Indexing</span>
+
+          <div id="arch-node-ggwave" onclick="selectArchTab('ggwave')"
+            class="p-3 rounded-xl border border-white/10 bg-white/5 text-neutral-300 cursor-pointer transition-all hover:border-white/30">
+            <span class="text-[9px] text-neutral-400 block mb-1">04 / TRANSMISSION</span>
+            <span class="font-bold">ggwave Link</span>
+            <span class="block text-[8px] text-neutral-400 mt-1">Loopback / FSK</span>
+          </div>
+
+          <div id="arch-node-asr" onclick="selectArchTab('asr')"
+            class="p-3 rounded-xl border border-white/10 bg-white/5 text-neutral-300 cursor-pointer transition-all hover:border-white/30">
+            <span class="text-[9px] text-neutral-400 block mb-1">05 / TRANSCRIPTION</span>
+            <span class="font-bold">AI4Bharat ASR</span>
+            <span class="block text-[8px] text-neutral-400 mt-1">10 Indic Languages</span>
+          </div>
+        </div>
+
+        <!-- Detail Specification Panel -->
+        <div class="border-t border-white/10 pt-5">
+          <div class="flex items-center justify-between mb-3 font-mono">
+            <span id="arch-card-title" class="text-sm font-bold text-white">Meta EnCodec Neural Speech
+              Quantization</span>
+            <span id="arch-card-tag" class="text-xs text-emerald-400">6.0 kbps Target Bandwidth</span>
+          </div>
+
+          <p id="arch-card-body" class="text-xs text-neutral-300 leading-relaxed font-mono mb-6">
+            EnCodec uses Residual Vector Quantization (RVQ) codebooks to compress 24kHz voice audio into discrete
+            indices, reducing data size by up to 235x while preserving speech intelligibility across
+            bandwidth-constrained links.
+          </p>
+
+          <div id="arch-card-specs" class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center font-mono text-[11px]">
+            <div class="tech-panel rounded-lg p-3">
+              <span class="text-neutral-400 block text-[9px]">SAMPLING RATE</span>
+              <span class="text-white font-bold block mt-1">24,000 Hz</span>
+            </div>
+            <div class="tech-panel rounded-lg p-3">
+              <span class="text-neutral-400 block text-[9px]">TARGET BANDWIDTH</span>
+              <span class="text-emerald-400 font-bold block mt-1">6.0 kbps</span>
+            </div>
+            <div class="tech-panel rounded-lg p-3">
+              <span class="text-neutral-400 block text-[9px]">CODEBOOK SHAPE</span>
+              <span class="text-white font-bold block mt-1">(1, 8, N_frames)</span>
+            </div>
+            <div class="tech-panel rounded-lg p-3">
+              <span class="text-neutral-400 block text-[9px]">QUANTIZATION</span>
+              <span class="text-emerald-400 font-bold block mt-1">Vector Indexing</span>
+            </div>
           </div>
         </div>
       </div>
@@ -418,9 +656,11 @@
 
     <!-- SECTION 5: LIVE TRANSMISSION CONSOLE (INTERACTIVE DEMO INSTRUMENT) -->
     <section id="console" class="py-24 px-6 max-w-5xl mx-auto w-full reveal-on-scroll">
-      <div class="text-left mb-10 border-b border-white/10 pb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+      <div
+        class="text-left mb-10 border-b border-white/10 pb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
-          <span class="text-[10px] font-mono text-emerald-400 uppercase tracking-widest block mb-1">05 / Engineering Instrument</span>
+          <span class="text-[10px] font-mono text-emerald-400 uppercase tracking-widest block mb-1">05 / Engineering
+            Instrument</span>
           <h2 class="text-2xl sm:text-4xl font-bold text-white tracking-tight">Live Transmission Console</h2>
         </div>
         <span class="text-xs font-mono text-neutral-400">Real Backend Pipeline Execution</span>
@@ -428,14 +668,15 @@
 
       <!-- Main Transmission Console Panel -->
       <div class="tech-panel rounded-2xl p-6 sm:p-8 text-left shadow-2xl border-white/15">
-        
+
         <!-- Console Header Status -->
         <div class="flex items-center justify-between pb-4 border-b border-white/10 mb-6 font-mono">
           <div>
             <span class="text-[10px] text-neutral-400 uppercase tracking-wider">iTANTRA // ENGINE CONSOLE</span>
             <h3 class="text-sm font-bold text-white mt-0.5">Neural Speech Instrument</h3>
           </div>
-          <div id="status-badge" class="px-3 py-1 rounded-full pill-badge text-xs text-emerald-400 border border-emerald-500/30 flex items-center space-x-2">
+          <div id="status-badge"
+            class="px-3 py-1 rounded-full pill-badge text-xs text-emerald-400 border border-emerald-500/30 flex items-center space-x-2">
             <span class="w-2 h-2 rounded-full bg-emerald-400 animate-signal-pulse"></span>
             <span>● Ready</span>
           </div>
@@ -444,12 +685,15 @@
         <!-- Controls Grid -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
           <div>
-            <label for="select-language" class="text-xs text-neutral-400 font-medium block mb-1.5 font-mono">Target Speech Language</label>
-            <select id="select-language" class="w-full bg-[#050505] border border-white/15 rounded-xl px-4 py-2.5 text-xs font-medium text-white focus:outline-none focus:border-white/40 font-mono">
+            <label for="select-language" class="text-xs text-neutral-400 font-medium block mb-1.5 font-mono">Target
+              Speech Language</label>
+            <select id="select-language"
+              class="w-full bg-[#050505] border border-white/15 rounded-xl px-4 py-2.5 text-xs font-medium text-white focus:outline-none focus:border-white/40 font-mono">
               <option value="hi" selected>Hindi (हिंदी)</option>
               <option value="gu">Gujarati (ગુજરાતી)</option>
               <option value="mr">Marathi (मરાઠી)</option>
-              <option value="kn">Kannada (<ctrl42><ctrl42>ಕನ್ನಡ)</option>
+              <option value="kn">Kannada (<ctrl42>
+                  <ctrl42>ಕನ್ನಡ)</option>
               <option value="ml">Malayalam (മലയാളം)</option>
               <option value="ta">Tamil (தமிழ்)</option>
               <option value="te">Telugu (తెలుగు)</option>
@@ -460,8 +704,10 @@
           </div>
 
           <div>
-            <label for="select-bitrate" class="text-xs text-neutral-400 font-medium block mb-1.5 font-mono">EnCodec Target Bitrate</label>
-            <select id="select-bitrate" class="w-full bg-[#050505] border border-white/15 rounded-xl px-4 py-2.5 text-xs font-medium text-white focus:outline-none focus:border-white/40 font-mono">
+            <label for="select-bitrate" class="text-xs text-neutral-400 font-medium block mb-1.5 font-mono">EnCodec
+              Target Bitrate</label>
+            <select id="select-bitrate"
+              class="w-full bg-[#050505] border border-white/15 rounded-xl px-4 py-2.5 text-xs font-medium text-white focus:outline-none focus:border-white/40 font-mono">
               <option value="6.0" selected>6.0 kbps (Optimal Target)</option>
               <option value="24.0">24.0 kbps (High Fidelity)</option>
               <option value="12.0">12.0 kbps (Medium Bitrate)</option>
@@ -473,23 +719,30 @@
 
         <!-- Link Mode Selector -->
         <div class="mb-6">
-          <span class="text-xs text-neutral-400 font-medium block mb-1.5 font-mono font-medium">Transmission Link Channel</span>
+          <span class="text-xs text-neutral-400 font-medium block mb-1.5 font-mono font-medium">Transmission Link
+            Channel</span>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <button id="mode-software" onclick="setMode('software_loopback')" class="py-2.5 px-4 rounded-xl text-xs font-mono font-medium border text-white bg-white/10 border-white/30 transition-all text-center">
+            <button id="mode-software" onclick="setMode('software_loopback')"
+              class="py-2.5 px-4 rounded-xl text-xs font-mono font-medium border text-white bg-white/10 border-white/30 transition-all text-center">
               Software Loopback (Verified PASS)
             </button>
-            <button id="mode-physical" onclick="setMode('physical_acoustic')" class="py-2.5 px-4 rounded-xl text-xs font-mono font-medium border text-neutral-400 border-white/10 hover:border-white/20 transition-all text-center">
+            <button id="mode-physical" onclick="setMode('physical_acoustic')"
+              class="py-2.5 px-4 rounded-xl text-xs font-mono font-medium border text-neutral-400 border-white/10 hover:border-white/20 transition-all text-center">
               Physical Acoustic (Experimental)
             </button>
           </div>
-          <p id="mode-note" class="text-[10px] font-mono text-neutral-400 mt-2">Verified software transmission channel (PASS).</p>
+          <p id="mode-note" class="text-[10px] font-mono text-neutral-400 mt-2">Verified software transmission channel
+            (PASS).</p>
         </div>
 
         <!-- Audio Input Control Console -->
-        <div class="tech-panel rounded-2xl p-6 mb-6 flex flex-col items-center justify-center text-center border-white/10">
-          <button id="btn-record" onclick="toggleRecording()" aria-label="Microphone Recording" class="w-16 h-16 rounded-full bg-white/10 border border-white/30 flex items-center justify-center text-white active:scale-95 transition-all shadow-xl mb-3">
+        <div
+          class="tech-panel rounded-2xl p-6 mb-6 flex flex-col items-center justify-center text-center border-white/10">
+          <button id="btn-record" onclick="toggleRecording()" aria-label="Microphone Recording"
+            class="w-16 h-16 rounded-full bg-white/10 border border-white/30 flex items-center justify-center text-white active:scale-95 transition-all shadow-xl mb-3">
             <svg id="mic-icon" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 016 0v6a3 3 0 01-3 3z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 016 0v6a3 3 0 01-3 3z" />
             </svg>
           </button>
 
@@ -542,7 +795,7 @@
 
         <!-- RESULTS DATA PANEL -->
         <div id="results-panel" class="hidden w-full space-y-4 pt-2">
-          
+
           <!-- SUCCESS METRICS PANEL -->
           <div id="card-success" class="w-full tech-panel rounded-xl p-5 text-left border-emerald-500/40">
             <div class="flex items-center justify-between mb-4 font-mono">
@@ -555,9 +808,12 @@
 
             <!-- Reconstructed Voice Player + Canvas Waveform -->
             <div class="mb-5">
-              <label for="audio-player" class="text-xs text-neutral-400 font-medium block mb-1.5 font-mono">Reconstructed Audio Output (24kHz)</label>
+              <label for="audio-player"
+                class="text-xs text-neutral-400 font-medium block mb-1.5 font-mono">Reconstructed Audio Output
+                (24kHz)</label>
               <audio id="audio-player" controls class="w-full h-10 accent-emerald-400 rounded-lg mb-2"></audio>
-              <canvas id="waveform-canvas" width="600" height="48" class="w-full h-12 rounded-lg bg-[#050505] border border-white/10"></canvas>
+              <canvas id="waveform-canvas" width="600" height="48"
+                class="w-full h-12 rounded-lg bg-[#050505] border border-white/10"></canvas>
             </div>
 
             <!-- Verified Real Backend Metrics Grid -->
@@ -583,8 +839,10 @@
             <!-- AI4Bharat Multilingual Transcription -->
             <div class="w-full bg-[#050505] border border-white/10 rounded-xl p-4">
               <div class="flex items-center justify-between mb-1.5 font-mono">
-                <span class="text-[10px] text-neutral-400 uppercase tracking-wider">AI4Bharat IndicConformer Multilingual ASR</span>
-                <button onclick="copyASRText()" class="text-[10px] text-neutral-300 hover:text-white px-2 py-0.5 rounded border border-white/20 bg-white/5 active:scale-95 transition-all">
+                <span class="text-[10px] text-neutral-400 uppercase tracking-wider">AI4Bharat IndicConformer
+                  Multilingual ASR</span>
+                <button onclick="copyASRText()"
+                  class="text-[10px] text-neutral-300 hover:text-white px-2 py-0.5 rounded border border-white/20 bg-white/5 active:scale-95 transition-all">
                   <span id="btn-copy-text">Copy Text</span>
                 </button>
               </div>
@@ -612,7 +870,8 @@
 
           <!-- Reset Action -->
           <div class="text-center pt-2">
-            <button onclick="resetAndRetry()" class="text-xs font-mono text-neutral-400 hover:text-white transition-colors underline underline-offset-4">
+            <button onclick="resetAndRetry()"
+              class="text-xs font-mono text-neutral-400 hover:text-white transition-colors underline underline-offset-4">
               Reset Console Workspace
             </button>
           </div>
@@ -624,80 +883,101 @@
     <!-- SECTION 6: KNOWLEDGE BASE / FAQ -->
     <section id="faq" class="py-24 px-6 max-w-4xl mx-auto w-full reveal-on-scroll text-left">
       <div class="text-left mb-12 border-b border-white/10 pb-6">
-        <span class="text-[10px] font-mono text-emerald-400 uppercase tracking-widest block mb-1">06 / Technical Knowledge Base</span>
+        <span class="text-[10px] font-mono text-emerald-400 uppercase tracking-widest block mb-1">06 / Technical
+          Knowledge Base</span>
         <h2 class="text-2xl sm:text-4xl font-bold text-white tracking-tight">Frequently Asked Questions</h2>
       </div>
 
       <div class="space-y-3">
         <!-- Q1 -->
         <div class="tech-panel rounded-xl p-4">
-          <button onclick="toggleFAQ(1)" class="w-full flex items-center justify-between text-left font-medium text-xs sm:text-sm text-white focus:outline-none" aria-expanded="false" aria-controls="faq-ans-1">
+          <button onclick="toggleFAQ(1)"
+            class="w-full flex items-center justify-between text-left font-medium text-xs sm:text-sm text-white focus:outline-none"
+            aria-expanded="false" aria-controls="faq-ans-1">
             <span>1. What is iTantra?</span>
             <span id="faq-icon-1" class="text-neutral-400 font-mono text-sm">+</span>
           </button>
           <div id="faq-ans-1" class="faq-answer mt-3 text-xs text-neutral-400 leading-relaxed">
-            iTantra is a low-bandwidth multilingual voice communication system. It compresses voice audio using Meta EnCodec neural speech tokens and transmits 256-byte packet streams over bandwidth-constrained links.
+            iTantra is a low-bandwidth multilingual voice communication system. It compresses voice audio using Meta
+            EnCodec neural speech tokens and transmits 256-byte packet streams over bandwidth-constrained links.
           </div>
         </div>
 
         <!-- Q2 -->
         <div class="tech-panel rounded-xl p-4">
-          <button onclick="toggleFAQ(2)" class="w-full flex items-center justify-between text-left font-medium text-xs sm:text-sm text-white focus:outline-none" aria-expanded="false" aria-controls="faq-ans-2">
+          <button onclick="toggleFAQ(2)"
+            class="w-full flex items-center justify-between text-left font-medium text-xs sm:text-sm text-white focus:outline-none"
+            aria-expanded="false" aria-controls="faq-ans-2">
             <span>2. Why does iTantra use EnCodec?</span>
             <span id="faq-icon-2" class="text-neutral-400 font-mono text-sm">+</span>
           </button>
           <div id="faq-ans-2" class="faq-answer mt-3 text-xs text-neutral-400 leading-relaxed">
-            EnCodec uses Vector Quantization (VQ) neural codebooks to compress 24kHz voice audio down to 6.0 kbps (and lower), achieving significant data reduction while preserving speech intelligibility.
+            EnCodec uses Vector Quantization (VQ) neural codebooks to compress 24kHz voice audio down to 6.0 kbps (and
+            lower), achieving significant data reduction while preserving speech intelligibility.
           </div>
         </div>
 
         <!-- Q3 -->
         <div class="tech-panel rounded-xl p-4">
-          <button onclick="toggleFAQ(3)" class="w-full flex items-center justify-between text-left font-medium text-xs sm:text-sm text-white focus:outline-none" aria-expanded="false" aria-controls="faq-ans-3">
+          <button onclick="toggleFAQ(3)"
+            class="w-full flex items-center justify-between text-left font-medium text-xs sm:text-sm text-white focus:outline-none"
+            aria-expanded="false" aria-controls="faq-ans-3">
             <span>3. What is ggwave?</span>
             <span id="faq-icon-3" class="text-neutral-400 font-mono text-sm">+</span>
           </button>
           <div id="faq-ans-3" class="faq-answer mt-3 text-xs text-neutral-400 leading-relaxed">
-            ggwave is a lightweight acoustic data-over-sound protocol that encodes binary packets into sound tones for transmission across audio links or software loopback.
+            ggwave is a lightweight acoustic data-over-sound protocol that encodes binary packets into sound tones for
+            transmission across audio links or software loopback.
           </div>
         </div>
 
         <!-- Q4 -->
         <div class="tech-panel rounded-xl p-4">
-          <button onclick="toggleFAQ(4)" class="w-full flex items-center justify-between text-left font-medium text-xs sm:text-sm text-white focus:outline-none" aria-expanded="false" aria-controls="faq-ans-4">
+          <button onclick="toggleFAQ(4)"
+            class="w-full flex items-center justify-between text-left font-medium text-xs sm:text-sm text-white focus:outline-none"
+            aria-expanded="false" aria-controls="faq-ans-4">
             <span>4. Why is packetization required?</span>
             <span id="faq-icon-4" class="text-neutral-400 font-mono text-sm">+</span>
           </button>
           <div id="faq-ans-4" class="faq-answer mt-3 text-xs text-neutral-400 leading-relaxed">
-            Packetization breaks continuous VQ byte streams into 256-byte sequence-numbered frames so that individual lost or corrupted packets can be isolated independently.
+            Packetization breaks continuous VQ byte streams into 256-byte sequence-numbered frames so that individual
+            lost or corrupted packets can be isolated independently.
           </div>
         </div>
 
         <!-- Q5 -->
         <div class="tech-panel rounded-xl p-4">
-          <button onclick="toggleFAQ(5)" class="w-full flex items-center justify-between text-left font-medium text-xs sm:text-sm text-white focus:outline-none" aria-expanded="false" aria-controls="faq-ans-5">
+          <button onclick="toggleFAQ(5)"
+            class="w-full flex items-center justify-between text-left font-medium text-xs sm:text-sm text-white focus:outline-none"
+            aria-expanded="false" aria-controls="faq-ans-5">
             <span>5. What does CRC32 do?</span>
             <span id="faq-icon-5" class="text-neutral-400 font-mono text-sm">+</span>
           </button>
           <div id="faq-ans-5" class="faq-answer mt-3 text-xs text-neutral-400 leading-relaxed">
-            CRC32 (Cyclic Redundancy Check) computes a 32-bit checksum for each packet payload before transmission, enabling error detection at the receiver.
+            CRC32 (Cyclic Redundancy Check) computes a 32-bit checksum for each packet payload before transmission,
+            enabling error detection at the receiver.
           </div>
         </div>
 
         <!-- Q6 -->
         <div class="tech-panel rounded-xl p-4">
-          <button onclick="toggleFAQ(6)" class="w-full flex items-center justify-between text-left font-medium text-xs sm:text-sm text-white focus:outline-none" aria-expanded="false" aria-controls="faq-ans-6">
+          <button onclick="toggleFAQ(6)"
+            class="w-full flex items-center justify-between text-left font-medium text-xs sm:text-sm text-white focus:outline-none"
+            aria-expanded="false" aria-controls="faq-ans-6">
             <span>6. Does iTantra convert speech to text?</span>
             <span id="faq-icon-6" class="text-neutral-400 font-mono text-sm">+</span>
           </button>
           <div id="faq-ans-6" class="faq-answer mt-3 text-xs text-neutral-400 leading-relaxed">
-            iTantra's primary function is neural voice-to-voice communication. However, it integrates AI4Bharat IndicConformer-600M for optional speech-to-text transcription.
+            iTantra's primary function is neural voice-to-voice communication. However, it integrates AI4Bharat
+            IndicConformer-600M for optional speech-to-text transcription.
           </div>
         </div>
 
         <!-- Q7 -->
         <div class="tech-panel rounded-xl p-4">
-          <button onclick="toggleFAQ(7)" class="w-full flex items-center justify-between text-left font-medium text-xs sm:text-sm text-white focus:outline-none" aria-expanded="false" aria-controls="faq-ans-7">
+          <button onclick="toggleFAQ(7)"
+            class="w-full flex items-center justify-between text-left font-medium text-xs sm:text-sm text-white focus:outline-none"
+            aria-expanded="false" aria-controls="faq-ans-7">
             <span>7. Which languages are supported?</span>
             <span id="faq-icon-7" class="text-neutral-400 font-mono text-sm">+</span>
           </button>
@@ -708,34 +988,43 @@
 
         <!-- Q8 -->
         <div class="tech-panel rounded-xl p-4">
-          <button onclick="toggleFAQ(8)" class="w-full flex items-center justify-between text-left font-medium text-xs sm:text-sm text-white focus:outline-none" aria-expanded="false" aria-controls="faq-ans-8">
+          <button onclick="toggleFAQ(8)"
+            class="w-full flex items-center justify-between text-left font-medium text-xs sm:text-sm text-white focus:outline-none"
+            aria-expanded="false" aria-controls="faq-ans-8">
             <span>8. How does iTantra work under low bandwidth?</span>
             <span id="faq-icon-8" class="text-neutral-400 font-mono text-sm">+</span>
           </button>
           <div id="faq-ans-8" class="faq-answer mt-3 text-xs text-neutral-400 leading-relaxed">
-            By transmitting compact VQ neural codebook indices rather than uncompressed PCM audio, payload size is reduced significantly, allowing voice communication over constrained links.
+            By transmitting compact VQ neural codebook indices rather than uncompressed PCM audio, payload size is
+            reduced significantly, allowing voice communication over constrained links.
           </div>
         </div>
 
         <!-- Q9 -->
         <div class="tech-panel rounded-xl p-4">
-          <button onclick="toggleFAQ(9)" class="w-full flex items-center justify-between text-left font-medium text-xs sm:text-sm text-white focus:outline-none" aria-expanded="false" aria-controls="faq-ans-9">
+          <button onclick="toggleFAQ(9)"
+            class="w-full flex items-center justify-between text-left font-medium text-xs sm:text-sm text-white focus:outline-none"
+            aria-expanded="false" aria-controls="faq-ans-9">
             <span>9. How is the voice reconstructed?</span>
             <span id="faq-icon-9" class="text-neutral-400 font-mono text-sm">+</span>
           </button>
           <div id="faq-ans-9" class="faq-answer mt-3 text-xs text-neutral-400 leading-relaxed">
-            The receiver depacketizes and verifies CRC32 checksums, reassembles VQ code tensors, and passes them to the EnCodec neural decoder to synthesize 24kHz voice output.
+            The receiver depacketizes and verifies CRC32 checksums, reassembles VQ code tensors, and passes them to the
+            EnCodec neural decoder to synthesize 24kHz voice output.
           </div>
         </div>
 
         <!-- Q10 -->
         <div class="tech-panel rounded-xl p-4">
-          <button onclick="toggleFAQ(10)" class="w-full flex items-center justify-between text-left font-medium text-xs sm:text-sm text-white focus:outline-none" aria-expanded="false" aria-controls="faq-ans-10">
+          <button onclick="toggleFAQ(10)"
+            class="w-full flex items-center justify-between text-left font-medium text-xs sm:text-sm text-white focus:outline-none"
+            aria-expanded="false" aria-controls="faq-ans-10">
             <span>10. Software loopback vs physical acoustic transmission?</span>
             <span id="faq-icon-10" class="text-neutral-400 font-mono text-sm">+</span>
           </button>
           <div id="faq-ans-10" class="faq-answer mt-3 text-xs text-neutral-400 leading-relaxed">
-            Software loopback is verified PASS. Physical acoustic transmission requires compatible speaker and microphone acoustic hardware conditions.
+            Software loopback is verified PASS. Physical acoustic transmission requires compatible speaker and
+            microphone acoustic hardware conditions.
           </div>
         </div>
 
@@ -744,11 +1033,17 @@
 
     <!-- FOOTER -->
     <footer class="w-full border-t border-white/10 py-12 px-6 bg-[#050505]/90">
-      <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left font-mono">
+      <div
+        class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left font-mono">
         <div class="flex items-center space-x-3">
           <div class="w-7 h-7 rounded bg-white/10 border border-white/20 flex items-center justify-center p-1">
-            <svg viewBox="0 0 24 24" fill="none" class="w-full h-full text-white" stroke="currentColor" stroke-width="2">
-              <path d="M4 10v4" /><path d="M8 7v10" /><path d="M12 3v18" /><path d="M16 8v8" /><path d="M20 11v2" />
+            <svg viewBox="0 0 24 24" fill="none" class="w-full h-full text-white" stroke="currentColor"
+              stroke-width="2">
+              <path d="M4 10v4" />
+              <path d="M8 7v10" />
+              <path d="M12 3v18" />
+              <path d="M16 8v8" />
+              <path d="M20 11v2" />
             </svg>
           </div>
           <div>
@@ -766,17 +1061,23 @@
   </div>
 
   <!-- Mobile Drawer Overlay -->
-  <div id="mobile-drawer" class="fixed inset-0 z-50 bg-[#050505]/95 backdrop-blur-2xl hidden flex-col justify-between p-6">
+  <div id="mobile-drawer"
+    class="fixed inset-0 z-50 bg-[#050505]/95 backdrop-blur-2xl hidden flex-col justify-between p-6">
     <div class="flex items-center justify-between pb-6 border-b border-white/10">
       <div class="flex items-center space-x-2">
         <div class="w-7 h-7 rounded bg-white/10 border border-white/20 flex items-center justify-center p-1">
           <svg viewBox="0 0 24 24" fill="none" class="w-full h-full text-white" stroke="currentColor" stroke-width="2">
-            <path d="M4 10v4" /><path d="M8 7v10" /><path d="M12 3v18" /><path d="M16 8v8" /><path d="M20 11v2" />
+            <path d="M4 10v4" />
+            <path d="M8 7v10" />
+            <path d="M12 3v18" />
+            <path d="M16 8v8" />
+            <path d="M20 11v2" />
           </svg>
         </div>
         <span class="font-bold text-base text-white">iTantra</span>
       </div>
-      <button onclick="closeMenu()" aria-label="Close Navigation" class="w-8 h-8 rounded border border-white/20 flex items-center justify-center text-white">
+      <button onclick="closeMenu()" aria-label="Close Navigation"
+        class="w-8 h-8 rounded border border-white/20 flex items-center justify-center text-white">
         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
         </svg>
@@ -785,10 +1086,14 @@
 
     <div class="flex flex-col space-y-6 py-8 text-center text-lg font-mono text-neutral-300">
       <button onclick="scrollToSection('pipeline'); closeMenu();" class="hover:text-white py-1">Pipeline</button>
-      <button onclick="scrollToSection('error-simulator'); closeMenu();" class="hover:text-white py-1">Packet Simulator</button>
-      <button onclick="scrollToSection('encodec-viz'); closeMenu();" class="hover:text-white py-1">EnCodec Quant</button>
-      <button onclick="scrollToSection('architecture'); closeMenu();" class="hover:text-white py-1">Architecture Map</button>
-      <button onclick="scrollToSection('console'); closeMenu();" class="hover:text-white py-1">Transmission Console</button>
+      <button onclick="scrollToSection('error-simulator'); closeMenu();" class="hover:text-white py-1">Packet
+        Simulator</button>
+      <button onclick="scrollToSection('encodec-viz'); closeMenu();" class="hover:text-white py-1">EnCodec
+        Quant</button>
+      <button onclick="scrollToSection('architecture'); closeMenu();" class="hover:text-white py-1">Architecture
+        Map</button>
+      <button onclick="scrollToSection('console'); closeMenu();" class="hover:text-white py-1">Transmission
+        Console</button>
     </div>
 
     <div class="pt-6 border-t border-white/10 flex flex-col space-y-3">
@@ -801,9 +1106,10 @@
 
   <!-- Three.js WebGL & Interactive Experience Script -->
   <script>
-    let scene, camera, renderer, signalRibbon, pointsCloud;
+    let scene, camera, renderer, signalLines = [], particleNodes;
     let mouseX = 0, mouseY = 0;
     let targetX = 0, targetY = 0;
+    let scrollProgressFactor = 0;
 
     function initHeroThreeJS() {
       const container = document.getElementById('hero-3d-canvas');
@@ -813,51 +1119,75 @@
       const height = container.parentElement.clientHeight;
 
       scene = new THREE.Scene();
-      camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
-      camera.position.z = 30;
+      camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 1000);
+      camera.position.set(0, 0, 28);
 
       renderer = new THREE.WebGLRenderer({ canvas: container, alpha: true, antialias: true });
       renderer.setSize(width, height);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-      // Create Parametric Signal Ribbon Geometry
-      const planeGeo = new THREE.PlaneGeometry(50, 18, 80, 40);
-      const mat = new THREE.MeshBasicMaterial({
-        color: 0x10b981,
-        wireframe: true,
-        transparent: true,
-        opacity: 0.55
-      });
+      // Build Procedural Volumetric Signal Ribbon (7 Parallel Signal Lines)
+      const numLines = 7;
+      const pointsPerLine = 120;
+      signalLines = [];
 
-      signalRibbon = new THREE.Mesh(planeGeo, mat);
-      scene.add(signalRibbon);
+      for (let l = 0; l < numLines; l++) {
+        const lineGeo = new THREE.BufferGeometry();
+        const positions = new Float32Array(pointsPerLine * 3);
+        const xStep = 50 / (pointsPerLine - 1);
 
-      // Create Particle Point Cloud for Scroll Morphing
-      const pointsCount = window.innerWidth < 768 ? 300 : 800;
-      const pointsGeo = new THREE.BufferGeometry();
-      const positions = new Float32Array(pointsCount * 3);
+        for (let i = 0; i < pointsPerLine; i++) {
+          positions[i * 3] = -25 + i * xStep;
+          positions[i * 3 + 1] = 0;
+          positions[i * 3 + 2] = (l - numLines / 2) * 0.8;
+        }
 
-      for (let i = 0; i < pointsCount * 3; i += 3) {
-        positions[i] = (Math.random() - 0.5) * 45;
-        positions[i + 1] = (Math.random() - 0.5) * 18;
-        positions[i + 2] = (Math.random() - 0.5) * 18;
+        lineGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
+        const isCenter = l === Math.floor(numLines / 2);
+        const lineMat = new THREE.LineBasicMaterial({
+          color: isCenter ? 0x34d399 : (l % 2 === 0 ? 0x10b981 : 0x059669),
+          transparent: true,
+          opacity: isCenter ? 0.95 : 0.45,
+          linewidth: isCenter ? 2 : 1
+        });
+
+        const lineMesh = new THREE.Line(lineGeo, lineMat);
+        scene.add(lineMesh);
+        signalLines.push({ mesh: lineMesh, offsetZ: (l - numLines / 2) * 0.7, index: l });
       }
-      pointsGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
 
-      const pointsMat = new THREE.PointsMaterial({
-        color: 0x34d399,
-        size: 0.2,
+      // Create Flowing Particle Pulse Nodes along Signal Pathway
+      const particleCount = 140;
+      const particleGeo = new THREE.BufferGeometry();
+      const pPositions = new Float32Array(particleCount * 3);
+
+      for (let i = 0; i < particleCount; i++) {
+        pPositions[i * 3] = (Math.random() - 0.5) * 50;
+        pPositions[i * 3 + 1] = 0;
+        pPositions[i * 3 + 2] = (Math.random() - 0.5) * 4;
+      }
+      particleGeo.setAttribute('position', new THREE.BufferAttribute(pPositions, 3));
+
+      const particleMat = new THREE.PointsMaterial({
+        color: 0x6ee7b7,
+        size: 0.22,
         transparent: true,
-        opacity: 0.6
+        opacity: 0.75
       });
 
-      pointsCloud = new THREE.Points(pointsGeo, pointsMat);
-      scene.add(pointsCloud);
+      particleNodes = new THREE.Points(particleGeo, particleMat);
+      scene.add(particleNodes);
 
       // Mouse Parallax Listener
       window.addEventListener('mousemove', (e) => {
         mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
         mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+      });
+
+      window.addEventListener('scroll', () => {
+        const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+        scrollProgressFactor = Math.min(1, Math.max(0, window.scrollY / (maxScroll || 1)));
       });
 
       window.addEventListener('resize', onWindowResize);
@@ -883,27 +1213,73 @@
 
       const elapsedTime = clock.getElapsedTime();
 
-      targetX += (mouseX - targetX) * 0.05;
-      targetY += (mouseY - targetY) * 0.05;
+      // Smooth Mouse Parallax Camera Movement
+      targetX += (mouseX - targetX) * 0.04;
+      targetY += (mouseY - targetY) * 0.04;
 
-      camera.position.x = targetX * 3;
-      camera.position.y = -targetY * 2;
+      camera.position.x = targetX * 2.5;
+      camera.position.y = -targetY * 1.8;
       camera.lookAt(scene.position);
 
-      if (signalRibbon) {
-        signalRibbon.rotation.z = Math.sin(elapsedTime * 0.2) * 0.1;
-        const pos = signalRibbon.geometry.attributes.position;
-        for (let i = 0; i < pos.count; i++) {
-          const u = pos.getX(i);
-          const v = pos.getY(i);
-          const z = Math.sin(u * 0.2 + elapsedTime * 1.5) * Math.cos(v * 0.3 + elapsedTime) * 1.8;
+      // Scroll Transformation State
+      // 0.0 - 0.25: RAW VOICE (High amplitude natural speech wave)
+      // 0.25 - 0.5: COMPRESSED REPRESENTATION (Smoothed acoustic envelope)
+      // 0.5 - 0.75: PACKETS (Discretized VQ block step pulses)
+      // 0.75 - 1.0: RECONSTRUCTED VOICE (Restored 24kHz output speech)
+
+      const stage = scrollProgressFactor;
+
+      signalLines.forEach((item) => {
+        const pos = item.mesh.geometry.attributes.position;
+        const count = pos.count;
+        const offsetZ = item.offsetZ;
+
+        for (let i = 0; i < count; i++) {
+          const x = pos.getX(i);
+          let y = 0;
+          let z = offsetZ;
+
+          if (stage < 0.25) {
+            // RAW VOICE: Multi-harmonic speech waveform
+            const normStage = stage / 0.25;
+            const amp1 = 2.5 * (1 - normStage) + 1.5 * normStage;
+            y = Math.sin(x * 0.25 + elapsedTime * 2.2) * Math.cos(x * 0.12 + elapsedTime * 1.1) * amp1;
+            y += Math.sin(x * 0.6 + elapsedTime * 3.5) * 0.4 * (1 - normStage);
+            z += Math.sin(x * 0.15 + elapsedTime) * 0.6;
+          } else if (stage < 0.5) {
+            // COMPRESSED REPRESENTATION: Smooth VQ latent envelope
+            const normStage = (stage - 0.25) / 0.25;
+            const amp = 1.5 * (1 - normStage) + 0.8 * normStage;
+            y = Math.sin(x * 0.3 + elapsedTime * 1.8) * amp;
+            z += Math.cos(x * 0.2 + elapsedTime) * 0.4 * (1 - normStage);
+          } else if (stage < 0.75) {
+            // PACKETS: Discrete quantized block step pulses
+            const normStage = (stage - 0.5) / 0.25;
+            const stepVal = Math.floor(Math.sin(x * 0.2 + elapsedTime * 1.5) * 3) * 0.6;
+            y = stepVal * (1 - normStage) + Math.sin(x * 0.8 + elapsedTime * 4) * 0.5 * normStage;
+          } else {
+            // RECONSTRUCTED VOICE: Restored 24kHz speech waveform
+            y = Math.sin(x * 0.3 + elapsedTime * 2.5) * Math.cos(x * 0.15 + elapsedTime * 1.2) * 2.0;
+          }
+
+          pos.setY(i, y);
           pos.setZ(i, z);
         }
-        signalRibbon.geometry.attributes.position.needsUpdate = true;
-      }
+        pos.needsUpdate = true;
+      });
 
-      if (pointsCloud) {
-        pointsCloud.rotation.y = elapsedTime * 0.05;
+      // Animate Particle Pulse Nodes along Signal Trajectory
+      if (particleNodes) {
+        const pPos = particleNodes.geometry.attributes.position;
+        for (let i = 0; i < pPos.count; i++) {
+          let px = pPos.getX(i) + 0.12;
+          if (px > 25) px = -25;
+          pPos.setX(i, px);
+
+          const py = Math.sin(px * 0.25 + elapsedTime * 2.2) * Math.cos(px * 0.12 + elapsedTime * 1.1) * 1.8;
+          pPos.setY(i, py);
+        }
+        pPos.needsUpdate = true;
       }
 
       renderer.render(scene, camera);
@@ -925,7 +1301,7 @@
     }
 
     // -------------------------------------------------------------
-    // INTERACTIVE PACKET ERROR SIMULATOR
+    // INTERACTIVE PACKET ERROR SIMULATOR (CONCEPTUAL DEMONSTRATION)
     // -------------------------------------------------------------
     let isSimulatingError = false;
     function triggerPacketErrorSim() {
@@ -936,22 +1312,22 @@
       if (!isSimulatingError) {
         isSimulatingError = true;
         pkt4.className = 'packet-sim-node packet-corrupt';
-        pkt4Status.innerText = 'CRC: CORRUPT ✕';
-        simStatus.innerText = 'SIMULATING ERROR: CRC32 MISMATCH ON PKT #004';
+        pkt4Status.innerHTML = '<span class="text-red-400 font-bold">CRC MISMATCH ✕</span><br><span class="text-[8px] text-red-300">PAYLOAD MODIFIED // REJECTED</span>';
+        simStatus.innerText = 'PACKET 004: PAYLOAD MODIFIED → CRC32 MISMATCH → PACKET REJECTED';
         simStatus.className = 'text-red-400 font-semibold animate-pulse';
 
         setTimeout(() => {
-          simStatus.innerText = 'RE-REQUESTING FRAME PKT #004...';
+          simStatus.innerText = 'RE-TRANSMITTING RECOVERY FRAME PKT #004...';
           simStatus.className = 'text-amber-300 font-semibold';
-        }, 1500);
+        }, 1600);
 
         setTimeout(() => {
           pkt4.className = 'packet-sim-node packet-pass';
-          pkt4Status.innerText = 'CRC: RECOVERED ✓';
-          simStatus.innerText = 'SYSTEM RECOVERED: ALL 5 PACKETS PASS';
+          pkt4Status.innerHTML = '<span class="text-emerald-400 font-bold">CRC: PASS ✓</span><br><span class="text-[8px] text-emerald-300">FRAME RECOVERED</span>';
+          simStatus.innerText = 'SYSTEM RECOVERED: ALL 5 PACKETS VERIFIED PASS';
           simStatus.className = 'text-emerald-400 font-semibold';
           isSimulatingError = false;
-        }, 3200);
+        }, 3400);
       }
     }
 
@@ -976,19 +1352,19 @@
       if (step === 1) {
         title.innerText = 'State 1: 24kHz Raw PCM Audio Signal';
         bw.innerText = 'Uncompressed ~384.0 kbps';
-        desc.innerText = 'Continuous analog speech sampled at 24,000 samples per second requiring ~384 kbps raw data rate.';
+        desc.innerText = 'Continuous analog speech sampled at 24,000 samples/sec requiring ~384 kbps raw bandwidth.';
       } else if (step === 2) {
-        title.innerText = 'State 2: Neural Encoder Quantization';
-        bw.innerText = 'Residual Vector Quantization';
-        desc.innerText = 'Neural network extracts acoustic embedding vectors and passes them into codebooks.';
+        title.innerText = 'State 2: Neural Encoder Latent Quantization';
+        bw.innerText = 'Residual Vector Quantization (RVQ)';
+        desc.innerText = 'Convolutional neural network extracts acoustic feature embeddings and projects vectors into RVQ codebook stages.';
       } else if (step === 3) {
-        title.innerText = 'State 3: VQ Codebook Matrix Representation';
+        title.innerText = 'State 3: Discrete VQ Codebook Index Matrix (1, 8, N)';
         bw.innerText = '8-Codebook Index Tensor';
-        desc.innerText = 'Continuous waveforms are converted into integer indices referencing discrete vector codebooks.';
+        desc.innerText = 'Continuous neural embeddings converted into integer indices referencing 1,024 discrete codebook entries per quantizer.';
       } else {
-        title.innerText = 'State 4: 6.0 kbps Target Bandwidth Payload';
+        title.innerText = 'State 4: 6.0 kbps Target Bandwidth Payload Stream';
         bw.innerText = 'Compressed 6.0 kbps Payload';
-        desc.innerText = 'Compact binary stream ready for 256-byte sequence packetization and transmission.';
+        desc.innerText = 'Compact binary byte stream ready for 256-byte sequence packetization, CRC32 checksum, and link transmission.';
       }
       drawEncodecVizCanvas();
     }
@@ -1004,47 +1380,107 @@
       const time = Date.now() * 0.003;
 
       if (currentEncodecStep === 1) {
-        // Continuous smooth sine wave
-        ctx.lineWidth = 2;
+        // STATE 01: 24kHz Raw PCM Natural Speech Waveform (Multi-harmonic speech envelope)
+        ctx.lineWidth = 1.8;
         ctx.strokeStyle = '#ffffff';
         ctx.beginPath();
         for (let x = 0; x < width; x++) {
-          const y = height / 2 + Math.sin(x * 0.05 + time) * 35;
+          const speechEnv = Math.sin(x * 0.015 + time * 0.5) * Math.cos(x * 0.008 + time * 0.3);
+          const y = height / 2 + (Math.sin(x * 0.06 + time * 2) * 20 + Math.sin(x * 0.14 + time * 4) * 8) * Math.abs(speechEnv);
           if (x === 0) ctx.moveTo(x, y);
           else ctx.lineTo(x, y);
         }
         ctx.stroke();
+
+        // Baseline reference
+        ctx.lineWidth = 0.5;
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+        ctx.beginPath();
+        ctx.moveTo(0, height / 2);
+        ctx.lineTo(width, height / 2);
+        ctx.stroke();
+
       } else if (currentEncodecStep === 2) {
-        // Quantizing wave with sample dots
-        ctx.lineWidth = 2;
+        // STATE 02: Conceptual Neural Quantization (Latent Vectors & Codebook Nodes)
+        ctx.lineWidth = 1.5;
         ctx.strokeStyle = '#34d399';
         ctx.beginPath();
-        for (let x = 0; x < width; x += 8) {
-          const y = height / 2 + Math.sin(x * 0.05 + time) * 30;
+        for (let x = 0; x < width; x += 12) {
+          const speechEnv = Math.sin(x * 0.015 + time * 0.5);
+          const y = height / 2 + Math.round((Math.sin(x * 0.05 + time * 1.5) * 30 * Math.abs(speechEnv)) / 8) * 8;
           if (x === 0) ctx.moveTo(x, y);
           else ctx.lineTo(x, y);
+
+          // Neural vector projection nodes
           ctx.fillStyle = '#10b981';
-          ctx.fillRect(x - 2, y - 2, 4, 4);
+          ctx.beginPath();
+          ctx.arc(x, y, 3, 0, Math.PI * 2);
+          ctx.fill();
         }
         ctx.stroke();
+
       } else if (currentEncodecStep === 3) {
-        // Stepwise VQ codebook representation
-        ctx.lineWidth = 2;
-        ctx.strokeStyle = '#10b981';
-        ctx.beginPath();
-        for (let x = 0; x < width; x += 20) {
-          const val = Math.floor(Math.sin(x * 0.03 + time) * 4) * 8;
-          const y = height / 2 + val;
-          ctx.lineTo(x, y);
-          ctx.lineTo(x + 20, y);
+        // STATE 03: Discrete VQ Codebook Matrix Representation (8 Quantizers x Time Steps)
+        const rows = 8;
+        const cols = 28;
+        const cellW = (width - 40) / cols;
+        const cellH = (height - 20) / rows;
+
+        ctx.font = '8px "JetBrains Mono", monospace';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+
+        for (let r = 0; r < rows; r++) {
+          for (let c = 0; c < cols; c++) {
+            const x = 20 + c * cellW;
+            const y = 10 + r * cellH;
+            const val = Math.floor(Math.abs(Math.sin(c * 0.4 + r * 0.8 + time)) * 999);
+            const isActive = (Math.floor(time * 3 + c) % cols) === c;
+
+            ctx.fillStyle = isActive ? 'rgba(16, 185, 129, 0.35)' : 'rgba(255, 255, 255, 0.04)';
+            ctx.strokeStyle = isActive ? '#10b981' : 'rgba(255, 255, 255, 0.08)';
+            ctx.lineWidth = 1;
+            ctx.fillRect(x, y, cellW - 2, cellH - 2);
+            ctx.strokeRect(x, y, cellW - 2, cellH - 2);
+
+            ctx.fillStyle = isActive ? '#ffffff' : '#a1a1aa';
+            ctx.fillText(val, x + cellW / 2 - 1, y + cellH / 2);
+          }
         }
-        ctx.stroke();
+
       } else {
-        // Compact discrete VQ payload blocks
-        ctx.fillStyle = '#10b981';
-        for (let x = 10; x < width - 10; x += 16) {
-          const blockH = Math.abs(Math.sin(x * 0.08 + time)) * 30 + 5;
-          ctx.fillRect(x, height / 2 - blockH / 2, 10, blockH);
+        // STATE 04: Compressed 6.0 kbps Payload Stream (16B Header + 256B Payload Frames)
+        const frameW = 140;
+        const gap = 16;
+        const startX = 20;
+
+        ctx.font = '9px "JetBrains Mono", monospace';
+        ctx.textAlign = 'left';
+
+        for (let i = 0; i < 4; i++) {
+          const fx = startX + i * (frameW + gap) - (Date.now() * 0.04) % (frameW + gap);
+          if (fx < -frameW || fx > width) continue;
+
+          // Header 16B
+          ctx.fillStyle = 'rgba(16, 185, 129, 0.25)';
+          ctx.strokeStyle = '#10b981';
+          ctx.fillRect(fx, height / 2 - 20, 30, 40);
+          ctx.strokeRect(fx, height / 2 - 20, 30, 40);
+
+          ctx.fillStyle = '#10b981';
+          ctx.fillText('HDR', fx + 4, height / 2 - 4);
+          ctx.fillText('16B', fx + 4, height / 2 + 8);
+
+          // Payload 256B
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+          ctx.fillRect(fx + 30, height / 2 - 20, 110, 40);
+          ctx.strokeRect(fx + 30, height / 2 - 20, 110, 40);
+
+          ctx.fillStyle = '#d4d4d8';
+          ctx.fillText(`PKT #${String(i + 1).padStart(3, '0')}`, fx + 36, height / 2 - 4);
+          ctx.fillStyle = '#10b981';
+          ctx.fillText('256B PAYLOAD', fx + 36, height / 2 + 8);
         }
       }
     }
@@ -1199,7 +1635,7 @@
       const ans = document.getElementById(`faq-ans-${idx}`);
       const icon = document.getElementById(`faq-icon-${idx}`);
       const btn = ans ? ans.previousElementSibling : null;
-      
+
       if (ans.classList.contains('open')) {
         ans.classList.remove('open');
         icon.innerText = '+';
@@ -1378,10 +1814,10 @@
         const width = canvas.width;
         const height = canvas.height;
         ctx.clearRect(0, 0, width, height);
-        
+
         const isPlaying = audio && !audio.paused && !audio.ended;
         const time = Date.now() * 0.006;
-        
+
         if (isPlaying) {
           ctx.lineWidth = 2;
           ctx.strokeStyle = '#10b981'; // Emerald waveform accent
@@ -1470,4 +1906,5 @@
     });
   </script>
 </body>
+
 </html>
