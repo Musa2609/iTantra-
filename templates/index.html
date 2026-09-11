@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>iTantra — Low-Bandwidth Neural Voice Communication</title>
   
-  <meta name="description" content="iTantra transmits intelligible multilingual speech through bandwidth-constrained links using Meta EnCodec neural quantization and acoustic data protocols.">
+  <meta name="description" content="iTantra transmits 24kHz speech through bandwidth-constrained links using Meta EnCodec neural quantization, 256-byte sequence packetization, and acoustic data protocols.">
   <meta property="og:title" content="iTantra — Low-Bandwidth Multilingual Voice Communication">
-  <meta property="og:description" content="Transmit 24kHz intelligible speech across 6.0 kbps links using neural vector quantization and 256-byte packetization.">
+  <meta property="og:description" content="Transmit 24kHz intelligible speech across 6.0 kbps links using neural vector quantization and sequence-numbered packetization.">
   <meta property="og:type" content="website">
 
   <!-- Custom Favicon -->
@@ -34,7 +34,7 @@
     }
   </script>
 
-  <!-- Deep-Tech Custom Stylesheet -->
+  <!-- Custom Deep-Tech Stylesheet -->
   <link rel="stylesheet" href="/static/css/stitch_cinema.css">
 </head>
 <body class="h-full w-full bg-[#050505] text-white font-sans relative overflow-x-hidden p-0 m-0 min-h-screen">
@@ -57,7 +57,7 @@
   <!-- MAIN PAGE CONTAINER -->
   <div class="relative z-10 flex flex-col justify-between min-h-screen w-full">
 
-    <!-- HEADER (3-Column Minimal Header) -->
+    <!-- HEADER (Clean 3-Column Navigation) -->
     <header class="sticky top-0 z-40 w-full px-6 py-4 backdrop-blur-xl border-b border-white/10 bg-[#050505]/80">
       <div class="max-w-7xl mx-auto flex items-center justify-between">
         
@@ -71,18 +71,18 @@
           <span class="font-bold text-lg tracking-tight text-white">iTantra</span>
         </div>
 
-        <!-- CENTER: Navigation Items (Clean 4-Link Bar) -->
+        <!-- CENTER: Navigation Items -->
         <nav class="hidden md:flex items-center space-x-8 text-xs font-medium text-neutral-400 font-mono" aria-label="Main Navigation">
-          <button onclick="scrollToSection('system')" class="hover:text-white transition-colors">System</button>
-          <button onclick="scrollToSection('technology')" class="hover:text-white transition-colors">Technology</button>
-          <button onclick="scrollToSection('transmission')" class="hover:text-white transition-colors">Transmission</button>
+          <button onclick="scrollToSection('pipeline')" class="hover:text-white transition-colors">Pipeline</button>
+          <button onclick="scrollToSection('architecture')" class="hover:text-white transition-colors">Signal Architecture</button>
+          <button onclick="scrollToSection('console')" class="hover:text-white transition-colors">Transmission Console</button>
           <button onclick="scrollToSection('faq')" class="hover:text-white transition-colors">Research</button>
         </nav>
 
-        <!-- RIGHT: Primary Action & Mobile Toggle -->
+        <!-- RIGHT: Console Trigger & Mobile Toggle -->
         <div class="flex items-center space-x-4">
-          <button onclick="scrollToSection('transmission')" class="btn-primary-tactile text-xs font-semibold px-4 py-2">
-            Launch Terminal
+          <button onclick="scrollToSection('console')" class="btn-primary-tactile text-xs font-semibold px-4 py-2">
+            Launch Console
           </button>
           <button id="menu-toggle" onclick="openMenu()" aria-label="Open Navigation Drawer" aria-expanded="false" aria-controls="mobile-drawer" class="md:hidden w-8 h-8 rounded-lg border border-white/20 flex items-center justify-center text-white/80 active:text-white">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -100,13 +100,13 @@
       <!-- Telemetry Badge -->
       <div class="hero-stagger-1 inline-flex items-center space-x-2 px-3.5 py-1 rounded-full pill-badge mb-8">
         <span class="w-2 h-2 rounded-full bg-emerald-400 animate-signal-pulse"></span>
-        <span class="text-[11px] font-mono text-neutral-300 tracking-wider uppercase">LOW-BANDWIDTH NEURAL SPEECH PIPELINE</span>
+        <span class="text-[11px] font-mono text-neutral-300 tracking-wider uppercase">RESILIENT NEURAL VOICE PIPELINE</span>
       </div>
 
       <!-- Icon Headline -->
       <h1 class="hero-stagger-2 text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight leading-[1.08] text-white max-w-4xl">
-        Voice, <br>
-        <span class="hero-stagger-3 font-serif-italic font-normal text-5xl sm:text-7xl md:text-8xl text-neutral-200 px-1 animate-blur-sharp">without the bandwidth.</span>
+        Communicate <span class="hero-stagger-3 font-serif-italic font-normal text-5xl sm:text-7xl md:text-8xl text-neutral-200 px-1 animate-blur-sharp">voice</span><br>
+        <span class="text-white/90 font-medium">over extreme bandwidth limits.</span>
       </h1>
 
       <!-- Technical Description -->
@@ -116,7 +116,7 @@
 
       <!-- Primary Action Buttons -->
       <div class="hero-stagger-5 mt-10 flex flex-col sm:flex-row items-center justify-center space-y-3 sm:space-y-0 sm:space-x-4 w-full max-w-md">
-        <button onclick="scrollToSection('transmission')" class="btn-primary-tactile w-full sm:w-auto py-3.5 px-8 text-xs font-semibold tracking-wide flex items-center justify-center space-x-2">
+        <button onclick="scrollToSection('console')" class="btn-primary-tactile w-full sm:w-auto py-3.5 px-8 text-xs font-semibold tracking-wide flex items-center justify-center space-x-2">
           <span>Start Transmission</span>
           <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -124,18 +124,18 @@
           </svg>
         </button>
 
-        <button onclick="scrollToSection('system')" class="btn-secondary-tactile w-full sm:w-auto py-3.5 px-8 text-xs font-medium tracking-wide flex items-center justify-center space-x-2">
-          <span>See How It Works</span>
+        <button onclick="scrollToSection('pipeline')" class="btn-secondary-tactile w-full sm:w-auto py-3.5 px-8 text-xs font-medium tracking-wide flex items-center justify-center space-x-2">
+          <span>See Pipeline</span>
         </button>
       </div>
 
-      <!-- Architecture Pipeline Telemetry Pill -->
+      <!-- Architecture Telemetry Pill -->
       <div class="mt-12 px-4 py-2 rounded-full border border-white/10 bg-black/60 text-[10px] text-neutral-400 font-mono tracking-tight flex items-center space-x-2">
         <span>EnCodec (6.0 kbps)</span>
         <span class="text-white/30">→</span>
         <span>Packets (256B)</span>
         <span class="text-white/30">→</span>
-        <span>CRC32</span>
+        <span>CRC32 Checksum</span>
         <span class="text-white/30">→</span>
         <span>ggwave</span>
         <span class="text-white/30">→</span>
@@ -144,232 +144,226 @@
 
     </main>
 
-    <!-- SECTION 1: THE ENGINEERING REALITY (PROBLEM VS SOLUTION) -->
-    <section id="system" class="py-24 px-6 max-w-6xl mx-auto w-full reveal-on-scroll">
-      <div class="text-left mb-12 border-b border-white/10 pb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-        <div>
-          <span class="text-[10px] font-mono text-emerald-400 uppercase tracking-widest block mb-1">01 / Problem & Solution</span>
-          <h2 class="text-2xl sm:text-4xl font-bold text-white tracking-tight">Normal voice assumes bandwidth.</h2>
-        </div>
-        <p class="text-xs text-neutral-400 max-w-md leading-relaxed">
-          Traditional voice codecs (Opus, AAC) drop completely when link bandwidth collapses below 8 kbps. iTantra quantizes speech into neural vector codebooks to maintain voice communication over extreme constraints.
-        </p>
+    <!-- SECTION 1: CONTINUOUS VISUAL COMMUNICATION PIPELINE -->
+    <section id="pipeline" class="py-24 px-6 max-w-4xl mx-auto w-full reveal-on-scroll">
+      <div class="text-left mb-12 border-b border-white/10 pb-6">
+        <span class="text-[10px] font-mono text-emerald-400 uppercase tracking-widest block mb-1">01 / End-to-End Pipeline</span>
+        <h2 class="text-2xl sm:text-4xl font-bold text-white tracking-tight">Continuous Signal Transmission System</h2>
+        <p class="text-xs text-neutral-400 mt-2">Scroll to trace speech transformation from raw PCM audio through neural codebooks and packet frames to 24kHz output speech.</p>
       </div>
 
-      <!-- Contrast Technical Comparison Cards -->
+      <!-- Single Continuous Signal Timeline -->
+      <div class="relative pl-12 space-y-6">
+        <!-- Connecting Signal Line -->
+        <div class="pipeline-connector-line"></div>
+
+        <!-- Stage 01 -->
+        <div class="pipeline-step-node active-node flex items-start space-x-4" id="pipe-node-1">
+          <div class="node-circle w-6 h-6 rounded-full border-2 border-white/30 bg-[#050505] flex items-center justify-center text-[10px] font-mono font-bold text-white shrink-0 mt-0.5">1</div>
+          <div class="node-box tech-panel rounded-xl p-4 flex-grow text-left">
+            <span class="text-[9px] font-mono text-neutral-400 block mb-0.5">STAGE 01 // INPUT</span>
+            <h3 class="text-sm font-bold text-white">Voice Audio Input</h3>
+            <p class="text-xs text-neutral-400 mt-1">Raw microphone capture (24kHz PCM signal data).</p>
+          </div>
+        </div>
+
+        <!-- Stage 02 -->
+        <div class="pipeline-step-node flex items-start space-x-4" id="pipe-node-2">
+          <div class="node-circle w-6 h-6 rounded-full border-2 border-white/30 bg-[#050505] flex items-center justify-center text-[10px] font-mono font-bold text-white shrink-0 mt-0.5">2</div>
+          <div class="node-box tech-panel rounded-xl p-4 flex-grow text-left">
+            <span class="text-[9px] font-mono text-emerald-400 block mb-0.5">STAGE 02 // NEURAL QUANTIZATION</span>
+            <h3 class="text-sm font-bold text-white">Meta EnCodec Encoder</h3>
+            <p class="text-xs text-neutral-400 mt-1">Quantizes 24kHz speech into discrete Vector Quantization (VQ) codebook indices at target 6.0 kbps bandwidth.</p>
+          </div>
+        </div>
+
+        <!-- Stage 03 -->
+        <div class="pipeline-step-node flex items-start space-x-4" id="pipe-node-3">
+          <div class="node-circle w-6 h-6 rounded-full border-2 border-white/30 bg-[#050505] flex items-center justify-center text-[10px] font-mono font-bold text-white shrink-0 mt-0.5">3</div>
+          <div class="node-box tech-panel rounded-xl p-4 flex-grow text-left">
+            <span class="text-[9px] font-mono text-neutral-400 block mb-0.5">STAGE 03 // REPRESENTATION</span>
+            <h3 class="text-sm font-bold text-white">Compressed Code Tensors</h3>
+            <p class="text-xs text-neutral-400 mt-1">Compact VQ index matrices representing acoustic features with up to 18x–235x data reduction.</p>
+          </div>
+        </div>
+
+        <!-- Stage 04 -->
+        <div class="pipeline-step-node flex items-start space-x-4" id="pipe-node-4">
+          <div class="node-circle w-6 h-6 rounded-full border-2 border-white/30 bg-[#050505] flex items-center justify-center text-[10px] font-mono font-bold text-white shrink-0 mt-0.5">4</div>
+          <div class="node-box tech-panel rounded-xl p-4 flex-grow text-left">
+            <span class="text-[9px] font-mono text-neutral-400 block mb-0.5">STAGE 04 // SERIALIZATION</span>
+            <h3 class="text-sm font-bold text-white">Binary Byte Buffer</h3>
+            <p class="text-xs text-neutral-400 mt-1">Encodes codebook tensors and scale metadata into a compact binary byte payload stream.</p>
+          </div>
+        </div>
+
+        <!-- Stage 05 -->
+        <div class="pipeline-step-node flex items-start space-x-4" id="pipe-node-5">
+          <div class="node-circle w-6 h-6 rounded-full border-2 border-white/30 bg-[#050505] flex items-center justify-center text-[10px] font-mono font-bold text-white shrink-0 mt-0.5">5</div>
+          <div class="node-box tech-panel rounded-xl p-4 flex-grow text-left">
+            <span class="text-[9px] font-mono text-neutral-400 block mb-0.5">STAGE 05 // FRAMING</span>
+            <h3 class="text-sm font-bold text-white">Packetization</h3>
+            <p class="text-xs text-neutral-400 mt-1">Splits binary payload into 256-byte chunks, prepending a 16-byte header (`ITAN` magic, packet ID, total count, CRC32, chunk length).</p>
+          </div>
+        </div>
+
+        <!-- Stage 06 -->
+        <div class="pipeline-step-node flex items-start space-x-4" id="pipe-node-6">
+          <div class="node-circle w-6 h-6 rounded-full border-2 border-white/30 bg-[#050505] flex items-center justify-center text-[10px] font-mono font-bold text-white shrink-0 mt-0.5">6</div>
+          <div class="node-box tech-panel rounded-xl p-4 flex-grow text-left">
+            <span class="text-[9px] font-mono text-emerald-400 block mb-0.5">STAGE 06 // INTEGRITY</span>
+            <h3 class="text-sm font-bold text-white">CRC32 Checksum Verification</h3>
+            <p class="text-xs text-neutral-400 mt-1">Calculates 32-bit checksum per chunk to enable packet-by-packet error detection at the receiver.</p>
+          </div>
+        </div>
+
+        <!-- Stage 07 -->
+        <div class="pipeline-step-node flex items-start space-x-4" id="pipe-node-7">
+          <div class="node-circle w-6 h-6 rounded-full border-2 border-white/30 bg-[#050505] flex items-center justify-center text-[10px] font-mono font-bold text-white shrink-0 mt-0.5">7</div>
+          <div class="node-box tech-panel rounded-xl p-4 flex-grow text-left">
+            <span class="text-[9px] font-mono text-neutral-400 block mb-0.5">STAGE 07 // TRANSMISSION</span>
+            <h3 class="text-sm font-bold text-white">ggwave Protocol Link</h3>
+            <p class="text-xs text-neutral-400 mt-1">Transmits framed binary payload via verified software loopback channel or acoustic audio tones.</p>
+          </div>
+        </div>
+
+        <!-- Stage 08 -->
+        <div class="pipeline-step-node flex items-start space-x-4" id="pipe-node-8">
+          <div class="node-circle w-6 h-6 rounded-full border-2 border-white/30 bg-[#050505] flex items-center justify-center text-[10px] font-mono font-bold text-white shrink-0 mt-0.5">8</div>
+          <div class="node-box tech-panel rounded-xl p-4 flex-grow text-left">
+            <span class="text-[9px] font-mono text-neutral-400 block mb-0.5">STAGE 08 // RECEIVER</span>
+            <h3 class="text-sm font-bold text-white">Receiver Ingestion Node</h3>
+            <p class="text-xs text-neutral-400 mt-1">Ingests packet frames, parses 16-byte headers, and validates CRC32 checksum integrity.</p>
+          </div>
+        </div>
+
+        <!-- Stage 09 -->
+        <div class="pipeline-step-node flex items-start space-x-4" id="pipe-node-9">
+          <div class="node-circle w-6 h-6 rounded-full border-2 border-white/30 bg-[#050505] flex items-center justify-center text-[10px] font-mono font-bold text-white shrink-0 mt-0.5">9</div>
+          <div class="node-box tech-panel rounded-xl p-4 flex-grow text-left">
+            <span class="text-[9px] font-mono text-neutral-400 block mb-0.5">STAGE 09 // REASSEMBLY</span>
+            <h3 class="text-sm font-bold text-white">Sequence Reassembly</h3>
+            <p class="text-xs text-neutral-400 mt-1">Reorders sequence-numbered packets, discards corrupted chunks, and deserializes VQ code tensors.</p>
+          </div>
+        </div>
+
+        <!-- Stage 10 -->
+        <div class="pipeline-step-node flex items-start space-x-4" id="pipe-node-10">
+          <div class="node-circle w-6 h-6 rounded-full border-2 border-white/30 bg-[#050505] flex items-center justify-center text-[10px] font-mono font-bold text-white shrink-0 mt-0.5">10</div>
+          <div class="node-box tech-panel rounded-xl p-4 flex-grow text-left">
+            <span class="text-[9px] font-mono text-neutral-400 block mb-0.5">STAGE 10 // SYNTHESIS</span>
+            <h3 class="text-sm font-bold text-white">EnCodec Decoder</h3>
+            <p class="text-xs text-neutral-400 mt-1">Synthesizes discrete VQ code tensors back into 24kHz audio waveform signal.</p>
+          </div>
+        </div>
+
+        <!-- Stage 11 (Final) -->
+        <div class="pipeline-step-node flex items-start space-x-4" id="pipe-node-11">
+          <div class="node-circle w-6 h-6 rounded-full border-2 border-emerald-400 bg-emerald-400 flex items-center justify-center text-[10px] font-mono font-bold text-[#050505] shrink-0 mt-0.5">✓</div>
+          <div class="node-box tech-panel rounded-xl p-4 flex-grow text-left border-emerald-500/40 bg-emerald-500/5">
+            <span class="text-[9px] font-mono text-emerald-400 block mb-0.5">FINAL STAGE // OUTPUT</span>
+            <h3 class="text-sm font-bold text-white">Reconstructed Voice Speech</h3>
+            <p class="text-xs text-emerald-400 font-semibold mt-1">24kHz Intelligible Speech Restored for playback.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION 2: SIGNAL ARCHITECTURE (VISUAL COMPONENT DIAGRAMS) -->
+    <section id="architecture" class="py-24 px-6 max-w-6xl mx-auto w-full reveal-on-scroll">
+      <div class="text-left mb-12 border-b border-white/10 pb-6">
+        <span class="text-[10px] font-mono text-emerald-400 uppercase tracking-widest block mb-1">02 / Component Specifications</span>
+        <h2 class="text-2xl sm:text-4xl font-bold text-white tracking-tight">Signal Architecture</h2>
+      </div>
+
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
         
-        <!-- Standard Voice Codecs Card -->
-        <div class="tech-panel rounded-2xl p-6 border-red-500/20">
-          <div class="flex items-center justify-between mb-4">
-            <span class="text-xs font-mono text-red-400">Standard Voice Codecs (Opus / AAC)</span>
-            <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-red-500/10 text-red-400 border border-red-500/30">DROPS &lt; 8 kbps</span>
-          </div>
-          <p class="text-xs text-neutral-400 leading-relaxed mb-6">
-            Standard codecs transmit continuous spectral frames requiring 32 kbps to 64 kbps. On satellite blackouts, emergency mesh links, or HF radio fading, packets drop and audio turns into unrecoverable noise.
+        <!-- EnCodec Card -->
+        <div class="tech-panel rounded-2xl p-6">
+          <span class="text-[9px] font-mono text-neutral-400 uppercase tracking-wider block mb-2">NEURAL QUANTIZATION</span>
+          <h3 class="text-base font-bold text-white">Meta EnCodec Engine</h3>
+          <p class="text-xs text-neutral-400 leading-relaxed mt-2 mb-4">
+            Encodes 24kHz audio using Residual Vector Quantization (RVQ) codebooks into discrete index tensors, achieving 6.0 kbps target bandwidth.
           </p>
-          <div class="font-mono text-[11px] space-y-2 text-neutral-400 pt-4 border-t border-white/10">
-            <div class="flex justify-between"><span>Required Bandwidth:</span><span class="text-white">32.0 - 64.0 kbps</span></div>
-            <div class="flex justify-between"><span>Payload Architecture:</span><span class="text-white">Uncompressed PCM / Frames</span></div>
-            <div class="flex justify-between"><span>Low-Bandwidth Behavior:</span><span class="text-red-400 font-semibold">Total Signal Loss</span></div>
+          <div class="p-3 rounded-lg bg-[#050505] border border-white/10 font-mono text-[10px] text-neutral-300">
+            <div class="flex justify-between border-b border-white/10 pb-1 mb-1"><span>Target Bitrate:</span><span class="text-emerald-400">6.0 kbps</span></div>
+            <div class="flex justify-between"><span>Codebook Shape:</span><span>(1, 8, N_frames)</span></div>
           </div>
         </div>
 
-        <!-- iTantra Neural Compression Card -->
-        <div class="tech-panel rounded-2xl p-6 border-emerald-500/30 tech-panel-active">
-          <div class="flex items-center justify-between mb-4">
-            <span class="text-xs font-mono text-emerald-400">iTantra Neural Speech System</span>
-            <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">OPERATIONAL @ 6.0 kbps</span>
-          </div>
-          <p class="text-xs text-neutral-400 leading-relaxed mb-6">
-            iTantra compresses 24kHz speech into discrete Vector Quantization (VQ) codebook indices. Payloads are chunked into 256-byte packets verified with CRC32 checksums for resilient software or acoustic transmission.
+        <!-- Packetization Card -->
+        <div class="tech-panel rounded-2xl p-6">
+          <span class="text-[9px] font-mono text-neutral-400 uppercase tracking-wider block mb-2">SEQUENCE FRAMING</span>
+          <h3 class="text-base font-bold text-white">Packetization & Header</h3>
+          <p class="text-xs text-neutral-400 leading-relaxed mt-2 mb-4">
+            Splits binary payload into 256-byte payload chunks, appending a 16-byte binary header for sequence reordering and corruption detection.
           </p>
-          <div class="font-mono text-[11px] space-y-2 text-neutral-400 pt-4 border-t border-white/10">
-            <div class="flex justify-between"><span>Target Speech Bitrate:</span><span class="text-emerald-400 font-bold">6.0 kbps</span></div>
-            <div class="flex justify-between"><span>Payload Architecture:</span><span class="text-white">VQ Codebooks + CRC32</span></div>
-            <div class="flex justify-between"><span>Low-Bandwidth Behavior:</span><span class="text-emerald-400 font-semibold">Intelligible 24kHz Speech</span></div>
+          <div class="p-3 rounded-lg bg-[#050505] border border-white/10 font-mono text-[10px] text-neutral-300">
+            <div class="flex justify-between border-b border-white/10 pb-1 mb-1"><span>Payload Chunk:</span><span class="text-white">256 Bytes</span></div>
+            <div class="flex justify-between"><span>Header Structure:</span><span>Magic (4B) + ID (2B) + Total (2B) + CRC (4B) + Len (4B)</span></div>
+          </div>
+        </div>
+
+        <!-- CRC32 Card -->
+        <div class="tech-panel rounded-2xl p-6">
+          <span class="text-[9px] font-mono text-neutral-400 uppercase tracking-wider block mb-2">DATA INTEGRITY</span>
+          <h3 class="text-base font-bold text-white">CRC32 Checksum Detection</h3>
+          <p class="text-xs text-neutral-400 leading-relaxed mt-2 mb-4">
+            Computes a 32-bit cyclic redundancy checksum on each payload chunk prior to transmission, detecting bit errors on frame arrival.
+          </p>
+          <div class="p-3 rounded-lg bg-[#050505] border border-white/10 font-mono text-[10px] text-neutral-300">
+            <div class="flex justify-between border-b border-white/10 pb-1 mb-1"><span>Verification Result:</span><span class="text-emerald-400 font-bold">PASS / CRC Check Verified</span></div>
+            <div class="flex justify-between"><span>Error Detection:</span><span>Per-Packet Bit Corruption Verification</span></div>
+          </div>
+        </div>
+
+        <!-- ggwave & AI4Bharat Card -->
+        <div class="tech-panel rounded-2xl p-6">
+          <span class="text-[9px] font-mono text-neutral-400 uppercase tracking-wider block mb-2">CHANNEL & SPEECH-TO-TEXT</span>
+          <h3 class="text-base font-bold text-white">ggwave & AI4Bharat IndicConformer</h3>
+          <p class="text-xs text-neutral-400 leading-relaxed mt-2 mb-4">
+            Transmits framed data via verified software loopback or acoustic sound tones, with optional IndicConformer-600M speech-to-text transcription.
+          </p>
+          <div class="p-3 rounded-lg bg-[#050505] border border-white/10 font-mono text-[10px] text-neutral-300">
+            <div class="flex justify-between border-b border-white/10 pb-1 mb-1"><span>Transmission Link:</span><span class="text-white">Software Loopback (Verified PASS)</span></div>
+            <div class="flex justify-between"><span>Multilingual ASR:</span><span class="text-emerald-400">10 Indian Languages</span></div>
           </div>
         </div>
 
       </div>
     </section>
 
-    <!-- SECTION 2: THE IDEA (CONCEPTUAL TRANSFORMATION SCHEMATIC) -->
-    <section class="py-20 px-6 max-w-6xl mx-auto w-full reveal-on-scroll">
-      <div class="text-center mb-12">
-        <span class="text-[10px] font-mono text-emerald-400 uppercase tracking-widest block mb-1">02 / Conceptual Transformation</span>
-        <h2 class="text-2xl sm:text-4xl font-bold text-white tracking-tight">The Core Pipeline Transformation</h2>
-      </div>
-
-      <!-- Engineering Schematic Horizontal Flow -->
-      <div class="tech-panel rounded-2xl p-8 text-left border-white/10">
-        <div class="grid grid-cols-2 md:grid-cols-6 gap-4 items-center text-center">
-          
-          <div class="p-3 rounded-xl bg-white/5 border border-white/10">
-            <span class="text-[9px] font-mono text-neutral-400 block mb-1">INPUT</span>
-            <span class="text-xs font-bold text-white block">Raw Voice</span>
-            <span class="text-[10px] font-mono text-neutral-500 block mt-1">24kHz Audio</span>
-          </div>
-
-          <div class="text-neutral-500 font-mono text-xs hidden md:block">→</div>
-
-          <div class="p-3 rounded-xl bg-white/5 border border-white/10">
-            <span class="text-[9px] font-mono text-neutral-400 block mb-1">STAGE 01</span>
-            <span class="text-xs font-bold text-white block">EnCodec VQ</span>
-            <span class="text-[10px] font-mono text-emerald-400 block mt-1">6.0 kbps Tokens</span>
-          </div>
-
-          <div class="text-neutral-500 font-mono text-xs hidden md:block">→</div>
-
-          <div class="p-3 rounded-xl bg-white/5 border border-white/10">
-            <span class="text-[9px] font-mono text-neutral-400 block mb-1">STAGE 02</span>
-            <span class="text-xs font-bold text-white block">256B Packets</span>
-            <span class="text-[10px] font-mono text-neutral-500 block mt-1">CRC32 Checked</span>
-          </div>
-
-          <div class="text-neutral-500 font-mono text-xs hidden md:block">→</div>
-
-          <div class="p-3 rounded-xl bg-white/5 border border-white/10 col-span-2 md:col-span-1">
-            <span class="text-[9px] font-mono text-neutral-400 block mb-1">STAGE 03</span>
-            <span class="text-xs font-bold text-white block">ggwave Link</span>
-            <span class="text-[10px] font-mono text-neutral-500 block mt-1">Sound / Loopback</span>
-          </div>
-
-          <div class="text-neutral-500 font-mono text-xs hidden md:block">→</div>
-
-          <div class="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/40 col-span-2 md:col-span-1">
-            <span class="text-[9px] font-mono text-emerald-400 block mb-1">OUTPUT</span>
-            <span class="text-xs font-bold text-white block">Reconstructed</span>
-            <span class="text-[10px] font-mono text-emerald-400 block mt-1">24kHz Speech</span>
-          </div>
-
-        </div>
-      </div>
-    </section>
-
-    <!-- SECTION 3: THE ACTUAL TECHNOLOGY (PIPELINE DIAGRAM) -->
-    <section id="technology" class="py-24 px-6 max-w-6xl mx-auto w-full reveal-on-scroll">
-      <div class="text-left mb-12 border-b border-white/10 pb-6">
-        <span class="text-[10px] font-mono text-emerald-400 uppercase tracking-widest block mb-1">03 / Pipeline Architecture</span>
-        <h2 class="text-2xl sm:text-4xl font-bold text-white tracking-tight">10-Stage Resilient Protocol</h2>
-      </div>
-
-      <!-- 10-Stage Engineering Matrix -->
-      <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 text-left">
-        
-        <div class="tech-panel rounded-xl p-4 flex flex-col justify-between min-h-[120px]">
-          <span class="text-[9px] font-mono text-neutral-400">01 / INPUT</span>
-          <div>
-            <h3 class="text-xs font-bold text-white">Voice Microphone</h3>
-            <p class="text-[10px] text-neutral-400 mt-1">Raw PCM Capture</p>
-          </div>
-        </div>
-
-        <div class="tech-panel rounded-xl p-4 flex flex-col justify-between min-h-[120px]">
-          <span class="text-[9px] font-mono text-neutral-400">02 / QUANTIZATION</span>
-          <div>
-            <h3 class="text-xs font-bold text-white">Meta EnCodec</h3>
-            <p class="text-[10px] text-emerald-400 mt-1">6.0 kbps VQ Codebooks</p>
-          </div>
-        </div>
-
-        <div class="tech-panel rounded-xl p-4 flex flex-col justify-between min-h-[120px]">
-          <span class="text-[9px] font-mono text-neutral-400">03 / COMPRESSION</span>
-          <div>
-            <h3 class="text-xs font-bold text-white">VQ Code Tensors</h3>
-            <p class="text-[10px] text-neutral-400 mt-1">Discrete Index Stream</p>
-          </div>
-        </div>
-
-        <div class="tech-panel rounded-xl p-4 flex flex-col justify-between min-h-[120px]">
-          <span class="text-[9px] font-mono text-neutral-400">04 / SERIALIZATION</span>
-          <div>
-            <h3 class="text-xs font-bold text-white">Binary Stream</h3>
-            <p class="text-[10px] text-neutral-400 mt-1">Packed Byte Buffer</p>
-          </div>
-        </div>
-
-        <div class="tech-panel rounded-xl p-4 flex flex-col justify-between min-h-[120px]">
-          <span class="text-[9px] font-mono text-neutral-400">05 / FRAMING</span>
-          <div>
-            <h3 class="text-xs font-bold text-white">Packetization</h3>
-            <p class="text-[10px] text-neutral-400 mt-1">256-Byte Chunk Frames</p>
-          </div>
-        </div>
-
-        <div class="tech-panel rounded-xl p-4 flex flex-col justify-between min-h-[120px]">
-          <span class="text-[9px] font-mono text-neutral-400">06 / INTEGRITY</span>
-          <div>
-            <h3 class="text-xs font-bold text-white">CRC32 Checksum</h3>
-            <p class="text-[10px] text-emerald-400 mt-1">100% Corruption Verification</p>
-          </div>
-        </div>
-
-        <div class="tech-panel rounded-xl p-4 flex flex-col justify-between min-h-[120px]">
-          <span class="text-[9px] font-mono text-neutral-400">07 / TRANSMISSION</span>
-          <div>
-            <h3 class="text-xs font-bold text-white">ggwave Link</h3>
-            <p class="text-[10px] text-neutral-400 mt-1">Acoustic / Loopback Mode</p>
-          </div>
-        </div>
-
-        <div class="tech-panel rounded-xl p-4 flex flex-col justify-between min-h-[120px]">
-          <span class="text-[9px] font-mono text-neutral-400">08 / RECEPTION</span>
-          <div>
-            <h3 class="text-xs font-bold text-white">Receiver Node</h3>
-            <p class="text-[10px] text-neutral-400 mt-1">Frame Verification</p>
-          </div>
-        </div>
-
-        <div class="tech-panel rounded-xl p-4 flex flex-col justify-between min-h-[120px]">
-          <span class="text-[9px] font-mono text-neutral-400">09 / DECODING</span>
-          <div>
-            <h3 class="text-xs font-bold text-white">EnCodec Decoder</h3>
-            <p class="text-[10px] text-neutral-400 mt-1">Neural Speech Synthesis</p>
-          </div>
-        </div>
-
-        <div class="tech-panel rounded-xl p-4 flex flex-col justify-between min-h-[120px] border-emerald-500/40 bg-emerald-500/5">
-          <span class="text-[9px] font-mono text-emerald-400">10 / SPEECH OUTPUT</span>
-          <div>
-            <h3 class="text-xs font-bold text-white">Reconstructed Voice</h3>
-            <p class="text-[10px] text-emerald-400 font-semibold mt-1">24kHz Speech Restored</p>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- SECTION 4: LIVE TRANSMISSION TERMINAL (DEMO WORKSPACE) -->
-    <section id="transmission" class="py-24 px-6 max-w-5xl mx-auto w-full reveal-on-scroll">
+    <!-- SECTION 3: LIVE TRANSMISSION CONSOLE (INTERACTIVE DEMO INSTRUMENT) -->
+    <section id="console" class="py-24 px-6 max-w-5xl mx-auto w-full reveal-on-scroll">
       <div class="text-left mb-10 border-b border-white/10 pb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
-          <span class="text-[10px] font-mono text-emerald-400 uppercase tracking-widest block mb-1">04 / Interactive Workspace</span>
-          <h2 class="text-2xl sm:text-4xl font-bold text-white tracking-tight">Live Transmission Terminal</h2>
+          <span class="text-[10px] font-mono text-emerald-400 uppercase tracking-widest block mb-1">03 / Engineering Instrument</span>
+          <h2 class="text-2xl sm:text-4xl font-bold text-white tracking-tight">Live Transmission Console</h2>
         </div>
-        <span class="text-xs font-mono text-neutral-400">Real-Time Backend Execution</span>
+        <span class="text-xs font-mono text-neutral-400">Real Backend Pipeline Execution</span>
       </div>
 
-      <!-- Main Terminal Panel -->
+      <!-- Main Transmission Console Panel -->
       <div class="tech-panel rounded-2xl p-6 sm:p-8 text-left shadow-2xl border-white/15">
         
-        <!-- Terminal Status Header -->
-        <div class="flex items-center justify-between pb-4 border-b border-white/10 mb-6">
+        <!-- Console Header Status -->
+        <div class="flex items-center justify-between pb-4 border-b border-white/10 mb-6 font-mono">
           <div>
-            <span class="text-[10px] text-neutral-400 font-mono uppercase tracking-wider">SYSTEM PROTOCOL // iTANTRA-V1</span>
-            <h3 class="text-sm font-bold text-white font-mono mt-0.5">Voice Transmission Workspace</h3>
+            <span class="text-[10px] text-neutral-400 uppercase tracking-wider">iTANTRA // ENGINE CONSOLE</span>
+            <h3 class="text-sm font-bold text-white mt-0.5">Neural Speech Instrument</h3>
           </div>
-          <div id="status-badge" class="px-3 py-1 rounded-full pill-badge text-xs font-mono text-emerald-400 border border-emerald-500/30 flex items-center space-x-2">
+          <div id="status-badge" class="px-3 py-1 rounded-full pill-badge text-xs text-emerald-400 border border-emerald-500/30 flex items-center space-x-2">
             <span class="w-2 h-2 rounded-full bg-emerald-400 animate-signal-pulse"></span>
             <span>● Ready</span>
           </div>
         </div>
 
-        <!-- Terminal Controls Grid -->
+        <!-- Controls Grid -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
           <div>
             <label for="select-language" class="text-xs text-neutral-400 font-medium block mb-1.5 font-mono">Target Speech Language</label>
-            <select id="select-language" class="w-full bg-[#050505] border border-white/15 rounded-xl px-4 py-2.5 text-xs font-medium text-white focus:outline-none focus:border-white/40">
+            <select id="select-language" class="w-full bg-[#050505] border border-white/15 rounded-xl px-4 py-2.5 text-xs font-medium text-white focus:outline-none focus:border-white/40 font-mono">
               <option value="hi" selected>Hindi (हिंदी)</option>
               <option value="gu">Gujarati (ગુજરાતી)</option>
               <option value="mr">Marathi (मરાઠી)</option>
@@ -385,7 +379,7 @@
 
           <div>
             <label for="select-bitrate" class="text-xs text-neutral-400 font-medium block mb-1.5 font-mono">EnCodec Target Bitrate</label>
-            <select id="select-bitrate" class="w-full bg-[#050505] border border-white/15 rounded-xl px-4 py-2.5 text-xs font-medium text-white focus:outline-none focus:border-white/40">
+            <select id="select-bitrate" class="w-full bg-[#050505] border border-white/15 rounded-xl px-4 py-2.5 text-xs font-medium text-white focus:outline-none focus:border-white/40 font-mono">
               <option value="6.0" selected>6.0 kbps (Optimal Target)</option>
               <option value="24.0">24.0 kbps (High Fidelity)</option>
               <option value="12.0">12.0 kbps (Medium Bitrate)</option>
@@ -395,7 +389,7 @@
           </div>
         </div>
 
-        <!-- Mode Switcher -->
+        <!-- Link Mode Selector -->
         <div class="mb-6">
           <span class="text-xs text-neutral-400 font-medium block mb-1.5 font-mono">Transmission Link Channel</span>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -409,7 +403,7 @@
           <p id="mode-note" class="text-[10px] font-mono text-neutral-400 mt-2">Verified software transmission channel (PASS).</p>
         </div>
 
-        <!-- Audio Input Action Console -->
+        <!-- Audio Input Control Console -->
         <div class="tech-panel rounded-2xl p-6 mb-6 flex flex-col items-center justify-center text-center border-white/10">
           <button id="btn-record" onclick="toggleRecording()" aria-label="Microphone Recording" class="w-16 h-16 rounded-full bg-white/10 border border-white/30 flex items-center justify-center text-white active:scale-95 transition-all shadow-xl mb-3">
             <svg id="mic-icon" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -420,7 +414,7 @@
           <div id="recording-status" class="text-xs font-mono font-semibold text-white tracking-wide mb-1">
             Click Microphone to Record Audio
           </div>
-          <p class="text-[11px] text-neutral-400 mb-4">Speak up to 10 seconds of voice speech</p>
+          <p class="text-[11px] text-neutral-400 mb-4">Speak up to 10 seconds of speech</p>
 
           <div class="flex items-center w-full max-w-xs mb-4">
             <div class="flex-grow border-t border-white/10"></div>
@@ -439,10 +433,10 @@
           </div>
         </div>
 
-        <!-- State Progress Tracker -->
+        <!-- Real-Time State Animation Grid -->
         <div class="mb-6">
           <div class="flex items-center justify-between mb-2">
-            <span class="text-[10px] text-neutral-400 font-mono uppercase tracking-wider">Pipeline Sequence State</span>
+            <span class="text-[10px] text-neutral-400 font-mono uppercase tracking-wider">Console Sequence State</span>
             <span id="pipeline-progress-text" class="text-[10px] font-mono text-neutral-400">IDLE</span>
           </div>
 
@@ -469,22 +463,22 @@
           
           <!-- SUCCESS METRICS PANEL -->
           <div id="card-success" class="w-full tech-panel rounded-xl p-5 text-left border-emerald-500/40">
-            <div class="flex items-center justify-between mb-4">
-              <span class="text-xs font-mono font-semibold text-emerald-400 flex items-center space-x-2">
+            <div class="flex items-center justify-between mb-4 font-mono">
+              <span class="text-xs font-semibold text-emerald-400 flex items-center space-x-2">
                 <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-                <span>TRANSMISSION COMPLETE — 24kHz SPEECH RESTORED</span>
+                <span>TRANSMISSION PASS — 24kHz SPEECH RESTORED</span>
               </span>
-              <span id="res-latency" class="text-xs text-neutral-400 font-mono">—</span>
+              <span id="res-latency" class="text-xs text-neutral-400">—</span>
             </div>
 
-            <!-- Reconstructed Voice Player + Canvas Visualizer -->
+            <!-- Reconstructed Voice Player + Canvas Waveform -->
             <div class="mb-5">
               <label for="audio-player" class="text-xs text-neutral-400 font-medium block mb-1.5 font-mono">Reconstructed Audio Output (24kHz)</label>
               <audio id="audio-player" controls class="w-full h-10 accent-emerald-400 rounded-lg mb-2"></audio>
               <canvas id="waveform-canvas" width="600" height="48" class="w-full h-12 rounded-lg bg-[#050505] border border-white/10"></canvas>
             </div>
 
-            <!-- Verified Metrics Grid -->
+            <!-- Verified Real Backend Metrics Grid -->
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center mb-5 font-mono">
               <div class="tech-panel rounded-lg p-2.5">
                 <span id="m-bitrate" class="text-xs font-bold text-white tracking-tight">6.0 kbps</span>
@@ -506,9 +500,9 @@
 
             <!-- AI4Bharat Multilingual Transcription -->
             <div class="w-full bg-[#050505] border border-white/10 rounded-xl p-4">
-              <div class="flex items-center justify-between mb-1.5">
-                <span class="text-[10px] text-neutral-400 font-mono uppercase tracking-wider">AI4Bharat IndicConformer Multilingual ASR</span>
-                <button onclick="copyASRText()" class="text-[10px] font-mono text-neutral-300 hover:text-white px-2 py-0.5 rounded border border-white/20 bg-white/5 active:scale-95 transition-all">
+              <div class="flex items-center justify-between mb-1.5 font-mono">
+                <span class="text-[10px] text-neutral-400 uppercase tracking-wider">AI4Bharat IndicConformer Multilingual ASR</span>
+                <button onclick="copyASRText()" class="text-[10px] text-neutral-300 hover:text-white px-2 py-0.5 rounded border border-white/20 bg-white/5 active:scale-95 transition-all">
                   <span id="btn-copy-text">Copy Text</span>
                 </button>
               </div>
@@ -520,8 +514,8 @@
 
           <!-- ERROR PANEL -->
           <div id="card-error" class="hidden w-full tech-panel rounded-xl p-5 text-left border-red-500/40">
-            <div class="flex items-center justify-between mb-3">
-              <span class="text-xs font-mono font-semibold text-red-400 flex items-center space-x-2">
+            <div class="flex items-center justify-between mb-3 font-mono">
+              <span class="text-xs font-semibold text-red-400 flex items-center space-x-2">
                 <span class="w-2 h-2 rounded-full bg-red-400"></span>
                 <span>TRANSMISSION ERROR</span>
               </span>
@@ -529,7 +523,7 @@
             <p id="error-desc" class="text-xs text-neutral-300 mb-4 leading-relaxed font-mono">
               Transmission encountered an issue.
             </p>
-            <button onclick="resetAndRetry()" class="w-full py-2.5 rounded-full text-xs font-semibold btn-primary-tactile">
+            <button onclick="resetAndRetry()" class="w-full py-2.5 rounded-full text-xs font-semibold btn-primary-tactile font-mono">
               Retry Transmission
             </button>
           </div>
@@ -537,7 +531,7 @@
           <!-- Reset Action -->
           <div class="text-center pt-2">
             <button onclick="resetAndRetry()" class="text-xs font-mono text-neutral-400 hover:text-white transition-colors underline underline-offset-4">
-              Reset Terminal Workspace
+              Reset Console Workspace
             </button>
           </div>
         </div>
@@ -545,15 +539,15 @@
       </div>
     </section>
 
-    <!-- SECTION 5: MULTILINGUAL CAPABILITIES -->
+    <!-- SECTION 4: MULTILINGUAL CAPABILITIES -->
     <section class="py-20 px-6 max-w-5xl mx-auto w-full reveal-on-scroll text-center">
-      <span class="text-[10px] font-mono text-emerald-400 uppercase tracking-widest block mb-1">05 / Multilingual Capabilities</span>
+      <span class="text-[10px] font-mono text-emerald-400 uppercase tracking-widest block mb-1">04 / Multilingual Support</span>
       <h2 class="text-2xl sm:text-4xl font-bold text-white tracking-tight mt-1 mb-8">10 Supported Indian Languages</h2>
 
       <div class="flex flex-wrap items-center justify-center gap-2.5 max-w-3xl mx-auto font-mono text-xs">
         <span class="px-3.5 py-1.5 rounded-lg tech-panel text-white border border-white/15">Hindi (हिंदी)</span>
         <span class="px-3.5 py-1.5 rounded-lg tech-panel text-white border border-white/15">Gujarati (ગુજરાતી)</span>
-        <span class="px-3.5 py-1.5 rounded-lg tech-panel text-white border border-white/15">Marathi (मराठी)</span>
+        <span class="px-3.5 py-1.5 rounded-lg tech-panel text-white border border-white/15">Marathi (मરાઠી)</span>
         <span class="px-3.5 py-1.5 rounded-lg tech-panel text-white border border-white/15">Kannada (ಕನ್ನಡ)</span>
         <span class="px-3.5 py-1.5 rounded-lg tech-panel text-white border border-white/15">Malayalam (മലയാളം)</span>
         <span class="px-3.5 py-1.5 rounded-lg tech-panel text-white border border-white/15">Tamil (தமிழ்)</span>
@@ -564,10 +558,10 @@
       </div>
     </section>
 
-    <!-- SECTION 6: KNOWLEDGE BASE / TECHNICAL FAQ -->
+    <!-- SECTION 5: KNOWLEDGE BASE / FAQ -->
     <section id="faq" class="py-24 px-6 max-w-4xl mx-auto w-full reveal-on-scroll text-left">
       <div class="text-left mb-12 border-b border-white/10 pb-6">
-        <span class="text-[10px] font-mono text-emerald-400 uppercase tracking-widest block mb-1">06 / Technical Knowledge Base</span>
+        <span class="text-[10px] font-mono text-emerald-400 uppercase tracking-widest block mb-1">05 / Technical Knowledge Base</span>
         <h2 class="text-2xl sm:text-4xl font-bold text-white tracking-tight">Frequently Asked Questions</h2>
       </div>
 
@@ -590,7 +584,7 @@
             <span id="faq-icon-2" class="text-neutral-400 font-mono text-sm">+</span>
           </button>
           <div id="faq-ans-2" class="faq-answer mt-3 text-xs text-neutral-400 leading-relaxed">
-            EnCodec uses Vector Quantization (VQ) neural codebooks to compress 24kHz voice audio down to 6.0 kbps (and lower), achieving over 18x to 235x data reduction while preserving speech intelligibility.
+            EnCodec uses Vector Quantization (VQ) neural codebooks to compress 24kHz voice audio down to 6.0 kbps (and lower), achieving significant data reduction while preserving speech intelligibility.
           </div>
         </div>
 
@@ -623,7 +617,7 @@
             <span id="faq-icon-5" class="text-neutral-400 font-mono text-sm">+</span>
           </button>
           <div id="faq-ans-5" class="faq-answer mt-3 text-xs text-neutral-400 leading-relaxed">
-            CRC32 (Cyclic Redundancy Check) computes a 32-bit checksum for each packet payload before transmission, enabling 100% data corruption verification at the receiver.
+            CRC32 (Cyclic Redundancy Check) computes a 32-bit checksum for each packet payload before transmission, enabling error detection at the receiver.
           </div>
         </div>
 
@@ -727,15 +721,15 @@
     </div>
 
     <div class="flex flex-col space-y-6 py-8 text-center text-lg font-mono text-neutral-300">
-      <button onclick="scrollToSection('system'); closeMenu();" class="hover:text-white py-1">System</button>
-      <button onclick="scrollToSection('technology'); closeMenu();" class="hover:text-white py-1">Technology</button>
-      <button onclick="scrollToSection('transmission'); closeMenu();" class="hover:text-white py-1">Transmission Workspace</button>
+      <button onclick="scrollToSection('pipeline'); closeMenu();" class="hover:text-white py-1">Pipeline</button>
+      <button onclick="scrollToSection('architecture'); closeMenu();" class="hover:text-white py-1">Signal Architecture</button>
+      <button onclick="scrollToSection('console'); closeMenu();" class="hover:text-white py-1">Transmission Console</button>
       <button onclick="scrollToSection('faq'); closeMenu();" class="hover:text-white py-1">Research / FAQ</button>
     </div>
 
     <div class="pt-6 border-t border-white/10 flex flex-col space-y-3">
-      <button onclick="scrollToSection('transmission'); closeMenu();" class="w-full py-3 rounded-full text-xs font-semibold btn-primary-tactile">
-        Launch Terminal
+      <button onclick="scrollToSection('console'); closeMenu();" class="w-full py-3 rounded-full text-xs font-semibold btn-primary-tactile font-mono">
+        Launch Console
       </button>
       <p class="text-[10px] font-mono text-center text-neutral-500">Low-Bandwidth Multilingual Voice Communication</p>
     </div>
@@ -770,6 +764,17 @@
       const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
       const scrolled = (winScroll / height) * 100;
       document.getElementById('scroll-progress').style.width = scrolled + '%';
+
+      // Progressive Pipeline Node Lighting
+      const nodes = document.querySelectorAll('.pipeline-step-node');
+      nodes.forEach((node, index) => {
+        const rect = node.getBoundingClientRect();
+        if (rect.top < window.innerHeight * 0.75) {
+          node.classList.add('active-node');
+        } else if (index > 0) {
+          node.classList.remove('active-node');
+        }
+      });
     });
 
     const observer = new IntersectionObserver((entries) => {

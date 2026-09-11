@@ -1,10 +1,10 @@
-/* iTantra — Tactical Deep-Tech Design System */
+/* iTantra — Tactical Signal Engineering System */
 @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@1&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 :root {
   --bg-pitch: #050505;
   --bg-surface: #0a0a0a;
-  --bg-card: #121212;
+  --bg-card: #111111;
   --border-light: rgba(255, 255, 255, 0.12);
   --border-subtle: rgba(255, 255, 255, 0.07);
   --text-white: #ffffff;
@@ -12,6 +12,7 @@
   --text-muted: #71717a;
   --signal-emerald: #10b981;
   --signal-amber: #f59e0b;
+  --signal-cyan: #06b6d4;
 }
 
 /* Base Setup */
@@ -29,7 +30,7 @@ body {
   overflow-x: hidden;
 }
 
-/* Accessibility Focus Rings */
+/* Focus Rings */
 :focus-visible {
   outline: 2px solid #ffffff !important;
   outline-offset: 3px !important;
@@ -62,15 +63,15 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 0.45;
-  filter: contrast(1.1) brightness(0.85);
+  opacity: 0.35;
+  filter: contrast(1.15) brightness(0.8);
 }
 
 .bg-scrim {
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 50% 30%, rgba(5, 5, 5, 0.2) 0%, rgba(5, 5, 5, 0.75) 60%, rgba(5, 5, 5, 0.95) 100%),
-              linear-gradient(180deg, rgba(5, 5, 5, 0.6) 0%, rgba(5, 5, 5, 0.3) 50%, rgba(5, 5, 5, 0.95) 100%);
+  background: radial-gradient(circle at 50% 30%, rgba(5, 5, 5, 0.25) 0%, rgba(5, 5, 5, 0.8) 65%, rgba(5, 5, 5, 0.98) 100%),
+              linear-gradient(180deg, rgba(5, 5, 5, 0.7) 0%, rgba(5, 5, 5, 0.4) 50%, rgba(5, 5, 5, 0.98) 100%);
 }
 
 .bg-grain {
@@ -78,7 +79,7 @@ body {
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 0);
+  background-image: radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 0);
   background-size: 24px 24px;
   opacity: 0.3;
 }
@@ -95,7 +96,7 @@ body {
   transition: width 0.1s ease-out;
 }
 
-/* Tactical Deep-Tech Cards & Panels */
+/* Technical Panels */
 .tech-panel {
   background: rgba(10, 10, 10, 0.85);
   border: 1px solid var(--border-subtle);
@@ -114,7 +115,7 @@ body {
   box-shadow: 0 0 20px -5px rgba(16, 185, 129, 0.15);
 }
 
-/* Buttons & Interactive Elements */
+/* Tactile Buttons */
 .btn-primary-tactile {
   position: relative;
   background: #ffffff;
@@ -158,12 +159,40 @@ body {
   transform: scale(0.97);
 }
 
-/* Telemetry & Badge Pills */
+/* Telemetry Pills */
 .pill-badge {
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid var(--border-subtle);
   border-radius: 9999px;
   backdrop-filter: blur(12px);
+}
+
+/* CONTINUOUS PIPELINE SIGNAL LINE SYSTEM */
+.pipeline-connector-line {
+  position: absolute;
+  left: 28px;
+  top: 40px;
+  bottom: 40px;
+  width: 2px;
+  background: linear-gradient(180deg, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0.8) 50%, rgba(16, 185, 129, 0.2) 100%);
+  z-index: 1;
+}
+
+.pipeline-step-node {
+  position: relative;
+  z-index: 2;
+  transition: all 0.4s ease;
+}
+
+.pipeline-step-node.active-node .node-circle {
+  background: #10b981;
+  border-color: #ffffff;
+  box-shadow: 0 0 15px #10b981;
+}
+
+.pipeline-step-node.active-node .node-box {
+  border-color: rgba(16, 185, 129, 0.5);
+  background: rgba(16, 185, 129, 0.06);
 }
 
 /* Motion Engineering Animations */
@@ -194,6 +223,13 @@ body {
 @keyframes pulseGlow {
   0%, 100% { opacity: 1; transform: scale(1); }
   50% { opacity: 0.4; transform: scale(0.92); }
+}
+
+@keyframes packetTravel {
+  0% { transform: translateY(0); opacity: 0; }
+  20% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { transform: translateY(100%); opacity: 0; }
 }
 
 .hero-stagger-1 { animation: fadeInUpStagger 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both; }
@@ -239,7 +275,7 @@ body {
 #waveform-canvas {
   width: 100%;
   height: 48px;
-  background: rgba(5, 5, 5, 0.9);
+  background: rgba(5, 5, 5, 0.95);
   border-radius: 8px;
   border: 1px solid var(--border-subtle);
 }
