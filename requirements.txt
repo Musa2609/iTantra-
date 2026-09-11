@@ -1,0 +1,9 @@
+flask>=3.0.0
+gunicorn>=21.2.0
+torch
+torchaudio
+encodec
+transformers
+soundfile
+requests
+numpy
