@@ -51,7 +51,7 @@
 
   <!-- Background Wave Video + Scrim Layer -->
   <div class="bg-video-container">
-    <video autoplay loop muted playsinline class="bg-video">
+    <video id="hero-wave-video" autoplay loop muted playsinline class="bg-video">
       <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260818_072341_50851634-bbc3-4c33-9acc-7647d4db44aa.mp4" type="video/mp4">
     </video>
     <div class="bg-scrim"></div>
@@ -718,6 +718,15 @@
     let mediaRecorder = null;
     let audioChunks = [];
     let isRecording = false;
+
+    // Explicit Video Playback Trigger
+    window.addEventListener('DOMContentLoaded', () => {
+      const vid = document.getElementById('hero-wave-video');
+      if (vid) {
+        vid.muted = true;
+        vid.play().catch(() => {});
+      }
+    });
 
     // Relative API Base URL
     const API_BASE = '';
