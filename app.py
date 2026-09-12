@@ -57,6 +57,15 @@ def api_transmit():
             temp_filename = f"upload_{uuid.uuid4().hex}{orig_ext}"
             temp_path = os.path.join(UPLOAD_FOLDER, temp_filename)
             file.save(temp_path)
+            upload_size = os.path.getsize(temp_path)
+            print(f"[API Upload Received] Filename: {file.filename} | Size: {upload_size} B | Mime: {file.content_type}")
+
+            # Keep a persistent debug copy of the last upload for content-integrity verification
+            try:
+                debug_path = os.path.join(UPLOAD_FOLDER, f"last_upload_debug{orig_ext}")
+                shutil.copyfile(temp_path, debug_path)
+            except Exception as copy_err:
+                print(f"[Debug Copy Info] {copy_err}")
         else:
             # Fallback to project audio.wav if no file provided
             temp_path = os.path.join(os.path.dirname(__file__), 'audio.wav')

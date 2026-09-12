@@ -1670,72 +1670,49 @@
     }
 
     let activeMediaStream = null;
+    let recordAudioContext = null;
+    let recordSourceNode = null;
+    let recordProcessorNode = null;
+    let recordedPCMChunks = [];
+    let totalRecordedSamples = 0;
 
-    async function convertBlobToWav(rawBlob) {
-      try {
-        const arrayBuffer = await rawBlob.arrayBuffer();
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+    function encodeWavPcm16(samplesFloat, sampleRate = 24000) {
+      const numChannels = 1;
+      const numSamples = samplesFloat.length;
+      const buffer = new ArrayBuffer(44 + numSamples * 2);
+      const view = new DataView(buffer);
 
-        const targetSr = 24000;
-        const numChannels = 1;
-        const channelData = audioBuffer.getChannelData(0);
-
-        const origSr = audioBuffer.sampleRate;
-        const outLength = Math.floor(channelData.length * targetSr / origSr);
-        const resampledData = new Float32Array(outLength);
-
-        // Find peak amplitude to apply smart speech gain normalization
-        let maxAmp = 0;
-        for (let i = 0; i < channelData.length; i++) {
-          const a = Math.abs(channelData[i]);
-          if (a > maxAmp) maxAmp = a;
-        }
-        // Normalize low-volume mic speech to 0.95 peak amplitude (up to 12x boost)
-        const normGain = (maxAmp > 0.001) ? Math.min(12.0, 0.95 / maxAmp) : 1.0;
-
-        for (let i = 0; i < outLength; i++) {
-          const origIdx = (i * origSr) / targetSr;
-          const indexFloor = Math.floor(origIdx);
-          const indexCeil = Math.min(channelData.length - 1, Math.ceil(origIdx));
-          const frac = origIdx - indexFloor;
-          const val = channelData[indexFloor] * (1 - frac) + channelData[indexCeil] * frac;
-          resampledData[i] = Math.max(-1, Math.min(1, val * normGain));
-        }
-
-        const wavBuffer = new ArrayBuffer(44 + outLength * 2);
-        const view = new DataView(wavBuffer);
-
-        function writeString(offset, str) {
-          for (let i = 0; i < str.length; i++) view.setUint8(offset + i, str.charCodeAt(i));
-        }
-
-        writeString(0, 'RIFF');
-        view.setUint32(4, 36 + outLength * 2, true);
-        writeString(8, 'WAVE');
-        writeString(12, 'fmt ');
-        view.setUint32(16, 16, true);
-        view.setUint16(20, 1, true); // PCM
-        view.setUint16(22, numChannels, true);
-        view.setUint32(24, targetSr, true);
-        view.setUint32(28, targetSr * numChannels * 2, true);
-        view.setUint16(32, numChannels * 2, true);
-        view.setUint16(34, 16, true);
-        writeString(36, 'data');
-        view.setUint32(40, outLength * 2, true);
-
-        let offset = 44;
-        for (let i = 0; i < outLength; i++) {
-          const sample = resampledData[i];
-          view.setInt16(offset, sample < 0 ? sample * 0x8000 : sample * 0x7FFF, true);
-          offset += 2;
-        }
-
-        return new Blob([view], { type: 'audio/wav' });
-      } catch (err) {
-        console.warn('Browser AudioContext PCM conversion info:', err);
-        return rawBlob;
+      function writeString(offset, str) {
+        for (let i = 0; i < str.length; i++) view.setUint8(offset + i, str.charCodeAt(i));
       }
+
+      // RIFF header
+      writeString(0, 'RIFF');
+      view.setUint32(4, 36 + numSamples * 2, true);
+      writeString(8, 'WAVE');
+
+      // fmt subchunk
+      writeString(12, 'fmt ');
+      view.setUint32(16, 16, true);          // Subchunk1Size (16 for PCM)
+      view.setUint16(20, 1, true);           // AudioFormat (1 = PCM)
+      view.setUint16(22, numChannels, true); // NumChannels (1 = Mono)
+      view.setUint32(24, sampleRate, true);  // SampleRate (24000)
+      view.setUint32(28, sampleRate * numChannels * 2, true); // ByteRate
+      view.setUint16(32, numChannels * 2, true);              // BlockAlign
+      view.setUint16(34, 16, true);          // BitsPerSample (16-bit)
+
+      // data subchunk
+      writeString(36, 'data');
+      view.setUint32(40, numSamples * 2, true);
+
+      let offset = 44;
+      for (let i = 0; i < numSamples; i++) {
+        const s = Math.max(-1, Math.min(1, samplesFloat[i]));
+        view.setInt16(offset, s < 0 ? s * 32768 : s * 32767, true);
+        offset += 2;
+      }
+
+      return new Blob([view], { type: 'audio/wav' });
     }
 
     async function toggleRecording() {
@@ -1744,71 +1721,182 @@
 
       if (!isRecording) {
         try {
+          recordedPCMChunks = [];
+          totalRecordedSamples = 0;
+          recordingStartTime = Date.now();
+
+          // Request user microphone with standard high-fidelity audio constraints
           const stream = await navigator.mediaDevices.getUserMedia({
             audio: {
-              channelCount: 1,
-              sampleRate: 24000,
               echoCancellation: true,
-              noiseSuppression: true,
+              noiseSuppression: false,
               autoGainControl: true
             }
           });
+
+          const audioTracks = stream.getAudioTracks();
+          if (!audioTracks || audioTracks.length === 0) {
+            throw new Error("No active audio track found in microphone stream");
+          }
+
+          const track = audioTracks[0];
+          console.log(`[iTantra Mic] Track label: ${track.label}, enabled: ${track.enabled}, readyState: ${track.readyState}`);
           activeMediaStream = stream;
 
-          let options = {};
-          if (MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) options = { mimeType: 'audio/webm;codecs=opus' };
-          else if (MediaRecorder.isTypeSupported('audio/webm')) options = { mimeType: 'audio/webm' };
-          else if (MediaRecorder.isTypeSupported('audio/ogg;codecs=opus')) options = { mimeType: 'audio/ogg;codecs=opus' };
+          // Initialize Web Audio API pipeline for direct lossless PCM capture
+          const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+          recordAudioContext = new AudioContextClass();
+          if (recordAudioContext.state === 'suspended') {
+            await recordAudioContext.resume();
+          }
 
-          mediaRecorder = new MediaRecorder(stream, options);
-          audioChunks = [];
-          recordingStartTime = Date.now();
+          const nativeSr = recordAudioContext.sampleRate;
+          console.log(`[iTantra Mic] Native AudioContext sample rate: ${nativeSr} Hz`);
 
-          mediaRecorder.ondataavailable = (event) => {
-            if (event.data && event.data.size > 0) audioChunks.push(event.data);
-          };
+          recordSourceNode = recordAudioContext.createMediaStreamSource(stream);
 
-          mediaRecorder.onstop = async () => {
-            if (activeMediaStream) {
-              activeMediaStream.getTracks().forEach(t => t.stop());
-              activeMediaStream = null;
+          // ScriptProcessor for direct 32-bit floating-point PCM capture
+          const bufferSize = 4096;
+          recordProcessorNode = recordAudioContext.createScriptProcessor(bufferSize, 1, 1);
+
+          recordProcessorNode.onaudioprocess = (e) => {
+            if (!isRecording) return;
+            const inputChannel = e.inputBuffer.getChannelData(0);
+            const chunk = new Float32Array(inputChannel.length);
+            chunk.set(inputChannel);
+            recordedPCMChunks.push(chunk);
+            totalRecordedSamples += chunk.length;
+
+            // Compute block peak for live visual feedback
+            let blockPeak = 0;
+            for (let i = 0; i < chunk.length; i++) {
+              const absVal = Math.abs(chunk[i]);
+              if (absVal > blockPeak) blockPeak = absVal;
             }
 
-            const rawMime = mediaRecorder.mimeType || 'audio/webm';
-            const rawBlob = new Blob(audioChunks, { type: rawMime });
-            const recDuration = ((Date.now() - recordingStartTime) / 1000).toFixed(1);
-
-            statusText.innerText = `Processing Audio (${rawMime}, ${(rawBlob.size / 1024).toFixed(1)} KB)...`;
-
-            const pcmWavBlob = await convertBlobToWav(rawBlob);
-            const isWav = pcmWavBlob.type === 'audio/wav';
-            const finalExt = isWav ? '.wav' : (rawMime.includes('webm') ? '.webm' : '.ogg');
-
-            console.log(`[iTantra Recording Telemetry] Raw MIME: ${rawMime}, Raw Size: ${rawBlob.size} B, Final MIME: ${pcmWavBlob.type}, Final Size: ${pcmWavBlob.size} B, Duration: ${recDuration}s`);
-
-            sendAudioToPipeline(pcmWavBlob, `recorded_audio${finalExt}`);
+            if (blockPeak > 0.02) {
+              statusText.innerText = `Recording Speech (Level: ${(blockPeak * 100).toFixed(0)}%)... Click to Stop`;
+            }
           };
 
-          mediaRecorder.start(200);
+          recordSourceNode.connect(recordProcessorNode);
+          recordProcessorNode.connect(recordAudioContext.destination);
+
           isRecording = true;
           recBtn.classList.add('border-red-500', 'animate-pulse');
-          statusText.innerText = "Recording... Click again to Stop";
+          statusText.innerText = "Recording... Speak into your microphone, then click to Stop";
+
         } catch (err) {
-          statusText.innerText = "Microphone permission denied/unavailable. Click 'Use Sample audio.wav' below to test.";
+          console.error('[iTantra Mic Error]', err);
+          statusText.innerText = "Microphone error: " + (err.message || "Permission denied") + ". Click 'Use Sample audio.wav' below to test.";
           statusText.className = "text-xs font-mono font-semibold text-amber-300 tracking-wide mb-1";
+          isRecording = false;
+          if (recBtn) recBtn.classList.remove('border-red-500', 'animate-pulse');
         }
       } else {
-        if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-          try { mediaRecorder.requestData(); } catch (e) {}
-          mediaRecorder.stop();
-        }
-        if (activeMediaStream) {
-          activeMediaStream.getTracks().forEach(t => t.stop());
-          activeMediaStream = null;
-        }
+        // Stop recording
         isRecording = false;
         recBtn.classList.remove('border-red-500', 'animate-pulse');
-        statusText.innerText = "Processing Recording...";
+        statusText.innerText = "Processing Real Voice Recording...";
+
+        try {
+          // Disconnect audio processing nodes
+          if (recordProcessorNode) {
+            recordProcessorNode.disconnect();
+            recordProcessorNode.onaudioprocess = null;
+            recordProcessorNode = null;
+          }
+          if (recordSourceNode) {
+            recordSourceNode.disconnect();
+            recordSourceNode = null;
+          }
+
+          const nativeSr = (recordAudioContext && recordAudioContext.sampleRate) ? recordAudioContext.sampleRate : 48000;
+          if (recordAudioContext) {
+            try { recordAudioContext.close(); } catch (e) {}
+            recordAudioContext = null;
+          }
+
+          // Stop media tracks ONLY AFTER all audio frames have been collected
+          if (activeMediaStream) {
+            activeMediaStream.getTracks().forEach(t => t.stop());
+            activeMediaStream = null;
+          }
+
+          if (totalRecordedSamples === 0 || recordedPCMChunks.length === 0) {
+            throw new Error("No audio samples were recorded from microphone");
+          }
+
+          // Concatenate all recorded PCM float chunks
+          const mergedPCM = new Float32Array(totalRecordedSamples);
+          let writeOffset = 0;
+          for (let i = 0; i < recordedPCMChunks.length; i++) {
+            mergedPCM.set(recordedPCMChunks[i], writeOffset);
+            writeOffset += recordedPCMChunks[i].length;
+          }
+          recordedPCMChunks = [];
+
+          // Resample to 24,000 Hz for Meta EnCodec
+          const targetSr = 24000;
+          const outLength = Math.floor(mergedPCM.length * targetSr / nativeSr);
+          const resampled24k = new Float32Array(outLength);
+
+          for (let i = 0; i < outLength; i++) {
+            const origIdx = (i * nativeSr) / targetSr;
+            const indexFloor = Math.floor(origIdx);
+            const indexCeil = Math.min(mergedPCM.length - 1, Math.ceil(origIdx));
+            const frac = origIdx - indexFloor;
+            resampled24k[i] = mergedPCM[indexFloor] * (1 - frac) + mergedPCM[indexCeil] * frac;
+          }
+
+          // Compute comprehensive audio telemetry
+          let peak = 0;
+          let sumSq = 0;
+          let minVal = 0;
+          let maxVal = 0;
+          let nearZeroCount = 0;
+
+          for (let i = 0; i < outLength; i++) {
+            const s = resampled24k[i];
+            const absS = Math.abs(s);
+            if (absS > peak) peak = absS;
+            if (s < minVal) minVal = s;
+            if (s > maxVal) maxVal = s;
+            sumSq += s * s;
+            if (absS < 1e-4) nearZeroCount++;
+          }
+
+          const rms = Math.sqrt(sumSq / outLength);
+          const nearZeroPct = (nearZeroCount / outLength) * 100;
+          const recDuration = (outLength / targetSr).toFixed(2);
+
+          console.log(`[iTantra Browser Audio Telemetry]`);
+          console.log(`  Native SR: ${nativeSr} Hz -> Target SR: ${targetSr} Hz | Duration: ${recDuration}s | Samples: ${outLength}`);
+          console.log(`  Peak: ${peak.toFixed(4)} | RMS: ${rms.toFixed(4)} | Min: ${minVal.toFixed(4)} | Max: ${maxVal.toFixed(4)} | Zero%: ${nearZeroPct.toFixed(1)}%`);
+
+          // Speech level check & gain-capped normalization
+          if (peak < 0.005) {
+            console.warn(`[iTantra Mic Warning] Very low speech level detected (Peak: ${peak.toFixed(5)}). Check microphone sensitivity.`);
+          } else {
+            // Apply gentle normalization capped at 4.0x (+12 dB boost) to prevent tone distortion
+            const normGain = Math.min(4.0, 0.90 / peak);
+            for (let i = 0; i < outLength; i++) {
+              resampled24k[i] = Math.max(-1.0, Math.min(1.0, resampled24k[i] * normGain));
+            }
+            console.log(`  [iTantra Mic Normalization] Applied gain ${normGain.toFixed(2)}x (New Peak: ${(peak * normGain).toFixed(4)})`);
+          }
+
+          // Encode directly to standard 16-bit 24kHz mono PCM WAV Blob
+          const wavBlob = encodeWavPcm16(resampled24k, targetSr);
+          console.log(`[iTantra Mic WAV] Generated clean 24kHz PCM WAV (${wavBlob.size} bytes)`);
+
+          statusText.innerText = `Transmitting ${recDuration}s Real Voice Recording (${(wavBlob.size / 1024).toFixed(1)} KB)...`;
+          sendAudioToPipeline(wavBlob, 'recorded_voice_24k.wav');
+
+        } catch (procErr) {
+          console.error('[iTantra Audio Processing Error]', procErr);
+          statusText.innerText = "Processing error: " + procErr.message;
+        }
       }
     }
 

@@ -142,7 +142,7 @@ def load_and_normalize_audio(audio_path, target_sr=24000):
     if data is None or orig_sr is None:
         raise AudioPipelineError("audio_decode", f"Unsupported or invalid audio format ({fmt_desc}). Could not decode PCM audio.")
 
-    # Validation & Normalization
+    # Validation & Downmixing
     if data.ndim == 1:
         mono_data = data
         num_samples = len(data)
@@ -167,6 +167,22 @@ def load_and_normalize_audio(audio_path, target_sr=24000):
     if torch.isnan(mono_data).any() or torch.isinf(mono_data).any():
         raise AudioPipelineError("audio_decode", "Audio data contains NaN or Inf sample values")
 
+    # Audio Telemetry Inspection
+    mono_np = mono_data.cpu().numpy()
+    raw_rms = float(np.sqrt(np.mean(mono_np ** 2)))
+    raw_peak = float(np.max(np.abs(mono_np)))
+    raw_min = float(np.min(mono_np))
+    raw_max = float(np.max(mono_np))
+    near_zero_pct = float(np.mean(np.abs(mono_np) < 1e-4) * 100.0)
+
+    print(f"[iTantra Audio Telemetry] File: {os.path.basename(audio_path)} | Format: {fmt_desc} | Size: {file_size} B")
+    print(f"  Orig SR: {orig_sr} Hz | Channels: {num_channels} | Samples: {num_samples} | Duration: {duration:.2f}s")
+    print(f"  Raw Peak: {raw_peak:.5f} | RMS: {raw_rms:.5f} | Min: {raw_min:.5f} | Max: {raw_max:.5f} | Near-Zero: {near_zero_pct:.1f}%")
+
+    # Remove DC bias offset (prevents EnCodec boundary ringing and oscillation)
+    dc_offset = torch.mean(mono_data)
+    mono_data = mono_data - dc_offset
+
     # Resample to target_sr (24,000 Hz) for EnCodec if needed
     if orig_sr != target_sr:
         try:
@@ -184,11 +200,19 @@ def load_and_normalize_audio(audio_path, target_sr=24000):
     else:
         norm_sr = orig_sr
 
-    max_val = torch.max(torch.abs(mono_data))
-    if max_val > 1e-4:
-        mono_data = (mono_data / max_val) * 0.95
-    elif max_val > 1.0:
-        mono_data = mono_data / max_val
+    # Smart gain-capped normalization
+    # Never boost near-silent ambient noise by thousands of times into tones
+    cur_peak = float(torch.max(torch.abs(mono_data)))
+    if cur_peak >= 0.005:
+        # Real audio/speech signal: gentle normalization, capped at max 4.0x (+12 dB boost)
+        norm_gain = min(4.0, 0.90 / cur_peak)
+        mono_data = mono_data * norm_gain
+        print(f"  [iTantra Normalization] Signal normalized with gain {norm_gain:.2f}x (Peak: {cur_peak:.4f} -> {cur_peak * norm_gain:.4f})")
+    elif cur_peak > 1.0:
+        mono_data = mono_data / cur_peak
+        print(f"  [iTantra Normalization] Signal clamped from peak {cur_peak:.4f} to 1.0")
+    else:
+        print(f"  [iTantra Normalization] Low-level signal preserved without over-amplification (Peak: {cur_peak:.5f})")
 
     return mono_data, norm_sr, duration, fmt_desc, file_size
 
@@ -423,8 +447,12 @@ def process_itantra_pipeline(audio_path, target_bitrate=6.0, language="hi", mode
     filename_out = f"reconstructed_{int(time.time()*1000)}_{int(target_bitrate)}kbps.wav"
     output_path = os.path.join(output_dir, filename_out)
     dec_max = float(np.max(np.abs(decoded_audio_np))) if len(decoded_audio_np) > 0 else 0.0
-    if dec_max > 1e-4:
-        decoded_audio_np = (decoded_audio_np / dec_max) * 0.95
+    if dec_max >= 0.005:
+        dec_gain = min(3.0, 0.92 / dec_max)
+        decoded_audio_np = decoded_audio_np * dec_gain
+        print(f"  [iTantra Output Audio] Normalized reconstructed audio with gain {dec_gain:.2f}x (Peak: {dec_max:.4f})")
+    elif dec_max > 1.0:
+        decoded_audio_np = decoded_audio_np / dec_max
     pcm16_samples = (np.clip(decoded_audio_np, -1.0, 1.0) * 32767.0).astype(np.int16)
     sf.write(output_path, pcm16_samples, encodec.sample_rate, subtype='PCM_16')
 
