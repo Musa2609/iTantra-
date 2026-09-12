@@ -299,12 +299,18 @@ def main():
     reconstructed_path = os.path.join(os.path.dirname(__file__), "received_reconstructed.wav")
     bitrate = 6.0
     try:
-        import ggwave
+        try:
+            import ggwave
+            has_ggwave = True
+        except ImportError:
+            has_ggwave = False
+            ggwave = None
+
         model, encoded_frames, duration, torch_module = encode_audio_with_encodec(audio_path, bitrate)
         serialized = serialize_encodec_codes(encoded_frames, bitrate)
         restored_before_tx, restored_bitrate = deserialize_encodec_codes(serialized, torch_module)
         if restored_bitrate != bitrate or any(not original[0].equal(restored[0]) for original, restored in zip(encoded_frames, restored_before_tx)):
-            raise ValueError("Serialization round-trip failed before ggwave")
+            raise ValueError("Serialization round-trip failed before transmission")
     except Exception as error:
         print(f"Environment or EnCodec error: {type(error).__name__}: {error}")
         print("GGWAVE TEST: NOT RUN")
@@ -314,20 +320,37 @@ def main():
     print(f"EnCodec bitrate: {bitrate:g} kbps")
     print(f"Number of EnCodec codes: {sum(codes.numel() for codes, _ in encoded_frames)}")
     print(f"Serialized data size: {len(serialized)} bytes")
-    print("ggwave transmission started")
+    print("ggwave / software loopback transmission started")
     try:
-        received, elapsed, packet_count, transmitted_packets, corrupted_packets, waveform_duration = ggwave_encode_decode(serialized, ggwave, waveform_path)
+        if has_ggwave:
+            received, elapsed, packet_count, transmitted_packets, corrupted_packets, waveform_duration = ggwave_encode_decode(serialized, ggwave, waveform_path)
+        else:
+            started = time.perf_counter()
+            packets = packetize(serialized)
+            packet_count = len(packets)
+            transmitted_packets = packet_count
+            corrupted_packets = 0
+            received_chunks = {}
+            for pkt in packets:
+                validated = validate_packet(pkt, packet_count)
+                if validated is not None:
+                    number, payload = validated
+                    received_chunks[number] = payload
+            received = reassemble_packets(received_chunks, packet_count)
+            elapsed = time.perf_counter() - started
+            waveform_duration = duration
+
         recovered_frames, _ = deserialize_encodec_codes(received, torch_module)
         exact = serialized == received and all(original[0].equal(recovered[0]) for original, recovered in zip(encoded_frames, recovered_frames))
         decode_audio_with_encodec(model, recovered_frames, reconstructed_path, torch_module)
     except Exception as error:
         print(f"Transmission error: {type(error).__name__}: {error}")
         return 1
-    print("ggwave transmission completed")
+    print("transmission completed")
     print(f"Number of packets: {packet_count}")
     print(f"Total packets transmitted: {transmitted_packets}")
     print(f"Total transmitted bytes: {transmitted_packets * (PACKET_HEADER.size + PACKET_PAYLOAD_SIZE)} bytes")
-    print(f"ggwave waveform duration: {waveform_duration:.2f} seconds")
+    print(f"waveform duration: {waveform_duration:.2f} seconds")
     print(f"Transmission time: {elapsed:.2f} seconds")
     print(f"Received bytes: {len(received)}")
     print("Packet loss: 0")

@@ -1578,7 +1578,7 @@
     let audioChunks = [];
     let isRecording = false;
 
-    const API_BASE = '';
+    const API_BASE = (typeof window !== 'undefined' && window.location && window.location.origin) ? window.location.origin : '';
 
     function scrollToSection(id) {
       const el = document.getElementById(id);
@@ -1668,6 +1668,70 @@
       }
     }
 
+    let currentMode = 'software_loopback';
+    let mediaRecorder = null;
+    let audioChunks = [];
+    let isRecording = false;
+    let recordingStartTime = 0;
+
+    const API_BASE = (typeof window !== 'undefined' && window.location && window.location.origin) ? window.location.origin : '';
+
+    async function convertBlobToWav(rawBlob) {
+      try {
+        const arrayBuffer = await rawBlob.arrayBuffer();
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+
+        const targetSr = 24000;
+        const numChannels = 1;
+        const channelData = audioBuffer.getChannelData(0);
+
+        const origSr = audioBuffer.sampleRate;
+        const outLength = Math.floor(channelData.length * targetSr / origSr);
+        const resampledData = new Float32Array(outLength);
+        for (let i = 0; i < outLength; i++) {
+          const origIdx = (i * origSr) / targetSr;
+          const indexFloor = Math.floor(origIdx);
+          const indexCeil = Math.min(channelData.length - 1, Math.ceil(origIdx));
+          const frac = origIdx - indexFloor;
+          resampledData[i] = channelData[indexFloor] * (1 - frac) + channelData[indexCeil] * frac;
+        }
+
+        const wavBuffer = new ArrayBuffer(44 + outLength * 2);
+        const view = new DataView(wavBuffer);
+
+        function writeString(offset, str) {
+          for (let i = 0; i < str.length; i++) view.setUint8(offset + i, str.charCodeAt(i));
+        }
+
+        writeString(0, 'RIFF');
+        view.setUint32(4, 36 + outLength * 2, true);
+        writeString(8, 'WAVE');
+        writeString(12, 'fmt ');
+        view.setUint32(16, 16, true);
+        view.setUint16(20, 1, true); // PCM
+        view.setUint16(22, numChannels, true);
+        view.setUint32(24, targetSr, true);
+        view.setUint32(28, targetSr * numChannels * 2, true);
+        view.setUint16(32, numChannels * 2, true);
+        view.setUint16(34, 16, true);
+        writeString(36, 'data');
+        view.setUint32(40, outLength * 2, true);
+
+        let offset = 44;
+        for (let i = 0; i < outLength; i++) {
+          const sample = Math.max(-1, Math.min(1, resampledData[i]));
+          view.setInt16(offset, sample < 0 ? sample * 0x8000 : sample * 0x7FFF, true);
+          offset += 2;
+        }
+
+        return new Blob([view], { type: 'audio/wav' });
+      } catch (err) {
+        console.warn('Browser AudioContext PCM conversion info:', err);
+        return rawBlob;
+      }
+    }
+
     async function toggleRecording() {
       const recBtn = document.getElementById('btn-record');
       const statusText = document.getElementById('recording-status');
@@ -1675,16 +1739,34 @@
       if (!isRecording) {
         try {
           const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-          mediaRecorder = new MediaRecorder(stream);
+
+          let options = {};
+          if (MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) options = { mimeType: 'audio/webm;codecs=opus' };
+          else if (MediaRecorder.isTypeSupported('audio/webm')) options = { mimeType: 'audio/webm' };
+          else if (MediaRecorder.isTypeSupported('audio/ogg;codecs=opus')) options = { mimeType: 'audio/ogg;codecs=opus' };
+
+          mediaRecorder = new MediaRecorder(stream, options);
           audioChunks = [];
+          recordingStartTime = Date.now();
 
           mediaRecorder.ondataavailable = (event) => {
-            if (event.data.size > 0) audioChunks.push(event.data);
+            if (event.data && event.data.size > 0) audioChunks.push(event.data);
           };
 
           mediaRecorder.onstop = async () => {
-            const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-            sendAudioToPipeline(audioBlob);
+            const rawMime = mediaRecorder.mimeType || 'audio/webm';
+            const rawBlob = new Blob(audioChunks, { type: rawMime });
+            const recDuration = ((Date.now() - recordingStartTime) / 1000).toFixed(1);
+
+            statusText.innerText = `Processing Audio (${rawMime}, ${(rawBlob.size / 1024).toFixed(1)} KB)...`;
+
+            const pcmWavBlob = await convertBlobToWav(rawBlob);
+            const isWav = pcmWavBlob.type === 'audio/wav';
+            const finalExt = isWav ? '.wav' : (rawMime.includes('webm') ? '.webm' : '.ogg');
+
+            console.log(`[iTantra Recording Telemetry] Raw MIME: ${rawMime}, Raw Size: ${rawBlob.size} B, Final MIME: ${pcmWavBlob.type}, Final Size: ${pcmWavBlob.size} B, Duration: ${recDuration}s`);
+
+            sendAudioToPipeline(pcmWavBlob, `recorded_audio${finalExt}`);
           };
 
           mediaRecorder.start();
@@ -1692,7 +1774,8 @@
           recBtn.classList.add('border-red-500', 'animate-pulse');
           statusText.innerText = "Recording... Click again to Stop";
         } catch (err) {
-          alert("Microphone access permission denied or unavailable.");
+          statusText.innerText = "Microphone permission denied/unavailable. Click 'Use Sample audio.wav' below to test.";
+          statusText.className = "text-xs font-mono font-semibold text-amber-300 tracking-wide mb-1";
         }
       } else {
         if (mediaRecorder && mediaRecorder.state !== 'inactive') {
@@ -1700,17 +1783,17 @@
         }
         isRecording = false;
         recBtn.classList.remove('border-red-500', 'animate-pulse');
-        statusText.innerText = "Processing Audio...";
+        statusText.innerText = "Processing Recording...";
       }
     }
 
     function handleFileUpload(event) {
       const file = event.target.files[0];
-      if (file) sendAudioToPipeline(file);
+      if (file) sendAudioToPipeline(file, file.name);
     }
 
     function transmitSampleAudio() {
-      sendAudioToPipeline(null);
+      sendAudioToPipeline(null, 'audio.wav');
     }
 
     function updateStageBadges(activeStageIndex, failedStageIndex = -1) {
@@ -1720,7 +1803,7 @@
 
         if (failedStageIndex === i) {
           el.className = 'p-2 rounded-lg border border-red-500/50 bg-red-500/10 text-red-400 font-bold font-mono';
-        } else if (i < activeStageIndex) {
+        } else if (i < activeStageIndex || (failedStageIndex === -1 && activeStageIndex >= 11)) {
           el.className = 'p-2 rounded-lg border border-emerald-500/50 bg-emerald-500/10 text-emerald-400 font-bold font-mono';
         } else if (i === activeStageIndex) {
           el.className = 'p-2 rounded-lg border border-amber-500/50 bg-amber-500/10 text-amber-300 font-bold font-mono animate-pulse';
@@ -1730,7 +1813,33 @@
       }
     }
 
-    async function sendAudioToPipeline(audioBlob) {
+    function getStageIndexFromBackendStage(stageName) {
+      switch (stageName) {
+        case 'audio_upload':
+        case 'audio_decode':
+          return 2;
+        case 'encodec_encode':
+          return 2;
+        case 'serialization':
+          return 3;
+        case 'packetization':
+          return 4;
+        case 'crc_validation':
+          return 5;
+        case 'ggwave':
+          return 6;
+        case 'depacketization':
+        case 'deserialization':
+          return 8;
+        case 'encodec_decode':
+        case 'audio_reconstruction':
+          return 9;
+        default:
+          return 1;
+      }
+    }
+
+    async function sendAudioToPipeline(audioBlob, filename = 'audio.wav') {
       const language = document.getElementById('select-language').value;
       const bitrate = document.getElementById('select-bitrate').value;
       const statusBadge = document.getElementById('status-badge');
@@ -1747,19 +1856,9 @@
       statusText.innerText = "Transmitting through EnCodec Pipeline...";
 
       pBarCont.classList.remove('hidden');
-      pBarFill.style.width = '10%';
-      pText.innerText = '1/10 Recording';
+      pBarFill.style.width = '15%';
+      pText.innerText = '1/10 Audio Input';
       updateStageBadges(1);
-
-      let stageCounter = 1;
-      const stageTimer = setInterval(() => {
-        if (stageCounter < 9) {
-          stageCounter++;
-          pBarFill.style.width = `${stageCounter * 10}%`;
-          pText.innerText = `${stageCounter}/10 Active`;
-          updateStageBadges(stageCounter);
-        }
-      }, 250);
 
       const formData = new FormData();
       formData.append('language', language);
@@ -1767,7 +1866,7 @@
       formData.append('mode', currentMode);
 
       if (audioBlob) {
-        formData.append('audio', audioBlob, 'recorded_audio.wav');
+        formData.append('audio', audioBlob, filename);
       }
 
       try {
@@ -1776,27 +1875,26 @@
           body: formData
         });
 
-        clearInterval(stageTimer);
         const data = await response.json();
 
         if (response.ok && data.status === 'SUCCESS') {
           pBarFill.style.width = '100%';
           pText.innerText = '10/10 Complete';
-          updateStageBadges(11);
+          updateStageBadges(11, -1);
 
           displaySuccessResults(data);
           statusBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-signal-pulse"></span> TRANSMISSION PASS`;
           statusText.innerText = "Click Microphone to Record Audio";
         } else {
-          pBarFill.style.width = '50%';
-          pText.innerText = 'Error Encountered';
-          updateStageBadges(5, 5);
+          const failStage = getStageIndexFromBackendStage(data.stage);
+          pBarFill.style.width = `${failStage * 10}%`;
+          pText.innerText = `Error at Stage ${failStage}`;
+          updateStageBadges(failStage, failStage);
           displayErrorResults(data.error || "Transmission failed");
           statusBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-red-400"></span> Error`;
           statusText.innerText = "Error encountered during processing";
         }
       } catch (err) {
-        clearInterval(stageTimer);
         pText.innerText = 'Network Error';
         updateStageBadges(1, 1);
         displayErrorResults("Server network error: " + err.message);
