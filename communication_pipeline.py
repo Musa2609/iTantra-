@@ -185,7 +185,9 @@ def load_and_normalize_audio(audio_path, target_sr=24000):
         norm_sr = orig_sr
 
     max_val = torch.max(torch.abs(mono_data))
-    if max_val > 1.0:
+    if max_val > 1e-4:
+        mono_data = (mono_data / max_val) * 0.95
+    elif max_val > 1.0:
         mono_data = mono_data / max_val
 
     return mono_data, norm_sr, duration, fmt_desc, file_size
@@ -420,6 +422,9 @@ def process_itantra_pipeline(audio_path, target_bitrate=6.0, language="hi", mode
     # Save reconstructed audio file as standard 16-bit PCM WAV
     filename_out = f"reconstructed_{int(time.time()*1000)}_{int(target_bitrate)}kbps.wav"
     output_path = os.path.join(output_dir, filename_out)
+    dec_max = float(np.max(np.abs(decoded_audio_np))) if len(decoded_audio_np) > 0 else 0.0
+    if dec_max > 1e-4:
+        decoded_audio_np = (decoded_audio_np / dec_max) * 0.95
     pcm16_samples = (np.clip(decoded_audio_np, -1.0, 1.0) * 32767.0).astype(np.int16)
     sf.write(output_path, pcm16_samples, encodec.sample_rate, subtype='PCM_16')
 
