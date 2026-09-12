@@ -1577,6 +1577,7 @@
     let mediaRecorder = null;
     let audioChunks = [];
     let isRecording = false;
+    let recordingStartTime = 0;
 
     const API_BASE = (typeof window !== 'undefined' && window.location && window.location.origin) ? window.location.origin : '';
 
@@ -1667,14 +1668,6 @@
         modeNote.innerText = "Physical acoustic mode requires compatible speaker/microphone acoustic conditions.";
       }
     }
-
-    let currentMode = 'software_loopback';
-    let mediaRecorder = null;
-    let audioChunks = [];
-    let isRecording = false;
-    let recordingStartTime = 0;
-
-    const API_BASE = (typeof window !== 'undefined' && window.location && window.location.origin) ? window.location.origin : '';
 
     async function convertBlobToWav(rawBlob) {
       try {
