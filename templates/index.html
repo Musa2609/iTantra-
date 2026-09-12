@@ -1950,6 +1950,86 @@
       draw();
     }
 
+    let currentAudioObjectUrl = null;
+
+    async function loadReconstructedAudio(audioUrl, expectedDurationSec) {
+      const player = document.getElementById('audio-player');
+      const statusBadge = document.getElementById('status-badge');
+      const statusText = document.getElementById('recording-status');
+
+      if (currentAudioObjectUrl) {
+        URL.revokeObjectURL(currentAudioObjectUrl);
+        currentAudioObjectUrl = null;
+      }
+
+      statusBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-400 animate-spin"></span> Loading Audio Metadata...`;
+
+      try {
+        const response = await fetch(audioUrl + '?t=' + Date.now(), { cache: 'no-store' });
+        if (!response.ok) throw new Error(`HTTP ${response.status} loading audio file`);
+
+        const audioBlob = await response.blob();
+        if (!audioBlob || audioBlob.size < 44) throw new Error("Received empty or truncated audio file from server");
+
+        const wavBlob = new Blob([audioBlob], { type: 'audio/wav' });
+        currentAudioObjectUrl = URL.createObjectURL(wavBlob);
+
+        player.onloadedmetadata = null;
+        player.oncanplay = null;
+        player.onerror = null;
+        player.onstalled = null;
+
+        const metadataPromise = new Promise((resolve, reject) => {
+          let resolved = false;
+
+          const onMeta = () => {
+            if (resolved) return;
+            resolved = true;
+            console.log(`[iTantra Player] Metadata loaded. Duration: ${player.duration}s (Backend calc: ${expectedDurationSec}s)`);
+            resolve(player.duration);
+          };
+
+          const onError = (e) => {
+            if (resolved) return;
+            resolved = true;
+            const errObj = player.error || e;
+            console.error('[iTantra Player] Audio Element Load Error:', errObj);
+            reject(new Error(errObj ? `Audio decode error (code ${errObj.code || 'unknown'})` : 'Failed to load audio element'));
+          };
+
+          player.onloadedmetadata = onMeta;
+          player.oncanplay = onMeta;
+          player.onerror = onError;
+          player.onstalled = () => console.warn('[iTantra Player] Audio playback stalled...');
+
+          setTimeout(() => {
+            if (!resolved) {
+              resolved = true;
+              console.warn(`[iTantra Player] loadedmetadata event timeout, using backend duration: ${expectedDurationSec}s`);
+              resolve(expectedDurationSec || 0);
+            }
+          }, 3000);
+        });
+
+        player.src = currentAudioObjectUrl;
+        player.load();
+
+        const dur = await metadataPromise;
+        const displayDur = (dur && !isNaN(dur) && dur > 0) ? dur : (expectedDurationSec || 0);
+
+        statusBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-signal-pulse"></span> TRANSMISSION PASS`;
+        statusText.innerText = `Audio Ready (${displayDur.toFixed(2)}s) — Click Play below`;
+
+        initWaveformVisualizer();
+
+      } catch (err) {
+        console.error('[iTantra Audio Playback Error]', err);
+        statusBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-red-400"></span> AUDIO PLAYBACK ERROR`;
+        statusText.innerText = "Reconstructed audio playback error: " + err.message;
+        displayErrorResults("Audio Playback Error: " + err.message);
+      }
+    }
+
     function displaySuccessResults(data) {
       document.getElementById('results-panel').classList.remove('hidden');
       document.getElementById('card-success').classList.remove('hidden');
@@ -1963,13 +2043,7 @@
       document.getElementById('res-latency').innerText = `${data.processing_latency_ms} ms`;
       document.getElementById('asr-output').innerText = data.asr_transcription || "—";
 
-      const player = document.getElementById('audio-player');
-      player.src = data.reconstructed_audio_url + '?t=' + new Date().getTime();
-      player.play().then(() => {
-        initWaveformVisualizer();
-      }).catch(() => {
-        initWaveformVisualizer();
-      });
+      loadReconstructedAudio(data.reconstructed_audio_url, data.duration_sec);
     }
 
     function displayErrorResults(errMsg) {
@@ -1980,6 +2054,17 @@
     }
 
     function resetAndRetry() {
+      const player = document.getElementById('audio-player');
+      if (player) {
+        player.pause();
+        player.removeAttribute('src');
+        player.load();
+      }
+      if (currentAudioObjectUrl) {
+        URL.revokeObjectURL(currentAudioObjectUrl);
+        currentAudioObjectUrl = null;
+      }
+
       document.getElementById('results-panel').classList.add('hidden');
       document.getElementById('progress-bar-container').classList.add('hidden');
       document.getElementById('progress-bar-fill').style.width = '0%';

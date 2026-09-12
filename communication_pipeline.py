@@ -298,6 +298,40 @@ def run_asr_transcription(mono_data, sr, language="hi"):
         print(f"[ASR Error] {e}")
         return "— (ASR unavailable for selected language)"
 
+def validate_reconstructed_wav(file_path, expected_sr=24000):
+    """
+    Validate that the generated reconstructed WAV file has a complete,
+    valid 16-bit PCM RIFF header and non-empty audio data.
+    """
+    if not os.path.exists(file_path):
+        raise AudioPipelineError("audio_reconstruction", "Generated audio file does not exist on disk")
+
+    file_size = os.path.getsize(file_path)
+    if file_size < 44:
+        raise AudioPipelineError("audio_reconstruction", f"Generated audio file size too small ({file_size} bytes)")
+
+    with open(file_path, "rb") as f:
+        header = f.read(44)
+
+    riff, overall_size, wave, fmt, chunk1_size, audio_fmt, num_channels, sample_rate, byte_rate, block_align, bits_per_sample = struct.unpack(
+        "<4sI4s4sIHHIIHH", header[:36]
+    )
+
+    if riff != b"RIFF" or wave != b"WAVE" or fmt != b"fmt ":
+        raise AudioPipelineError("audio_reconstruction", "Invalid WAV RIFF/WAVE header in reconstructed file")
+
+    if sample_rate != expected_sr:
+        raise AudioPipelineError("audio_reconstruction", f"Unexpected sample rate in WAV header: {sample_rate} Hz (expected {expected_sr} Hz)")
+
+    if num_channels != 1:
+        raise AudioPipelineError("audio_reconstruction", f"Unexpected channel count in WAV header: {num_channels} (expected 1 mono)")
+
+    data_bytes = file_size - 44
+    calc_duration = data_bytes / (sample_rate * num_channels * (bits_per_sample // 8)) if (sample_rate * num_channels * (bits_per_sample // 8)) > 0 else 0.0
+
+    print(f"[iTantra Reconstructed WAV Verified] File: {os.path.basename(file_path)} | Size: {file_size} B | SR: {sample_rate} Hz | Channels: {num_channels} | Bits: {bits_per_sample} | Calc Duration: {calc_duration:.2f}s")
+    return calc_duration
+
 def process_itantra_pipeline(audio_path, target_bitrate=6.0, language="hi", mode="software_loopback", output_dir="static/audio"):
     """
     Execute the complete iTantra End-to-End Voice Communication Pipeline:
@@ -383,10 +417,14 @@ def process_itantra_pipeline(audio_path, target_bitrate=6.0, language="hi", mode
     if len(decoded_audio_np) == 0 or np.isnan(decoded_audio_np).any():
         raise AudioPipelineError("audio_reconstruction", "Reconstructed audio waveform tensor is empty or invalid")
 
-    # Save reconstructed audio file
+    # Save reconstructed audio file as standard 16-bit PCM WAV
     filename_out = f"reconstructed_{int(time.time()*1000)}_{int(target_bitrate)}kbps.wav"
     output_path = os.path.join(output_dir, filename_out)
-    sf.write(output_path, decoded_audio_np, encodec.sample_rate)
+    pcm16_samples = (np.clip(decoded_audio_np, -1.0, 1.0) * 32767.0).astype(np.int16)
+    sf.write(output_path, pcm16_samples, encodec.sample_rate, subtype='PCM_16')
+
+    # Validate generated RIFF header
+    calc_duration = validate_reconstructed_wav(output_path, expected_sr=encodec.sample_rate)
 
     # 9. AI4Bharat ASR (Multilingual Speech-to-Text)
     asr_text = run_asr_transcription(mono_data, orig_sr, language=language)
@@ -399,7 +437,7 @@ def process_itantra_pipeline(audio_path, target_bitrate=6.0, language="hi", mode
 
     return {
         "status": "SUCCESS",
-        "duration_sec": round(duration, 2),
+        "duration_sec": round(calc_duration, 2),
         "input_format": fmt_desc,
         "raw_file_bytes": raw_file_size,
         "orig_sample_rate": orig_sr,

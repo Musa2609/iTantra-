@@ -104,7 +104,17 @@ def api_transmit():
 
 @app.route('/static/audio/<path:filename>')
 def serve_audio(filename):
-    return send_from_directory(STATIC_AUDIO_FOLDER, filename)
+    file_path = os.path.join(STATIC_AUDIO_FOLDER, filename)
+    if not os.path.exists(file_path):
+        return jsonify({"error": "Audio file not found"}), 404
+
+    response = send_from_directory(STATIC_AUDIO_FOLDER, filename)
+    response.headers['Content-Type'] = 'audio/wav'
+    response.headers['Accept-Ranges'] = 'bytes'
+    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '0'
+    return response
 
 if __name__ == '__main__':
     get_encodec_model()
