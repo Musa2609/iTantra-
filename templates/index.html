@@ -1952,10 +1952,27 @@
 
     let currentAudioObjectUrl = null;
 
-    async function loadReconstructedAudio(audioUrl, expectedDurationSec) {
+    function base64ToBlob(base64Data, contentType = 'audio/wav') {
+      const base64Clean = base64Data.replace(/^data:audio\/\w+;base64,/, '');
+      const byteCharacters = atob(base64Clean);
+      const byteArrays = [];
+      for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+        const slice = byteCharacters.slice(offset, offset + 512);
+        const byteNumbers = new Array(slice.length);
+        for (let i = 0; i < slice.length; i++) {
+          byteNumbers[i] = slice.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        byteArrays.push(byteArray);
+      }
+      return new Blob(byteArrays, { type: contentType });
+    }
+
+    async function loadReconstructedAudio(data) {
       const player = document.getElementById('audio-player');
       const statusBadge = document.getElementById('status-badge');
       const statusText = document.getElementById('recording-status');
+      const expectedDurationSec = data.duration_sec;
 
       if (currentAudioObjectUrl) {
         URL.revokeObjectURL(currentAudioObjectUrl);
@@ -1965,13 +1982,20 @@
       statusBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-400 animate-spin"></span> Loading Audio Metadata...`;
 
       try {
-        const response = await fetch(audioUrl + '?t=' + Date.now(), { cache: 'no-store' });
-        if (!response.ok) throw new Error(`HTTP ${response.status} loading audio file`);
+        let wavBlob = null;
+        if (data.audio_base64) {
+          wavBlob = base64ToBlob(data.audio_base64, 'audio/wav');
+          console.log(`[iTantra Player] Decoded base64 WAV payload (${wavBlob.size} bytes)`);
+        } else if (data.reconstructed_audio_url) {
+          const response = await fetch(data.reconstructed_audio_url + '?t=' + Date.now(), { cache: 'no-store' });
+          if (!response.ok) throw new Error(`HTTP ${response.status} loading audio file`);
+          const audioBlob = await response.blob();
+          if (!audioBlob || audioBlob.size < 44) throw new Error("Received empty or truncated audio file from server");
+          wavBlob = new Blob([audioBlob], { type: 'audio/wav' });
+        } else {
+          throw new Error("No reconstructed audio payload returned by server");
+        }
 
-        const audioBlob = await response.blob();
-        if (!audioBlob || audioBlob.size < 44) throw new Error("Received empty or truncated audio file from server");
-
-        const wavBlob = new Blob([audioBlob], { type: 'audio/wav' });
         currentAudioObjectUrl = URL.createObjectURL(wavBlob);
 
         player.onloadedmetadata = null;
@@ -1979,7 +2003,7 @@
         player.onerror = null;
         player.onstalled = null;
 
-        const metadataPromise = new Promise((resolve, reject) => {
+        const metadataPromise = new Promise((resolve) => {
           let resolved = false;
 
           const onMeta = () => {
@@ -1993,8 +2017,8 @@
             if (resolved) return;
             resolved = true;
             const errObj = player.error || e;
-            console.error('[iTantra Player] Audio Element Load Error:', errObj);
-            reject(new Error(errObj ? `Audio decode error (code ${errObj.code || 'unknown'})` : 'Failed to load audio element'));
+            console.error('[iTantra Player] Audio Element Load Warning:', errObj);
+            resolve(expectedDurationSec || 0);
           };
 
           player.onloadedmetadata = onMeta;
@@ -2005,7 +2029,7 @@
           setTimeout(() => {
             if (!resolved) {
               resolved = true;
-              console.warn(`[iTantra Player] loadedmetadata event timeout, using backend duration: ${expectedDurationSec}s`);
+              console.warn(`[iTantra Player] loadedmetadata timeout, using backend duration: ${expectedDurationSec}s`);
               resolve(expectedDurationSec || 0);
             }
           }, 3000);
@@ -2043,7 +2067,7 @@
       document.getElementById('res-latency').innerText = `${data.processing_latency_ms} ms`;
       document.getElementById('asr-output').innerText = data.asr_transcription || "—";
 
-      loadReconstructedAudio(data.reconstructed_audio_url, data.duration_sec);
+      loadReconstructedAudio(data);
     }
 
     function displayErrorResults(errMsg) {

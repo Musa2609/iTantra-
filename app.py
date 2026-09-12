@@ -102,6 +102,7 @@ def api_transmit():
             except Exception as clean_err:
                 print(f"[Cleanup Warning] {clean_err}")
 
+@app.route('/api/audio/<path:filename>')
 @app.route('/static/audio/<path:filename>')
 def serve_audio(filename):
     file_path = os.path.join(STATIC_AUDIO_FOLDER, filename)

@@ -426,6 +426,16 @@ def process_itantra_pipeline(audio_path, target_bitrate=6.0, language="hi", mode
     # Validate generated RIFF header
     calc_duration = validate_reconstructed_wav(output_path, expected_sr=encodec.sample_rate)
 
+    # Encode reconstructed WAV to base64 for instant client-side playback
+    try:
+        import base64
+        with open(output_path, "rb") as audio_f:
+            audio_bytes = audio_f.read()
+        audio_base64 = "data:audio/wav;base64," + base64.b64encode(audio_bytes).decode("utf-8")
+    except Exception as b64_err:
+        print(f"[iTantra Warning] Base64 encoding warning: {b64_err}")
+        audio_base64 = None
+
     # 9. AI4Bharat ASR (Multilingual Speech-to-Text)
     asr_text = run_asr_transcription(mono_data, orig_sr, language=language)
 
@@ -453,7 +463,8 @@ def process_itantra_pipeline(audio_path, target_bitrate=6.0, language="hi", mode
         "packet_loss": "0%",
         "crc_status": crc_status,
         "transmission_mode": transmission_mode_name,
-        "reconstructed_audio_url": f"/static/audio/{filename_out}",
+        "reconstructed_audio_url": f"/api/audio/{filename_out}",
+        "audio_base64": audio_base64,
         "reconstruction_status": "SUCCESS — 24kHz Neural Audio Restored",
         "processing_latency_ms": elapsed_ms,
         "language": language,
