@@ -1,4 +1,4 @@
-﻿# iTantra — Acoustic Speech Communication Bridge
+# iTantra — Acoustic Speech Communication Bridge
 
 End-to-end acoustic pipeline that lets **two laptops exchange speech** using only sound waves (speakers + microphone) — no internet, no Wi-Fi, no Bluetooth. Works offline after the one-time model download.
 
@@ -28,7 +28,20 @@ Supported languages: **Hindi, Bengali, Tamil, Telugu, Marathi, Gujarati, Kannada
 
 ---
 
-## One-Time Setup (Do This On Every Laptop)
+## Quick Start (Windows — 1-Click Launchers)
+
+No complex PowerShell commands needed! Just double-click the `.bat` files:
+
+1. **First-time setup:** Double-click **`setup.bat`**  
+   *(Automatically checks/installs Python 3.12, creates virtual environment, installs packages, and helps log in to Hugging Face)*
+2. **On Laptop 1 (Receiver):** Double-click **`run_receiver.bat`**  
+   *(Listens on microphone, decodes tones, synthesizes translated speech, and plays it aloud)*
+3. **On Laptop 2 (Sender):** Double-click **`run_sender.bat`**  
+   *(Presents a simple menu: records 5s of your speech, auto-detects language, translates, and plays acoustic tones)*
+
+---
+
+## Manual Setup (PowerShell / Linux / macOS)
 
 ### 1. Clone the repository
 

@@ -236,29 +236,24 @@ def send_text_acoustically(text, output_device=None):
     return len(waveform) / GGWAVE_SAMPLE_RATE
 
 
-def receive_text_acoustically(input_device=None):
+def receive_text_acoustically(input_device=None, duration=15.0):
     import numpy as np
     import sounddevice as sd
 
-    probe = packetize(b"physical-text-probe")[0]
-    instance = ggwave.init()
-    try:
-        probe_waveform = ggwave.encode(probe, instance=instance)
-    finally:
-        ggwave.free(instance)
-    duration = PHYSICAL_LEAD_SECONDS + len(probe_waveform) / 4 / GGWAVE_SAMPLE_RATE + 1
-    print(f"Receiver listening for {duration:.1f} seconds...")
+    print(f"\n[Receiver] Listening on microphone for {duration:.1f} seconds...")
+    print(f"[Receiver] (Please trigger the Sender laptop now!)", flush=True)
     captured = sd.rec(int(duration * GGWAVE_SAMPLE_RATE), samplerate=GGWAVE_SAMPLE_RATE, channels=1, dtype="float32", device=input_device, blocking=True)
+    print(f"[Receiver] Processing captured audio...", flush=True)
     instance = ggwave.init()
     try:
         decoded = ggwave.decode(instance, captured[:, 0].astype(np.float32).tobytes())
     finally:
         ggwave.free(instance)
     if not decoded:
-        raise RuntimeError("No ggwave text packet was decoded from the microphone")
+        raise RuntimeError("No ggwave text packet was decoded from the microphone. Try placing the laptops closer or turning up the speaker volume.")
     validated = validate_packet(decoded, 1)
     if validated is None:
-        raise RuntimeError("Received ggwave packet failed CRC32 validation")
+        raise RuntimeError("Received ggwave packet failed CRC32 validation (corrupted by noise)")
     _number, payload = validated
     return payload.decode("utf-8")
 
@@ -300,6 +295,7 @@ def main():
     parser.add_argument("--target-language", default=None, help="IndicTrans2 target tag, e.g. eng_Latn or tam_Taml")
     parser.add_argument("--tts-output", default="received_tts.wav")
     parser.add_argument("--record", type=float, default=None, metavar="SECONDS", help="Record speech from microphone for N seconds before sending")
+    parser.add_argument("--listen-duration", type=float, default=15.0, metavar="SECONDS", help="Receiver listening window in seconds (default: 15.0)")
     parser.add_argument("--auto-detect", action="store_true", help="Auto-detect spoken Indian language using IndicConformer LID")
     parser.add_argument("--physical-send", action="store_true", help="ASR text -> speaker ggwave signal")
     parser.add_argument("--physical-receive", action="store_true", help="microphone ggwave signal -> text -> TTS")
@@ -311,11 +307,18 @@ def main():
             raise ValueError("Choose one physical role")
         if args.physical_receive:
             import sounddevice
-            received_text = receive_text_acoustically(sounddevice.default.device[0])
-            print(f"Received text: {received_text}")
+            import soundfile as sf
+            received_text = receive_text_acoustically(sounddevice.default.device[0], duration=args.listen_duration)
+            print(f"\n[Receiver] Decoded text: {received_text}")
             synthesize_with_indic_parler(received_text, args.tts_output, target_tts_language(args.target_language, args.language))
-            print(f"TTS output: {args.tts_output}")
-            print("PHYSICAL ASR/TTS TEST: PASS")
+            print(f"[Receiver] TTS output saved to: {args.tts_output}")
+            try:
+                audio_data, sr = sf.read(args.tts_output)
+                print(f"[Receiver] Playing received speech through speakers...", flush=True)
+                sounddevice.play(audio_data, samplerate=sr, device=sounddevice.default.device[1], blocking=True)
+            except Exception as e:
+                print(f"[Receiver] Note: Could not auto-play audio: {e}")
+            print("\nPHYSICAL ASR/TTS TEST: PASS")
             return 0
 
         if args.record is not None:
