@@ -625,7 +625,7 @@ def process_itantra_pipeline(audio_path, target_bitrate=6.0, language="hi", mode
     # Direct Speech -> Opus Encoder -> Packetization -> CRC -> ggwave
     # Preserves speech audio waveform without STT or TTS!
     # ==============================================================
-    if mode in ["mode_1_voice", "voice", "opus"]:
+    if mode in ["mode_1_voice", "voice", "opus", "encodec_voice"]:
         comm_mode_name = "MODE 1 — VOICE (OPUS)"
         if not has_speech_vad:
             elapsed_ms = int((time.time() - start_time) * 1000)
