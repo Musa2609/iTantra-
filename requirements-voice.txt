@@ -1,0 +1,23 @@
+﻿# Voice-layer packages for iTantra acoustic speech pipeline
+# Python 3.12 required (IndicConformer ONNX binaries)
+
+# Deep learning core
+torch
+torchaudio
+
+# Hugging Face ecosystem
+transformers==4.46.1
+huggingface_hub
+
+# AI4Bharat models support
+onnxruntime
+parler-tts
+IndicTransToolkit
+
+# Audio I/O
+soundfile
+sounddevice
+numpy
+
+# Acoustic data-over-sound
+ggwave
