@@ -1,29 +1,10 @@
-﻿__pycache__/
+__pycache__/
 *.pyc
-*.pyo
-.venv/
-voice-env/
-env/
-venv/
-
-# Hugging Face and model caches
-.cache/
-**/.cache/
-hf_cache/
-
-# Generated audio and test captures
-*.wav
-*.mp3
-*.flac
-
-# Local secrets and editor files
-.env
-.env.*
-.vscode/
 *.pyo
 .ds_store
 .venv/
-voice-env/
 env/
 venv/
-*.wav
+uploads/
+scratch/
+static/audio/reconstructed_*.wav
