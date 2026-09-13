@@ -19,13 +19,13 @@ def encode_packet_to_ggwave_wav(packet_bytes: bytes, output_wav_path: str, volum
     hex_payload = packet_bytes.hex()
 
     cmd = [NODE_BIN, SCRIPT_PATH, "encode", hex_payload, output_wav_path, str(volume)]
-    proc = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, cwd=os.path.dirname(__file__))
+    proc = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, encoding="utf-8", errors="replace", cwd=os.path.dirname(__file__))
 
     if proc.returncode != 0:
         raise RuntimeError(f"ggwave encode failed: {proc.stderr}")
 
     # Parse JSON output from last line
-    output_lines = [line.strip() for line in proc.stdout.splitlines() if line.strip().startswith("{")]
+    output_lines = [line.strip() for line in (proc.stdout or "").splitlines() if line.strip().startswith("{")]
     if not output_lines:
         raise RuntimeError(f"Unexpected ggwave output: {proc.stdout}")
 
@@ -41,12 +41,12 @@ def decode_ggwave_wav_file(input_wav_path: str) -> bytes | None:
         return None
 
     cmd = [NODE_BIN, SCRIPT_PATH, "decode", input_wav_path]
-    proc = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, cwd=os.path.dirname(__file__))
+    proc = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, encoding="utf-8", errors="replace", cwd=os.path.dirname(__file__))
 
     if proc.returncode != 0:
         return None
 
-    output_lines = [line.strip() for line in proc.stdout.splitlines() if line.strip().startswith("{")]
+    output_lines = [line.strip() for line in (proc.stdout or "").splitlines() if line.strip().startswith("{")]
     if not output_lines:
         return None
 

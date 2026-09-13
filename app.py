@@ -29,6 +29,7 @@ UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), 'uploads')
 STATIC_AUDIO_FOLDER = os.path.join(os.path.dirname(__file__), 'static', 'audio')
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(STATIC_AUDIO_FOLDER, exist_ok=True)
+_RX_CHUNK_BUFFER = {}
 
 @app.route('/')
 @app.route('/sender')
@@ -195,7 +196,75 @@ def api_receiver_decode_acoustic():
         wire_crc = Crc16.compute(wire_packet[:-2])
         rx_tx_id = f"ACOUSTIC-{int(time.time()*1000)%100000:05d}"
 
-        if rx_packet.header.packet_type == PacketType.MODE_1_SEMANTIC:
+        if rx_packet.header.packet_type == PacketType.VOICE_OPUS:
+            from opus_engine import OpusDecoder
+            import struct
+            # Check if payload contains chunk framing [chunk_idx: 2B, total_chunks: 2B]
+            if len(rx_packet.payload) >= 4:
+                idx, total = struct.unpack_from("!HH", rx_packet.payload, 0)
+                if total > 1 and idx < total:
+                    if total not in _RX_CHUNK_BUFFER:
+                        _RX_CHUNK_BUFFER[total] = {}
+                    _RX_CHUNK_BUFFER[total][idx] = rx_packet.payload[4:]
+                    if len(_RX_CHUNK_BUFFER[total]) < total:
+                        return jsonify({
+                            "status": "PARTIAL",
+                            "message": f"Received acoustic chunk {idx+1}/{total} (CRC PASS)",
+                            "mode": "MODE 1 — VOICE (OPUS)",
+                            "chunk": idx + 1,
+                            "total": total
+                        })
+                    # All chunks arrived! Reassemble in sequence order
+                    assembled = bytearray()
+                    for i in range(total):
+                        assembled.extend(_RX_CHUNK_BUFFER[total][i])
+                    _RX_CHUNK_BUFFER.pop(total, None)
+                    opus_raw = bytes(assembled)
+                elif total == 1:
+                    opus_raw = rx_packet.payload[4:]
+                else:
+                    opus_raw = rx_packet.payload
+            else:
+                opus_raw = rx_packet.payload
+            try:
+                decoder = OpusDecoder(target_sample_rate=24000)
+                reconstructed_pcm, dec_sr = decoder.decode(opus_raw)
+                voice_filename = f"rx_laptop2_voice_{rx_tx_id}.wav"
+                voice_out_path = os.path.join(STATIC_AUDIO_FOLDER, voice_filename)
+                pcm16 = (np.clip(reconstructed_pcm, -1.0, 1.0) * 32767.0).astype(np.int16)
+                sf.write(voice_out_path, pcm16, dec_sr, subtype='PCM_16')
+                dur = len(pcm16) / dec_sr
+
+                print(f"\n{'='*70}")
+                print(f"RECEIVER ACOUSTIC DEMODULATION LOGS ({rx_tx_id}) — VOICE (OPUS)")
+                print(f"  RX listening started: TRUE")
+                print(f"  ggwave signal detected: TRUE")
+                print(f"  received payload bytes: {len(wire_packet)}")
+                print(f"  packet ID: {rx_tx_id}")
+                print(f"  CRC result: PASS (0x{wire_crc:04X})")
+                print(f"  mode: MODE 1 — VOICE (OPUS)")
+                print(f"  Opus decoding: SUCCESS")
+                print(f"  sample rate: {dec_sr} Hz")
+                print(f"  reconstructed duration: {dur:.2f}s")
+                print(f"  speaker playback: STARTED")
+                print(f"{'='*70}\n")
+
+                return jsonify({
+                    "status": "SUCCESS",
+                    "mode": "MODE 1 — VOICE (OPUS)",
+                    "packet_type": "VOICE_OPUS",
+                    "crc": f"PASS (0x{wire_crc:04X})",
+                    "category": "Voice Audio",
+                    "type_id": 0,
+                    "receiverMeaningText": f"Reconstructed Speech Audio ({dec_sr} Hz, {dur:.2f}s)",
+                    "audio_url": f"/api/audio/{voice_filename}",
+                    "audio_duration_sec": round(dur, 2)
+                })
+            except Exception as dec_err:
+                print(f"[Acoustic Opus Decode Error] {dec_err}")
+                return jsonify({"status": "DECODE_ERROR", "message": f"Opus decoding error: {dec_err}"})
+
+        elif rx_packet.header.packet_type == PacketType.MODE_1_SEMANTIC:
             rx_payload = SemanticPayload.decode(rx_packet.payload)
             category = IntentCategory.from_id(rx_payload.type_id)
             receiver_meaning = get_receiver_emergency_template(rx_payload.type_id, lang_code="hi")
@@ -206,7 +275,7 @@ def api_receiver_decode_acoustic():
             dur = generate_tts_audio(receiver_meaning, tts_out_path, lang="hi", is_emergency=True)
 
             print(f"\n{'='*70}")
-            print(f"RECEIVER ACOUSTIC DEMODULATION LOGS ({rx_tx_id})")
+            print(f"RECEIVER ACOUSTIC DEMODULATION LOGS ({rx_tx_id}) — SEMANTIC")
             print(f"  RX listening started: TRUE")
             print(f"  ggwave signal detected: TRUE")
             print(f"  received payload bytes: {len(wire_packet)}")
@@ -224,7 +293,7 @@ def api_receiver_decode_acoustic():
 
             return jsonify({
                 "status": "SUCCESS",
-                "mode": "MODE 1 — SEMANTIC",
+                "mode": "MODE 2 — SEMANTIC",
                 "crc": f"PASS (0x{wire_crc:04X})",
                 "category": category.label,
                 "type_id": rx_payload.type_id,

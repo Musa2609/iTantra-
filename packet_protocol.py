@@ -11,9 +11,21 @@ from semantic_engine import SemanticPayload
 MAGIC_BYTE = 0x49  # ASCII 'I'
 
 class PacketType(IntEnum):
-    MODE_1_SEMANTIC = 1
-    MODE_2_TEXT = 2
-    MODE_3_ENCODEC = 3
+    VOICE_OPUS = 0       # Mode 1: Voice / Audio Codec (Opus frames)
+    MODE_1_SEMANTIC = 1  # Mode 2: Semantic Intent (10-bit compact frame)
+    MODE_2_TEXT = 2      # Mode 2: Free Text (UTF-8)
+    MODE_3_ENCODEC = 3   # Legacy neural codec
+
+# Mode aliases for clarity
+MODE_1_VOICE_OPUS = PacketType.VOICE_OPUS
+MODE_2_SEMANTIC = PacketType.MODE_1_SEMANTIC
+
+class Crc32:
+    """CRC32 (IEEE 802.3) for error detection."""
+    @staticmethod
+    def compute(data: bytes) -> int:
+        import zlib
+        return zlib.crc32(data) & 0xFFFFFFFF
 
 class Crc16:
     """CRC16-CCITT (Polynomial 0x1021, Initial 0xFFFF)"""
@@ -104,3 +116,60 @@ class FecEngine:
         p = parity_packet.ljust(max_len, b"\x00")
         recovered = bytes(b1 ^ b2 for b1, b2 in zip(k, p))
         return recovered[:original_len]
+
+def chunk_payload(payload: bytes, packet_type: PacketType, chunk_size: int = 120, lang_id: int = 0) -> List[Packet]:
+    """
+    Split arbitrary payload (e.g. Opus bitstream or text) into sequence-numbered Packets
+    that fit comfortably within the 140-byte acoustic modem MTU.
+    Each packet contains: [chunk_index: 2B, total_chunks: 2B, chunk_data].
+    """
+    if len(payload) == 0:
+        return []
+    total_chunks = (len(payload) + chunk_size - 1) // chunk_size
+    packets = []
+    for idx in range(total_chunks):
+        chunk_data = payload[idx * chunk_size : (idx + 1) * chunk_size]
+        framed_payload = struct.pack("!HH", idx, total_chunks) + chunk_data
+        header = PacketHeader(
+            packet_type=packet_type,
+            lang_id=lang_id,
+            is_fec=False,
+            sequence_num=idx
+        )
+        packets.append(Packet(header=header, payload=framed_payload))
+    return packets
+
+def reassemble_payload(packets: List[Packet]) -> Tuple[Optional[bytes], int, int]:
+    """
+    Reassemble received Packets into complete binary payload.
+    Returns: (reassembled_bytes, valid_count, missing_count).
+    """
+    chunks = {}
+    total_expected = None
+    valid_count = 0
+    
+    for pkt in packets:
+        if pkt is None or len(pkt.payload) < 4:
+            continue
+        idx, total = struct.unpack_from("!HH", pkt.payload, 0)
+        chunk_data = pkt.payload[4:]
+        chunks[idx] = chunk_data
+        total_expected = total
+        valid_count += 1
+        
+    if total_expected is None or len(chunks) == 0:
+        return None, 0, 0
+        
+    missing_count = total_expected - len(chunks)
+    if missing_count > 0:
+        return None, valid_count, missing_count
+
+    reassembled = bytearray()
+    for i in range(total_expected):
+        if i in chunks:
+            reassembled.extend(chunks[i])
+        else:
+            return None, valid_count, missing_count
+            
+    return bytes(reassembled), valid_count, 0
+

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>iTantra — Laptop 2 Receiver Station</title>
+  <title>iTantra — Dedicated Acoustic Receiver Station (Laptop 2)</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="/static/css/stitch_cinema.css">
   <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
@@ -17,16 +17,16 @@
       </div>
       <div>
         <h1 class="text-base font-bold text-white tracking-tight flex items-center gap-2">
-          iTantra — Acoustic Receiver
-          <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-cyan-500/10 border border-cyan-500/20 text-cyan-400">Laptop 2 Station</span>
+          iTantra — Acoustic Receiver Station
+          <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-cyan-500/10 border border-cyan-500/20 text-cyan-400">Laptop 2 Physical Terminal</span>
         </h1>
-        <p class="text-xs text-neutral-400 font-mono">Microphone &rarr; ggwave Demodulation &rarr; Semantic Decode &rarr; Receiver TTS</p>
+        <p class="text-xs text-neutral-400 font-mono">Microphone &rarr; ggwave Demodulation &rarr; CRC Check &rarr; Reassembly &rarr; Opus Decode / Semantic TTS</p>
       </div>
     </div>
     <div class="flex items-center gap-3 font-mono text-xs">
-      <a href="/" class="px-3 py-1.5 rounded-lg border border-white/10 bg-white/5 hover:bg-white/10 text-neutral-300 transition">Sender Station &rarr;</a>
+      <a href="/" class="px-3 py-1.5 rounded-lg border border-white/10 bg-white/5 hover:bg-white/10 text-neutral-300 transition">&larr; Sender Station</a>
       <span id="rx-online-badge" class="px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center gap-1.5">
-        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> ONLINE
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> STATION ONLINE
       </span>
     </div>
   </header>
@@ -36,9 +36,23 @@
     <div class="p-4 rounded-xl border border-cyan-500/20 bg-cyan-950/10 flex items-start gap-4">
       <div class="p-2 rounded-lg bg-cyan-500/10 text-cyan-400 text-xl font-bold">🔊 &rarr; 🎤</div>
       <div class="text-xs space-y-1">
-        <h2 class="font-bold text-sm text-cyan-300">Physical Two-Laptop Acoustic Communication</h2>
-        <p class="text-neutral-300">Place this laptop's microphone near Laptop 1's speakers. When Laptop 1 plays the <strong>ggwave acoustic data tones</strong>, this receiver captures the sound over the air, decodes the 10-bit semantic packet, verifies CRC16, and speaks the reconstructed message through this laptop's speakers.</p>
-        <p class="text-neutral-400 font-mono">Zero network / WiFi data exchange. Sound is the physical transmission medium.</p>
+        <h2 class="font-bold text-sm text-cyan-300">Physical Two-Laptop Acoustic Communication Channel</h2>
+        <p class="text-neutral-300">Position Laptop 2's microphone near Laptop 1's speakers. When Laptop 1 transmits <strong>ggwave acoustic data tones</strong> across the air, this station demodulates the audio waveform, validates CRC checksums, and restores either <strong>Voice Speech (Mode 1 Opus)</strong> or <strong>Synthesized Meaning (Mode 2 Semantic)</strong>.</p>
+        <p class="text-neutral-400 font-mono">Channel Status: <strong>TWO-LAPTOP ACOUSTIC — IN DEVELOPMENT / TESTING</strong>. Zero Wi-Fi or local network payload exchange.</p>
+      </div>
+    </div>
+
+    <!-- Receiver State Machine Indicator -->
+    <div class="p-4 rounded-xl border border-white/10 bg-black/40 font-mono text-xs">
+      <span class="text-[10px] text-neutral-400 uppercase tracking-widest block mb-2">Protocol State Machine</span>
+      <div class="grid grid-cols-4 sm:grid-cols-7 gap-1 text-center font-bold text-[10px]">
+        <div id="sm-waiting" class="py-1.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">1. WAITING</div>
+        <div id="sm-detected" class="py-1.5 rounded bg-white/5 text-neutral-500">2. SIGNAL</div>
+        <div id="sm-received" class="py-1.5 rounded bg-white/5 text-neutral-500">3. RECEIVED</div>
+        <div id="sm-verified" class="py-1.5 rounded bg-white/5 text-neutral-500">4. VERIFIED</div>
+        <div id="sm-decoded" class="py-1.5 rounded bg-white/5 text-neutral-500">5. DECODED</div>
+        <div id="sm-output" class="py-1.5 rounded bg-white/5 text-neutral-500">6. SYNTH/RECON</div>
+        <div id="sm-playing" class="py-1.5 rounded bg-white/5 text-neutral-500">7. PLAYING</div>
       </div>
     </div>
 
@@ -46,9 +60,9 @@
     <div class="p-6 rounded-2xl border border-white/10 bg-black/60 shadow-2xl space-y-6">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-5">
         <div>
-          <span class="text-[10px] font-mono uppercase tracking-widest text-neutral-400 block">Receiver Operational State</span>
+          <span class="text-[10px] font-mono uppercase tracking-widest text-neutral-400 block">Current Receiver State</span>
           <span id="state-display" class="text-xl font-black text-white font-mono flex items-center gap-2">
-            <span class="w-3 h-3 rounded-full bg-neutral-500"></span> WAITING FOR SIGNAL
+            <span class="w-3 h-3 rounded-full bg-neutral-500"></span> IDLE — CLICK START LISTENING
           </span>
         </div>
         <div class="flex items-center gap-3">
@@ -72,40 +86,82 @@
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 font-mono text-xs">
         <div class="p-3 rounded-xl bg-white/[0.02] border border-white/5">
           <span class="text-[9px] text-neutral-500 block uppercase">ggwave Demodulator</span>
-          <span id="tel-demod" class="font-bold text-white text-sm">IDLE</span>
+          <span id="tel-demod" class="font-bold text-white text-sm">STANDBY</span>
         </div>
         <div class="p-3 rounded-xl bg-white/[0.02] border border-white/5">
-          <span class="text-[9px] text-neutral-500 block uppercase">Packet CRC16</span>
+          <span class="text-[9px] text-neutral-500 block uppercase">Packet CRC</span>
           <span id="tel-crc" class="font-bold text-neutral-400 text-sm">—</span>
         </div>
         <div class="p-3 rounded-xl bg-white/[0.02] border border-white/5">
-          <span class="text-[9px] text-neutral-500 block uppercase">Semantic Category</span>
-          <span id="tel-cat" class="font-bold text-neutral-400 text-sm">—</span>
+          <span class="text-[9px] text-neutral-500 block uppercase">Communication Mode</span>
+          <span id="tel-mode" class="font-bold text-neutral-400 text-sm">—</span>
         </div>
         <div class="p-3 rounded-xl bg-white/[0.02] border border-white/5">
-          <span class="text-[9px] text-neutral-500 block uppercase">TTS Engine</span>
-          <span id="tel-tts" class="font-bold text-neutral-400 text-sm">STANDBY</span>
+          <span class="text-[9px] text-neutral-500 block uppercase">Speaker Output</span>
+          <span id="tel-speaker" class="font-bold text-neutral-400 text-sm">READY</span>
         </div>
       </div>
     </div>
 
-    <!-- Reconstructed Semantic Message Card (Shown only on successful decode) -->
-    <div id="result-card" class="p-6 rounded-2xl border border-amber-500/20 bg-amber-950/10 space-y-4 hidden">
+    <!-- Output Card: MODE 1 VOICE (OPUS) -->
+    <div id="opus-card" class="p-6 rounded-2xl border border-blue-500/30 bg-blue-950/15 space-y-4 hidden">
+      <div class="flex items-center justify-between">
+        <span class="text-xs font-mono font-bold uppercase tracking-wider text-blue-400 flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-blue-400"></span>
+          RECEIVED VOICE — OPUS AUDIO CODEC
+        </span>
+        <span id="opus-packet-badge" class="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-500/20 text-blue-300">
+          CRC PASS &bull; Voice Characteristics Preserved
+        </span>
+      </div>
+
+      <div class="border-t border-white/10 pt-3">
+        <span class="text-[10px] font-mono text-neutral-400 uppercase tracking-widest block mb-1">
+          Reconstructed Speech Output:
+        </span>
+        <p id="opus-voice-desc" class="text-lg font-bold text-blue-100 font-sans">
+          Reconstructed 24 kHz Speech (Speech waveform restored from compressed Opus frames)
+        </p>
+      </div>
+
+      <!-- Laptop 2 Reconstructed Speech Audio Player -->
+      <div class="border-t border-white/10 pt-3">
+        <div class="flex items-center justify-between mb-1 text-xs font-mono">
+          <span class="text-neutral-300 font-semibold">Laptop 2 Physical Speaker (Reconstructed Voice)</span>
+          <span id="opus-dur" class="text-emerald-400 font-bold">Duration: —</span>
+        </div>
+        <audio id="opus-player" controls autoplay class="w-full h-10 accent-blue-400 rounded-lg"></audio>
+      </div>
+    </div>
+
+    <!-- Output Card: MODE 2 SEMANTIC (Meaning + TTS) -->
+    <div id="semantic-card" class="p-6 rounded-2xl border border-amber-500/30 bg-amber-950/15 space-y-4 hidden">
       <div class="flex items-center justify-between">
         <span class="text-xs font-mono font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
           <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-          Acoustically Decoded & Restored Message
+          RECEIVED MEANING — SEMANTIC RECONSTRUCTION
         </span>
-        <span id="rx-packet-badge" class="text-[10px] font-mono px-2 py-0.5 rounded bg-white/10 text-neutral-300">
-          Packet: 1 / 1 (CRC PASS)
+        <span id="semantic-packet-badge" class="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/20 text-amber-300">
+          CRC PASS &bull; 10-bit Payload
         </span>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3 font-mono text-xs">
+        <div class="p-2.5 rounded-lg bg-black/40 border border-white/5">
+          <span class="text-[9px] text-neutral-400 block uppercase">Decoded Category</span>
+          <span id="semantic-cat-val" class="font-bold text-amber-300 text-sm">—</span>
+        </div>
+        <div class="p-2.5 rounded-lg bg-black/40 border border-white/5">
+          <span class="text-[9px] text-neutral-400 block uppercase">Semantic Payload Size</span>
+          <span class="font-bold text-emerald-400 text-sm">10 bits (2 Bytes)</span>
+        </div>
       </div>
 
       <div class="border-t border-white/10 pt-3">
         <span class="text-[10px] font-mono text-neutral-400 uppercase tracking-widest block mb-1">
           Receiver Reconstructed Meaning:
         </span>
-        <p id="rx-semantic-meaning" class="text-xl font-bold text-amber-200 leading-snug font-sans">
+        <p id="semantic-meaning-text" class="text-xl font-bold text-amber-200 leading-snug font-sans">
           —
         </p>
       </div>
@@ -113,10 +169,10 @@
       <!-- Laptop 2 Synthesized Speech Audio Player -->
       <div class="border-t border-white/10 pt-3">
         <div class="flex items-center justify-between mb-1 text-xs font-mono">
-          <span class="text-neutral-300 font-semibold">Laptop 2 Physical Audio Output (TTS Voice Speech)</span>
-          <span id="rx-tts-dur" class="text-emerald-400 font-bold">Duration: —</span>
+          <span class="text-neutral-300 font-semibold">TTS OUTPUT (Reconstructed Meaning Synthesized to Speech)</span>
+          <span id="semantic-tts-dur" class="text-emerald-400 font-bold">Duration: —</span>
         </div>
-        <audio id="receiver-player" controls autoplay class="w-full h-10 accent-cyan-400 rounded-lg"></audio>
+        <audio id="semantic-player" controls autoplay class="w-full h-10 accent-amber-400 rounded-lg"></audio>
       </div>
     </div>
   </main>
@@ -138,12 +194,33 @@
     const micLevelTxt = document.getElementById('mic-level-txt');
     const telDemod = document.getElementById('tel-demod');
     const telCrc = document.getElementById('tel-crc');
-    const telCat = document.getElementById('tel-cat');
-    const telTts = document.getElementById('tel-tts');
-    const resultCard = document.getElementById('result-card');
-    const rxSemanticMeaning = document.getElementById('rx-semantic-meaning');
-    const rxTtsDur = document.getElementById('rx-tts-dur');
-    const receiverPlayer = document.getElementById('receiver-player');
+    const telMode = document.getElementById('tel-mode');
+    const telSpeaker = document.getElementById('tel-speaker');
+
+    const opusCard = document.getElementById('opus-card');
+    const opusVoiceDesc = document.getElementById('opus-voice-desc');
+    const opusDur = document.getElementById('opus-dur');
+    const opusPlayer = document.getElementById('opus-player');
+
+    const semanticCard = document.getElementById('semantic-card');
+    const semanticCatVal = document.getElementById('semantic-cat-val');
+    const semanticMeaningText = document.getElementById('semantic-meaning-text');
+    const semanticTtsDur = document.getElementById('semantic-tts-dur');
+    const semanticPlayer = document.getElementById('semantic-player');
+
+    function setStep(step) {
+      const steps = ['waiting', 'detected', 'received', 'verified', 'decoded', 'output', 'playing'];
+      steps.forEach((s, idx) => {
+        const el = document.getElementById('sm-' + s);
+        if (el) {
+          if (idx <= step) {
+            el.className = "py-1.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 font-bold";
+          } else {
+            el.className = "py-1.5 rounded bg-white/5 text-neutral-500";
+          }
+        }
+      });
+    }
 
     async function toggleListening() {
       if (isListening) {
@@ -166,9 +243,10 @@
         isListening = true;
         btnListen.className = "px-6 py-3 rounded-xl bg-rose-500 hover:bg-rose-400 text-white font-bold text-sm transition flex items-center gap-2 shadow-lg shadow-rose-500/25";
         btnListenText.innerText = "Stop Listening";
-        stateDisplay.innerHTML = `<span class="w-3 h-3 rounded-full bg-cyan-400 animate-ping"></span> RECEIVER: WAITING FOR SIGNAL`;
-        telDemod.innerText = "LISTENING...";
+        stateDisplay.innerHTML = `<span class="w-3 h-3 rounded-full bg-cyan-400 animate-ping"></span> WAITING FOR ACOUSTIC SIGNAL`;
+        telDemod.innerText = "LISTENING (48kHz)";
         telDemod.className = "font-bold text-cyan-400 text-sm";
+        setStep(0);
 
         drawOscilloscope();
         startChunkedRecording();
@@ -187,9 +265,10 @@
 
       btnListen.className = "px-6 py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black font-bold text-sm transition flex items-center gap-2 shadow-lg shadow-cyan-500/25";
       btnListenText.innerText = "Start Listening (Microphone)";
-      stateDisplay.innerHTML = `<span class="w-3 h-3 rounded-full bg-neutral-500"></span> RECEIVER: IDLE`;
-      telDemod.innerText = "IDLE";
+      stateDisplay.innerHTML = `<span class="w-3 h-3 rounded-full bg-neutral-500"></span> IDLE — CLICK START LISTENING`;
+      telDemod.innerText = "STANDBY";
       telDemod.className = "font-bold text-neutral-400 text-sm";
+      setStep(0);
     }
 
     function drawOscilloscope() {
@@ -206,16 +285,17 @@
       const rms = Math.sqrt(sumSquare / dataArray.length);
       micLevelTxt.innerText = `Noise Floor: RMS ${(rms * 100).toFixed(2)}%`;
 
-      if (rms > 0.08) {
-        stateDisplay.innerHTML = `<span class="w-3 h-3 rounded-full bg-amber-400 animate-pulse"></span> RECEIVER: SIGNAL DETECTED`;
-        telDemod.innerText = "DEMODULATING...";
+      if (rms > 0.07) {
+        stateDisplay.innerHTML = `<span class="w-3 h-3 rounded-full bg-amber-400 animate-pulse"></span> SIGNAL DETECTED — DEMODULATING`;
+        telDemod.innerText = "DEMODULATING";
         telDemod.className = "font-bold text-amber-400 text-sm";
+        setStep(1);
       }
 
       ctx.fillStyle = '#080808';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       ctx.lineWidth = 2;
-      ctx.strokeStyle = rms > 0.08 ? '#f59e0b' : '#06b6d4';
+      ctx.strokeStyle = rms > 0.07 ? '#f59e0b' : '#06b6d4';
       ctx.beginPath();
 
       const sliceWidth = canvas.width * 1.0 / dataArray.length;
@@ -233,7 +313,6 @@
     }
 
     function startChunkedRecording() {
-      // Record 5-second acoustic chunks and send to /api/receiver/decode_acoustic
       let currentRecorder = null;
       const recordSlice = () => {
         if (!isListening) return;
@@ -267,30 +346,52 @@
         const data = await res.json();
 
         if (data.status === 'SUCCESS') {
-          console.log('[Laptop 2 Receiver] Acoustic packet successfully received and decoded:', data);
-          stateDisplay.innerHTML = `<span class="w-3 h-3 rounded-full bg-emerald-400"></span> GGWAVE PACKET RECEIVED &bull; CRC PASS`;
-          telDemod.innerText = "PACKET PASS";
+          console.log('[Laptop 2 Receiver] Acoustic packet decoded:', data);
+          setStep(3); // VERIFIED
+          
+          stateDisplay.innerHTML = `<span class="w-3 h-3 rounded-full bg-emerald-400"></span> PACKET VERIFIED (CRC PASS)`;
+          telDemod.innerText = "DEMOD PASS";
           telDemod.className = "font-bold text-emerald-400 text-sm";
-          telCrc.innerText = data.crc || "PASS (0xCCITT)";
+          telCrc.innerText = data.crc || "PASS";
           telCrc.className = "font-bold text-emerald-400 text-sm";
-          telCat.innerText = data.category || "MEDICAL";
-          telCat.className = "font-bold text-cyan-400 text-sm";
-          telTts.innerText = "SYNTHESIZED";
-          telTts.className = "font-bold text-emerald-400 text-sm";
+          telMode.innerText = data.mode || "OPUS";
+          telMode.className = "font-bold text-cyan-400 text-sm";
 
-          // Show reconstructed message
-          resultCard.classList.remove('hidden');
-          rxSemanticMeaning.innerText = `"${data.receiverMeaningText}"`;
-          rxTtsDur.innerText = `Duration: ${data.audio_duration_sec}s`;
+          setStep(4); // DECODED
 
-          // Play through Laptop 2 physical speakers
-          if (data.audio_url) {
-            receiverPlayer.src = data.audio_url + '?t=' + Date.now();
-            receiverPlayer.play();
+          if (data.mode && data.mode.includes("VOICE")) {
+            // MODE 1: OPUS VOICE
+            setStep(5); // RECONSTRUCTED
+            opusCard.classList.remove('hidden');
+            semanticCard.classList.add('hidden');
+            opusVoiceDesc.innerText = data.receiverMeaningText || "Reconstructed 24kHz Speech Audio";
+            opusDur.innerText = `Duration: ${data.audio_duration_sec}s`;
+            if (data.audio_url) {
+              opusPlayer.src = data.audio_url + '?t=' + Date.now();
+              opusPlayer.play();
+              setStep(6); // PLAYING
+              telSpeaker.innerText = "PLAYING SPEECH";
+              telSpeaker.className = "font-bold text-emerald-400 text-sm";
+            }
+          } else {
+            // MODE 2: SEMANTIC
+            setStep(5); // SYNTHESIZED
+            semanticCard.classList.remove('hidden');
+            opusCard.classList.add('hidden');
+            semanticCatVal.innerText = data.category || "EMERGENCY";
+            semanticMeaningText.innerText = `"${data.receiverMeaningText}"`;
+            semanticTtsDur.innerText = `Duration: ${data.audio_duration_sec}s`;
+            if (data.audio_url) {
+              semanticPlayer.src = data.audio_url + '?t=' + Date.now();
+              semanticPlayer.play();
+              setStep(6); // PLAYING
+              telSpeaker.innerText = "PLAYING TTS";
+              telSpeaker.className = "font-bold text-amber-400 text-sm";
+            }
           }
         }
       } catch (err) {
-        console.warn("[Acoustic Chunk Info]", err);
+        console.warn("[Acoustic Demodulator Info]", err);
       }
     }
   </script>
