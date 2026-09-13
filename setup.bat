@@ -6,62 +6,79 @@ echo             iTantra One-Time Setup
 echo ===================================================
 echo.
 
-:: 1. Check Python
-set "PYTHON_EXE="
+:: Check specifically for Python 3.12 (PyTorch/ONNX does NOT support Python 3.14 or 3.13)
+set "PYTHON_CMD="
 
 py -3.12 --version >nul 2>&1
 if %ERRORLEVEL% EQU 0 (
     set "PYTHON_CMD=py -3.12"
-    echo [OK] Found Python 3.12 via Python Launcher (py -3.12)
-    goto :PYTHON_FOUND
+    echo [OK] Found Python 3.12 via Python Launcher
+    goto :SETUP_VENV
 )
 
-python --version >nul 2>&1
+:: Check if standard 'python' command happens to be 3.12
+python -c "import sys; sys.exit(0 if sys.version_info[:2] == (3, 12) else 1)" >nul 2>&1
 if %ERRORLEVEL% EQU 0 (
     set "PYTHON_CMD=python"
-    echo [INFO] Found default Python in PATH
-    goto :PYTHON_FOUND
+    echo [OK] Found Python 3.12 in PATH
+    goto :SETUP_VENV
 )
 
-py --version >nul 2>&1
-if %ERRORLEVEL% EQU 0 (
-    set "PYTHON_CMD=py"
-    echo [INFO] Found Python Launcher (py)
-    goto :PYTHON_FOUND
-)
-
-:: If not found, offer winget install
-echo [WARNING] Python 3.12 was not found on this machine.
-echo Attempting automatic installation of Python 3.12 via winget...
+:: Python 3.12 was NOT found!
+echo ===================================================
+echo [!] Python 3.12 is REQUIRED for AI4Bharat/PyTorch.
+echo     (Python 3.13 and 3.14 are not supported yet)
+echo ===================================================
 echo.
-winget install Python.Python.3.12 --silent --accept-package-agreements --accept-source-agreements
-if %ERRORLEVEL% EQU 0 (
-    echo [OK] Python 3.12 installed successfully!
-    echo Please CLOSE this window and run setup.bat again to refresh environment PATH.
-    pause
-    exit /b 0
-) else (
-    echo [ERROR] Automatic installation failed.
-    echo Please download and install Python 3.12 manually:
+echo Downloading official Python 3.12 installer directly...
+echo Please wait 10-20 seconds...
+echo.
+
+curl -L -o "%TEMP%\python-3.12.8-amd64.exe" "https://www.python.org/ftp/python/3.12.8/python-3.12.8-amd64.exe"
+if %ERRORLEVEL% NEQ 0 (
+    echo [ERROR] Could not download Python 3.12.
+    echo Please manually download and install Python 3.12 from:
     echo   https://www.python.org/downloads/release/python-3128/
-    echo IMPORTANT: Make sure to check "Add python.exe to PATH" during installation!
+    echo IMPORTANT: Check 'Add python.exe to PATH' when installing!
     pause
     exit /b 1
 )
 
-:PYTHON_FOUND
-echo.
+echo Installing Python 3.12...
+"%TEMP%\python-3.12.8-amd64.exe" /passive PrependPath=1 Include_pip=1
+del "%TEMP%\python-3.12.8-amd64.exe" >nul 2>&1
 
+:: Check if py -3.12 is now available
+py -3.12 --version >nul 2>&1
+if %ERRORLEVEL% EQU 0 (
+    set "PYTHON_CMD=py -3.12"
+    echo [OK] Python 3.12 installed and verified!
+    goto :SETUP_VENV
+)
+
+:: Check common install path if launcher hasn't reloaded PATH
+if exist "%LocalAppData%\Programs\Python\Python312\python.exe" (
+    set "PYTHON_CMD="%LocalAppData%\Programs\Python\Python312\python.exe""
+    echo [OK] Found Python 3.12 at %LocalAppData%\Programs\Python\Python312
+    goto :SETUP_VENV
+)
+
+echo [OK] Python 3.12 has been installed.
+echo Please CLOSE this window and double-click setup.bat again so Windows loads the new PATH!
+pause
+exit /b 0
+
+:SETUP_VENV
+echo.
 :: 2. Create voice-env virtual environment
 if exist "voice-env\Scripts\python.exe" (
     echo [SKIP] Virtual environment 'voice-env' already exists.
 ) else (
-    echo [...] Creating virtual environment 'voice-env'...
+    echo [...] Creating virtual environment 'voice-env' using %PYTHON_CMD%...
     if exist "voice-env" rd /s /q "voice-env"
     %PYTHON_CMD% -m venv voice-env
     if not exist "voice-env\Scripts\python.exe" (
         echo [ERROR] Failed to create virtual environment.
-        echo Please ensure Python 3.12 is installed with PATH enabled.
         pause
         exit /b 1
     )
