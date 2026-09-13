@@ -3,8 +3,15 @@ __pycache__/
 *.pyo
 .ds_store
 .venv/
+voice-env/
 env/
 venv/
 uploads/
 scratch/
-static/audio/reconstructed_*.wav
+*.log
+*.wav
+*.mp3
+static/audio/*.wav
+.antideploy.json
+*.pdf
+4a29bee1-c5d2-46b8-8398-38399427539a.png

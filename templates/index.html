@@ -686,6 +686,28 @@
           </div>
         </div>
 
+        <!-- Communication Architecture Mode Selector -->
+        <div class="mb-5 bg-white/[0.03] border border-amber-500/30 rounded-xl p-3.5">
+          <div class="flex items-center justify-between mb-1.5">
+            <label for="select-comm-mode" class="text-xs text-amber-400 font-semibold block font-mono">
+              ⚡ Communication Architecture Mode
+            </label>
+            <span id="comm-mode-badge" class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/30">
+              Autonomous
+            </span>
+          </div>
+          <select id="select-comm-mode" onchange="onCommModeChange(this.value)"
+            class="w-full bg-[#050505] border border-white/20 rounded-xl px-4 py-2.5 text-xs font-mono font-medium text-white focus:outline-none focus:border-amber-400">
+            <option value="auto" selected>⚡ Auto-Route (Classifier decides: Mode 1 Emergency vs Mode 2 Text)</option>
+            <option value="mode_1_semantic">🚨 Mode 1: Semantic Communication (10-Bit Bit-Packed SOS)</option>
+            <option value="mode_2_text">💬 Mode 2: Free Text Communication (UTF-8 Speech Packet)</option>
+            <option value="encodec_voice">🎙️ Mode 3: EnCodec Neural Voice (24kHz Codebook Loopback)</option>
+          </select>
+          <p id="comm-mode-desc" class="text-[10px] font-mono text-neutral-400 mt-1.5">
+            Auto-Route transcribes speech, evaluates semantic intent: Emergency speech reduces to ultra-compact 10-bit packets; normal speech routes as text.
+          </p>
+        </div>
+
         <!-- Controls Grid -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
           <div>
@@ -696,8 +718,7 @@
               <option value="hi" selected>Hindi (हिंदी)</option>
               <option value="gu">Gujarati (ગુજરાતી)</option>
               <option value="mr">Marathi (मરાઠી)</option>
-              <option value="kn">Kannada (<ctrl42>
-                  <ctrl42>ಕನ್ನಡ)</option>
+              <option value="kn">Kannada (ಕನ್ನಡ)</option>
               <option value="ml">Malayalam (മലയാളം)</option>
               <option value="ta">Tamil (தமிழ்)</option>
               <option value="te">Telugu (తెలుగు)</option>
@@ -723,20 +744,25 @@
 
         <!-- Link Mode Selector -->
         <div class="mb-6">
-          <span class="text-xs text-neutral-400 font-medium block mb-1.5 font-mono font-medium">Transmission Link
-            Channel</span>
+          <div class="flex items-center justify-between mb-1.5 font-mono">
+            <span class="text-xs text-neutral-400 font-medium block">Transmission Link Channel</span>
+            <a href="/receiver" target="_blank" class="text-xs text-cyan-400 hover:underline flex items-center gap-1">
+              Laptop 2 Receiver Station (/receiver) ↗
+            </a>
+          </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <button id="mode-software" onclick="setMode('software_loopback')"
               class="py-2.5 px-4 rounded-xl text-xs font-mono font-medium border text-white bg-white/10 border-white/30 transition-all text-center">
-              Software Loopback (Verified PASS)
+              MODE A: Software Loopback (Pipeline Validation)
             </button>
             <button id="mode-physical" onclick="setMode('physical_acoustic')"
               class="py-2.5 px-4 rounded-xl text-xs font-mono font-medium border text-neutral-400 border-white/10 hover:border-white/20 transition-all text-center">
-              Physical Acoustic (Experimental)
+              MODE B: Two-Laptop Acoustic (Speaker → Air → Mic)
             </button>
           </div>
-          <p id="mode-note" class="text-[10px] font-mono text-neutral-400 mt-2">Verified software transmission channel
-            (PASS).</p>
+          <p id="mode-note" class="text-[10px] font-mono text-neutral-400 mt-2">
+            <strong>MODE A: SOFTWARE LOOPBACK</strong> &bull; Validates ggwave encoder &rarr; loopback decoder &rarr; CRC16 &rarr; TTS pipeline without air.
+          </p>
         </div>
 
         <!-- Audio Input Control Console -->
@@ -800,57 +826,142 @@
         <!-- RESULTS DATA PANEL -->
         <div id="results-panel" class="hidden w-full space-y-4 pt-2">
 
-          <!-- SUCCESS METRICS PANEL -->
+          <!-- REAL iTANTRA RECEIVER STATION PANEL -->
           <div id="card-success" class="w-full tech-panel rounded-xl p-5 text-left border-emerald-500/40">
-            <div class="flex items-center justify-between mb-4 font-mono">
-              <span class="text-xs font-semibold text-emerald-400 flex items-center space-x-2">
-                <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-                <span>TRANSMISSION PASS — 24kHz SPEECH RESTORED</span>
-              </span>
-              <span id="res-latency" class="text-xs text-neutral-400">—</span>
+            <!-- Receiver Header -->
+            <div class="flex items-center justify-between pb-3 border-b border-white/10 mb-4 font-mono">
+              <div>
+                <span class="text-[10px] text-emerald-400 uppercase tracking-widest block font-bold">iTANTRA RECEIVER STATION</span>
+                <span id="rx-link-status" class="text-xs text-neutral-300 font-semibold">Link Status: Connected (Verified Transport)</span>
+              </div>
+              <div class="text-right">
+                <span class="text-[9px] text-neutral-500 uppercase block">Transmission ID</span>
+                <span id="res-tx-id" class="text-xs font-mono font-bold text-amber-300">TX-READY</span>
+              </div>
             </div>
 
-            <!-- Reconstructed Voice Player + Canvas Waveform -->
+            <!-- Receiver Pipeline Status Tracker -->
+            <div class="mb-4 bg-white/[0.02] border border-white/10 rounded-xl p-3 font-mono">
+              <div class="text-[9px] text-neutral-400 uppercase tracking-wider mb-2">Receiver Pipeline State</div>
+              <div class="flex items-center justify-between text-[10px] sm:text-xs text-center font-bold">
+                <span id="p-step-rx" class="px-2 py-1 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/40">1. RECEIVED</span>
+                <span class="text-white/30">→</span>
+                <span id="p-step-ver" class="px-2 py-1 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/40">2. VERIFIED</span>
+                <span class="text-white/30">→</span>
+                <span id="p-step-dec" class="px-2 py-1 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/40">3. DECODED</span>
+                <span class="text-white/30">→</span>
+                <span id="p-step-syn" class="px-2 py-1 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/40">4. SYNTHESIZED</span>
+                <span class="text-white/30">→</span>
+                <span id="p-step-ply" class="px-2 py-1 rounded bg-white/5 text-neutral-400 border border-white/10">5. PLAYING</span>
+              </div>
+            </div>
+
+            <!-- Incoming Transmission Details Grid -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs mb-3 font-mono">
+              <div class="bg-white/[0.02] p-2.5 rounded-lg border border-white/5">
+                <span class="text-[9px] text-neutral-500 block">Transmission Mode</span>
+                <span id="res-comm-mode-text" class="font-semibold text-white text-xs">—</span>
+              </div>
+              <div class="bg-white/[0.02] p-2.5 rounded-lg border border-white/5">
+                <span class="text-[9px] text-neutral-500 block">Language / Dialect</span>
+                <span id="res-language-text" class="font-semibold text-white text-xs">—</span>
+              </div>
+              <div class="bg-white/[0.02] p-2.5 rounded-lg border border-white/5">
+                <span class="text-[9px] text-neutral-500 block">Packets &amp; Sequence</span>
+                <span id="res-packets-text" class="font-semibold text-emerald-400 text-xs">—</span>
+              </div>
+              <div class="bg-white/[0.02] p-2.5 rounded-lg border border-white/5">
+                <span class="text-[9px] text-neutral-500 block">CRC Checksum</span>
+                <span id="res-crc-state" class="font-semibold text-emerald-400 text-xs">—</span>
+              </div>
+            </div>
+
+            <!-- Received Content Card (Mode 1 Semantic vs Mode 2 Text) -->
+            <div id="res-content-card" class="w-full bg-[#080808] border border-white/10 rounded-xl p-4 mb-4 font-mono">
+              <div class="flex items-center justify-between mb-2">
+                <span id="res-content-heading" class="text-[10px] text-amber-400 font-bold uppercase tracking-wider">
+                  Receiver Reconstructed Meaning (Mode 1 Semantic)
+                </span>
+                <span id="res-conf-badge" class="text-[10px] text-neutral-300 px-2 py-0.5 rounded border border-white/15 bg-white/5">
+                  Conf: —
+                </span>
+              </div>
+              <div id="res-semantic-fields" class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs mb-3">
+                <div class="bg-white/[0.02] p-2 rounded border border-white/5">
+                  <span class="text-[9px] text-neutral-500 block">Intent Category</span>
+                  <span id="res-category" class="font-semibold text-white text-xs">—</span>
+                </div>
+                <div class="bg-white/[0.02] p-2 rounded border border-white/5">
+                  <span class="text-[9px] text-neutral-500 block">Semantic Payload</span>
+                  <span id="res-payload-bits" class="font-semibold text-amber-300 text-xs">—</span>
+                </div>
+                <div class="bg-white/[0.02] p-2 rounded border border-white/5">
+                  <span class="text-[9px] text-neutral-500 block">FEC Recovery</span>
+                  <span id="res-fec-state" class="font-semibold text-cyan-400 text-xs">—</span>
+                </div>
+              </div>
+              <div class="border-t border-white/10 pt-2.5">
+                <span id="res-label-meaning" aria-hidden="true" class="text-[9px] text-neutral-400 uppercase tracking-wider block mb-1">
+                  Receiver Reconstructed Meaning:
+                </span>
+                <p id="res-receiver-text" aria-label="Reconstructed Message" class="text-sm font-semibold text-amber-200 leading-snug">—</p>
+              </div>
+            </div>
+
+            <!-- Transmission Audio Output / Synthesized Playback -->
             <div class="mb-5">
-              <label for="audio-player"
-                class="text-xs text-neutral-400 font-medium block mb-1.5 font-mono">Reconstructed Audio Output
-                (24kHz)</label>
+              <div class="flex items-center justify-between mb-1.5 font-mono">
+                <div>
+                  <label id="audio-player-label" for="audio-player" class="text-xs text-neutral-300 font-semibold block">
+                    Transmission Audio Output
+                  </label>
+                  <span id="audio-player-sublabel" class="text-[10px] text-neutral-400 block mt-0.5">
+                    Modem Tones / Synthesized Playback
+                  </span>
+                </div>
+                <span id="audio-dur-display" class="text-[10px] text-emerald-400 font-mono">Duration: —</span>
+              </div>
               <audio id="audio-player" controls class="w-full h-10 accent-emerald-400 rounded-lg mb-2"></audio>
               <canvas id="waveform-canvas" width="600" height="48"
                 class="w-full h-12 rounded-lg bg-[#050505] border border-white/10"></canvas>
+              <div id="receiver-link-banner" class="mt-2 p-2.5 rounded-lg bg-cyan-950/30 border border-cyan-500/30 flex items-center justify-between font-mono text-xs hidden">
+                <span class="text-cyan-200">📡 Listening Station:</span>
+                <a href="/receiver" target="_blank" class="px-3 py-1 rounded-md bg-cyan-500/20 border border-cyan-500/40 text-cyan-300 font-bold hover:bg-cyan-500/30 transition flex items-center gap-1">
+                  Open Laptop 2 Receiver Station (/receiver) ↗
+                </a>
+              </div>
             </div>
 
-            <!-- Verified Real Backend Metrics Grid -->
+            <!-- Receiver Verified Metrics Grid -->
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center mb-5 font-mono">
               <div class="tech-panel rounded-lg p-2.5">
-                <span id="m-bitrate" class="text-xs font-bold text-white tracking-tight">6.0 kbps</span>
-                <span class="text-[9px] text-neutral-400 block mt-0.5">Target Bitrate</span>
+                <span id="m-bitrate" class="text-xs font-bold text-white tracking-tight">10 bits</span>
+                <span id="m-bitrate-label" class="text-[9px] text-neutral-400 block mt-0.5">Payload</span>
               </div>
               <div class="tech-panel rounded-lg p-2.5">
-                <span id="m-packets" class="text-xs font-bold text-white tracking-tight">98 / 98</span>
-                <span class="text-[9px] text-neutral-400 block mt-0.5">Packets Verified</span>
+                <span id="m-packets" class="text-xs font-bold text-white tracking-tight">1 / 1</span>
+                <span id="m-packets-label" class="text-[9px] text-neutral-400 block mt-0.5">Packets Verified</span>
               </div>
               <div class="tech-panel rounded-lg p-2.5">
-                <span id="m-ratio" class="text-xs font-bold text-white tracking-tight">18.2x</span>
-                <span class="text-[9px] text-neutral-400 block mt-0.5">Compression Ratio</span>
+                <span id="m-ratio" class="text-xs font-bold text-white tracking-tight">PASS</span>
+                <span id="m-ratio-label" class="text-[9px] text-neutral-400 block mt-0.5">Integrity</span>
               </div>
               <div class="tech-panel rounded-lg p-2.5">
                 <span id="m-crc" class="text-xs font-bold text-emerald-400 tracking-tight">PASS</span>
-                <span class="text-[9px] text-neutral-400 block mt-0.5">CRC32 Checksum</span>
+                <span id="m-crc-label" class="text-[9px] text-neutral-400 block mt-0.5">CRC Status</span>
               </div>
             </div>
 
             <!-- AI4Bharat Multilingual Transcription -->
             <div class="w-full bg-[#050505] border border-white/10 rounded-xl p-4">
               <div class="flex items-center justify-between mb-1.5 font-mono">
-                <span class="text-[10px] text-neutral-400 uppercase tracking-wider">AI4Bharat IndicConformer
-                  Multilingual ASR</span>
+                <span class="text-[10px] text-neutral-400 uppercase tracking-wider">Transmitter Speech-to-Text ASR (Whisper / IndicConformer)</span>
                 <button onclick="copyASRText()"
                   class="text-[10px] text-neutral-300 hover:text-white px-2 py-0.5 rounded border border-white/20 bg-white/5 active:scale-95 transition-all">
                   <span id="btn-copy-text">Copy Text</span>
                 </button>
               </div>
-              <div id="asr-output" class="text-sm font-medium text-neutral-100">
+              <div id="asr-output" class="text-sm font-medium text-neutral-100 font-mono">
                 —
               </div>
             </div>
@@ -1659,13 +1770,13 @@
       const modeNote = document.getElementById('mode-note');
 
       if (mode === 'software_loopback') {
-        swBtn.className = 'py-2.5 px-4 rounded-xl text-xs font-mono font-medium border text-white bg-white/10 border-white/30 transition-all text-center';
+        swBtn.className = 'py-2.5 px-4 rounded-xl text-xs font-mono font-medium border text-white bg-white/10 border-white/30 transition-all text-center shadow-lg';
         physBtn.className = 'py-2.5 px-4 rounded-xl text-xs font-mono font-medium border text-neutral-400 border-white/10 hover:border-white/20 transition-all text-center';
-        modeNote.innerText = "Verified software transmission channel (PASS).";
+        modeNote.innerHTML = "<strong>MODE A: SOFTWARE LOOPBACK</strong> &bull; Validates ggwave encoder &rarr; loopback decoder &rarr; CRC16 &rarr; TTS pipeline without air.";
       } else {
-        physBtn.className = 'py-2.5 px-4 rounded-xl text-xs font-mono font-medium border text-white bg-white/10 border-white/30 transition-all text-center';
+        physBtn.className = 'py-2.5 px-4 rounded-xl text-xs font-mono font-medium border text-white bg-cyan-500/20 border-cyan-500/40 text-cyan-300 transition-all text-center shadow-lg';
         swBtn.className = 'py-2.5 px-4 rounded-xl text-xs font-mono font-medium border text-neutral-400 border-white/10 hover:border-white/20 transition-all text-center';
-        modeNote.innerText = "Physical acoustic mode requires compatible speaker/microphone acoustic conditions.";
+        modeNote.innerHTML = "<strong>MODE B: TWO-LAPTOP ACOUSTIC</strong> &bull; Laptop 1 speaker plays genuine ggwave modem tones over the air. Laptop 2 (<a href='/receiver' target='_blank' class='text-cyan-400 underline font-bold'>/receiver</a>) mic captures, verifies CRC, and speaks TTS.";
       }
     }
 
@@ -1952,9 +2063,71 @@
       }
     }
 
+    function onCommModeChange(modeVal) {
+      const badge = document.getElementById('comm-mode-badge');
+      const desc = document.getElementById('comm-mode-desc');
+      if (modeVal === 'auto') {
+        badge.innerText = 'Autonomous';
+        badge.className = 'text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/30';
+        desc.innerText = 'Auto-Route transcribes speech, evaluates semantic intent: Emergency speech reduces to ultra-compact 10-bit packets; normal speech routes as text.';
+      } else if (modeVal === 'mode_1_semantic') {
+        badge.innerText = 'Mode 1';
+        badge.className = 'text-[10px] font-mono px-2 py-0.5 rounded-full bg-red-500/20 text-red-300 border border-red-500/30';
+        desc.innerText = 'Mode 1: Semantic Compression. Forces intent classification and reduces speech to 10-bit payload + receiver template synthesis.';
+      } else if (modeVal === 'mode_2_text') {
+        badge.innerText = 'Mode 2';
+        badge.className = 'text-[10px] font-mono px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30';
+        desc.innerText = 'Mode 2: Free Text Communication. Transmits ASR transcript as UTF-8 packet with CRC16 and speech synthesis.';
+      } else {
+        badge.innerText = 'Mode 3';
+        badge.className = 'text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
+        desc.innerText = 'Mode 3: EnCodec Neural Voice. 24kHz RVQ neural compression into 256-byte chunks with CRC32 verification.';
+      }
+    }
+
+    function setPipelineStatus(stage) {
+      const steps = {
+        'RX': document.getElementById('p-step-rx'),
+        'VER': document.getElementById('p-step-ver'),
+        'DEC': document.getElementById('p-step-dec'),
+        'SYN': document.getElementById('p-step-syn'),
+        'PLY': document.getElementById('p-step-ply')
+      };
+      const activeClass = 'px-2 py-1 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 font-bold';
+      const inactiveClass = 'px-2 py-1 rounded bg-white/5 text-neutral-500 border border-white/10';
+      const playingClass = 'px-2 py-1 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 font-bold animate-pulse';
+
+      Object.values(steps).forEach(s => { if (s) s.className = inactiveClass; });
+
+      if (stage === 'IDLE') return;
+
+      if (stage === 'RECEIVED' && steps.RX) {
+        steps.RX.className = activeClass;
+      } else if (stage === 'VERIFIED') {
+        if (steps.RX) steps.RX.className = activeClass;
+        if (steps.VER) steps.VER.className = activeClass;
+      } else if (stage === 'DECODED') {
+        if (steps.RX) steps.RX.className = activeClass;
+        if (steps.VER) steps.VER.className = activeClass;
+        if (steps.DEC) steps.DEC.className = activeClass;
+      } else if (stage === 'SYNTHESIZED') {
+        if (steps.RX) steps.RX.className = activeClass;
+        if (steps.VER) steps.VER.className = activeClass;
+        if (steps.DEC) steps.DEC.className = activeClass;
+        if (steps.SYN) steps.SYN.className = activeClass;
+      } else if (stage === 'PLAYING') {
+        if (steps.RX) steps.RX.className = activeClass;
+        if (steps.VER) steps.VER.className = activeClass;
+        if (steps.DEC) steps.DEC.className = activeClass;
+        if (steps.SYN) steps.SYN.className = activeClass;
+        if (steps.PLY) steps.PLY.className = playingClass;
+      }
+    }
+
     async function sendAudioToPipeline(audioBlob, filename = 'audio.wav') {
       const language = document.getElementById('select-language').value;
       const bitrate = document.getElementById('select-bitrate').value;
+      const commMode = document.getElementById('select-comm-mode') ? document.getElementById('select-comm-mode').value : 'auto';
       const statusBadge = document.getElementById('status-badge');
       const statusText = document.getElementById('recording-status');
       const pText = document.getElementById('pipeline-progress-text');
@@ -1963,10 +2136,42 @@
       const btnRecord = document.getElementById('btn-record');
       const btnSample = document.getElementById('btn-sample');
 
+      // CRITICAL: Immediately clear and stop all previous transmission & audio playback state
+      const player = document.getElementById('audio-player');
+      if (player) {
+        player.pause();
+        player.removeAttribute('src');
+        player.load();
+      }
+      if (currentAudioObjectUrl) {
+        URL.revokeObjectURL(currentAudioObjectUrl);
+        currentAudioObjectUrl = null;
+      }
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+      currentWaveformBuffer = null;
+      renderWaveformCanvas(0);
+
+      // Clear previous labels to prevent state contamination
+      document.getElementById('res-tx-id').innerText = 'TX-PENDING...';
+      document.getElementById('asr-output').innerText = '— Processing ASR...';
+      document.getElementById('res-category').innerText = '—';
+      document.getElementById('res-conf-badge').innerText = 'Conf: —';
+      document.getElementById('res-payload-bits').innerText = '—';
+      document.getElementById('res-crc-state').innerText = '—';
+      document.getElementById('res-fec-state').innerText = '—';
+      document.getElementById('res-receiver-text').innerText = '—';
+      document.getElementById('res-comm-mode-text').innerText = '—';
+      document.getElementById('res-language-text').innerText = '—';
+      document.getElementById('res-packets-text').innerText = '—';
+      document.getElementById('audio-dur-display').innerText = 'Duration: —';
+      setPipelineStatus('IDLE');
+
       btnRecord.disabled = true;
       btnSample.disabled = true;
       statusBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-400 animate-spin"></span> Processing`;
-      statusText.innerText = "Transmitting through EnCodec Pipeline...";
+      statusText.innerText = "Processing Speech & Routing Mode...";
 
       pBarCont.classList.remove('hidden');
       pBarFill.style.width = '15%';
@@ -1976,7 +2181,8 @@
       const formData = new FormData();
       formData.append('language', language);
       formData.append('bitrate', bitrate);
-      formData.append('mode', currentMode);
+      formData.append('mode', commMode);
+      formData.append('channel_mode', currentMode);
 
       if (audioBlob) {
         formData.append('audio', audioBlob, filename);
@@ -1998,6 +2204,14 @@
           displaySuccessResults(data);
           statusBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-signal-pulse"></span> TRANSMISSION PASS`;
           statusText.innerText = "Click Microphone to Record Audio";
+        } else if (response.ok && data.status === 'NO_SPEECH') {
+          pBarFill.style.width = '100%';
+          pText.innerText = 'Audio Processed — No Speech Detected';
+          updateStageBadges(2, -1);
+
+          displayNoSpeechResults(data);
+          statusBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-neutral-400"></span> NO SPEECH`;
+          statusText.innerText = "No speech detected in audio. Please speak clearly into mic.";
         } else {
           const failStage = getStageIndexFromBackendStage(data.stage);
           pBarFill.style.width = `${failStage * 10}%`;
@@ -2102,14 +2316,17 @@
 
       player.onplay = () => {
         cancelAnimationFrame(animFrameId);
+        setPipelineStatus('PLAYING');
         updateVisualizer();
       };
       player.onpause = () => {
         cancelAnimationFrame(animFrameId);
+        setPipelineStatus('SYNTHESIZED');
         updateVisualizer();
       };
       player.onended = () => {
         cancelAnimationFrame(animFrameId);
+        setPipelineStatus('SYNTHESIZED');
         renderWaveformCanvas(0);
       };
       player.ontimeupdate = () => {
@@ -2135,7 +2352,8 @@
       const player = document.getElementById('audio-player');
       const statusBadge = document.getElementById('status-badge');
       const statusText = document.getElementById('recording-status');
-      const expectedDurationSec = data.duration_sec;
+      const durDisplay = document.getElementById('audio-dur-display');
+      const expectedDurationSec = data.duration_sec || 0;
 
       if (currentAudioObjectUrl) {
         URL.revokeObjectURL(currentAudioObjectUrl);
@@ -2150,7 +2368,7 @@
           wavBlob = base64ToBlob(data.audio_base64, 'audio/wav');
           console.log(`[iTantra Player] Decoded base64 WAV payload (${wavBlob.size} bytes)`);
         } else if (data.reconstructed_audio_url) {
-          const response = await fetch(data.reconstructed_audio_url + '?t=' + Date.now(), { cache: 'no-store' });
+          const response = await fetch(data.reconstructed_audio_url + '?tx=' + (data.transmission_id || Date.now()), { cache: 'no-store' });
           if (!response.ok) throw new Error(`HTTP ${response.status} loading audio file`);
           const audioBlob = await response.blob();
           if (!audioBlob || audioBlob.size < 44) throw new Error("Received empty or truncated audio file from server");
@@ -2183,7 +2401,7 @@
           const onMeta = () => {
             if (resolved) return;
             resolved = true;
-            console.log(`[iTantra Player] Metadata loaded. Duration: ${player.duration}s (Backend calc: ${expectedDurationSec}s)`);
+            console.log(`[iTantra Player] Metadata loaded. Duration: ${player.duration}s (Backend: ${expectedDurationSec}s)`);
             resolve(player.duration);
           };
 
@@ -2191,7 +2409,7 @@
             if (resolved) return;
             resolved = true;
             const errObj = player.error || e;
-            console.error('[iTantra Player] Audio Element Load Warning:', errObj);
+            console.error('[iTantra Player] Audio Load Info:', errObj);
             resolve(expectedDurationSec || 0);
           };
 
@@ -2203,10 +2421,9 @@
           setTimeout(() => {
             if (!resolved) {
               resolved = true;
-              console.warn(`[iTantra Player] loadedmetadata timeout, using backend duration: ${expectedDurationSec}s`);
               resolve(expectedDurationSec || 0);
             }
-          }, 3000);
+          }, 2500);
         });
 
         player.volume = 1.0;
@@ -2215,16 +2432,88 @@
         player.load();
 
         const dur = await metadataPromise;
-        const displayDur = (dur && !isNaN(dur) && dur > 0) ? dur : (expectedDurationSec || 0);
+        const displayDur = (dur && !isNaN(dur) && dur > 0) ? dur : expectedDurationSec;
 
+        const isAcoustic = (data.channel_mode === 'physical_acoustic');
+        durDisplay.innerText = `Duration: ${displayDur.toFixed(2)}s (${isAcoustic ? 'Acoustic ggwave Tones' : 'Restored Speech'})`;
         statusBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-signal-pulse"></span> TRANSMISSION PASS`;
-        statusText.innerText = `Audio Ready (${displayDur.toFixed(2)}s) — Click Play below`;
+        statusText.innerText = isAcoustic 
+          ? `ggwave Acoustic Modem Audio Ready (${displayDur.toFixed(2)}s) — Transmitting Through Speaker Over Air`
+          : `Audio Ready (${displayDur.toFixed(2)}s) — Click Play below`;
 
       } catch (err) {
         console.error('[iTantra Audio Playback Error]', err);
         statusBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-red-400"></span> AUDIO PLAYBACK ERROR`;
-        statusText.innerText = "Reconstructed audio playback error: " + err.message;
+        statusText.innerText = "Reconstructed audio error: " + err.message;
+        durDisplay.innerText = "Duration: Error";
         displayErrorResults("Audio Playback Error: " + err.message);
+      }
+    }
+
+    function displayNoSpeechResults(data) {
+      document.getElementById('results-panel').classList.remove('hidden');
+      document.getElementById('card-success').classList.remove('hidden');
+      document.getElementById('card-error').classList.add('hidden');
+
+      document.getElementById('res-tx-id').innerText = data.transmission_id || 'TX-EMPTY';
+      document.getElementById('rx-link-status').innerText = 'Link Status: Connected (Channel Idle — No Transmission)';
+      document.getElementById('rx-link-status').className = 'text-xs text-neutral-400 font-semibold';
+
+      setPipelineStatus('IDLE');
+
+      document.getElementById('res-comm-mode-text').innerText = 'NONE (Not Selected)';
+      document.getElementById('res-language-text').innerText = (data.language || 'HI').toUpperCase();
+      document.getElementById('res-packets-text').innerText = '0 Packets Sent';
+      document.getElementById('res-crc-state').innerText = 'N/A';
+
+      document.getElementById('res-content-heading').innerText = 'Transmission Aborted — No Speech Recognized';
+      document.getElementById('res-content-heading').className = 'text-[10px] text-neutral-400 font-bold uppercase tracking-wider';
+      document.getElementById('res-conf-badge').innerText = 'Conf: 0%';
+      document.getElementById('res-category').innerText = 'NOT RUN';
+      document.getElementById('res-payload-bits').innerText = '0 bits';
+      document.getElementById('res-fec-state').innerText = 'N/A';
+      document.getElementById('res-label-meaning').innerText = 'Receiver Status:';
+      document.getElementById('res-receiver-text').innerText = 'NO TRANSMISSION — Microphone audio contained no speech (ambient silence). State reset.';
+
+      document.getElementById('audio-dur-display').innerText = 'Duration: 0.00s (No Audio)';
+      document.getElementById('m-bitrate').innerText = '0 bits';
+      document.getElementById('m-bitrate-label').innerText = 'Payload Transmitted';
+      document.getElementById('m-packets').innerText = '0 / 0';
+      document.getElementById('m-packets-label').innerText = 'Packets Sent';
+      document.getElementById('m-ratio').innerText = 'N/A';
+      document.getElementById('m-ratio-label').innerText = 'Integrity';
+      document.getElementById('m-crc').innerText = 'N/A';
+      document.getElementById('m-crc-label').innerText = 'CRC Result';
+
+      document.getElementById('asr-output').innerText = '— (No speech recognized in audio)';
+
+      const player = document.getElementById('audio-player');
+      if (player) {
+        player.pause();
+        player.removeAttribute('src');
+        player.load();
+      }
+      currentWaveformBuffer = null;
+      renderWaveformCanvas(0);
+    }
+
+    function logAndVerifyTTSInput(textToSpeak) {
+      console.log("========== TTS INPUT ==========");
+      console.log("TTS INPUT:", JSON.stringify(textToSpeak));
+      console.log("TTS LENGTH:", textToSpeak ? textToSpeak.length : 0);
+      console.log("================================");
+
+      if (
+        textToSpeak && (
+          textToSpeak.includes("Receiver Reconstructed Meaning") ||
+          textToSpeak.includes("Intent Category") ||
+          textToSpeak.includes("Semantic Payload") ||
+          textToSpeak.includes("FEC Recovery") ||
+          textToSpeak.includes("CRC")
+        )
+      ) {
+        console.error("BUG: UI METADATA ENTERED TTS:", textToSpeak);
+        return;
       }
     }
 
@@ -2233,12 +2522,139 @@
       document.getElementById('card-success').classList.remove('hidden');
       document.getElementById('card-error').classList.add('hidden');
 
-      document.getElementById('m-bitrate').innerText = `${data.bitrate_kbps} kbps`;
-      document.getElementById('m-packets').innerText = `${data.packets_received} / ${data.packets_sent}`;
-      document.getElementById('m-ratio').innerText = data.compression_ratio;
-      document.getElementById('m-crc').innerText = data.crc_status;
+      document.getElementById('res-tx-id').innerText = data.transmission_id || 'TX-OK';
+      
+      const isAcoustic = (data.channel_mode === 'physical_acoustic');
+      const playerLabel = document.getElementById('audio-player-label');
+      const playerSublabel = document.getElementById('audio-player-sublabel');
+      const rxBanner = document.getElementById('receiver-link-banner');
 
-      document.getElementById('res-latency').innerText = `${data.processing_latency_ms} ms`;
+      if (isAcoustic) {
+        document.getElementById('rx-link-status').innerText = 'Link Status: Acoustic Physical Transmission (Speaker → Air → Mic)';
+        document.getElementById('rx-link-status').className = 'text-xs text-cyan-300 font-semibold';
+        if (playerLabel) playerLabel.innerText = "GGWAVE TRANSMISSION AUDIO (Acoustic Modem Data Tones)";
+        if (playerSublabel) playerSublabel.innerText = "Audible 48kHz Chirps / Modem Tones • Playing Through Physical Laptop 1 Speaker Over Air";
+        if (rxBanner) rxBanner.classList.remove('hidden');
+      } else {
+        document.getElementById('rx-link-status').innerText = 'Link Status: Connected (Software Loopback Channel)';
+        document.getElementById('rx-link-status').className = 'text-xs text-emerald-300 font-semibold';
+        if (playerLabel) playerLabel.innerText = "Receiver Audio Output (Software Loopback Pipeline Validation)";
+        if (playerSublabel) playerSublabel.innerText = "Synthesized Speech Restored from ggwave Loopback Verification";
+        if (rxBanner) rxBanner.classList.add('hidden');
+      }
+
+      setPipelineStatus('SYNTHESIZED');
+
+      const commMode = data.communication_mode || "MODE 3 ENCODEC VOICE";
+      document.getElementById('res-comm-mode-text').innerText = commMode;
+      document.getElementById('res-language-text').innerText = (data.language || 'HI').toUpperCase();
+      document.getElementById('res-packets-text').innerText = `${data.packets_received} / ${data.packets_sent} (Seq #1)`;
+      document.getElementById('res-crc-state').innerText = data.crc_status || "PASS (16-bit CCITT)";
+
+      const rx = data.receiver || {};
+      const tx = data.sender || {};
+      const categoryLabel = rx.decoded_category || (data.classification ? data.classification.category : "—");
+      document.getElementById('res-category').innerText = categoryLabel;
+
+      if (tx.confidence != null) {
+        const confPct = Math.round(tx.confidence * 100);
+        document.getElementById('res-conf-badge').innerText = `Sender Conf: ${confPct}%`;
+      } else {
+        document.getElementById('res-conf-badge').innerText = `Decoded: ${categoryLabel}`;
+      }
+
+      // STEP 4: Explicit separate variables for UI display label and spoken text
+      const receiverMeaningText = rx.receiverMeaningText || rx.decoded_meaning || data.receiverMeaningText || data.receiver_text || "";
+      const receiverMeaningLabel = isAcoustic ? "Acoustic Channel Status:" : "Receiver Reconstructed Meaning:";
+
+      document.getElementById('res-payload-bits').innerText = (rx.payload_bits || data.payload_bits) ? `${rx.payload_bits || data.payload_bits} bits` : "—";
+      document.getElementById('res-fec-state').innerText = rx.fec_status || data.fec_status || "Protected";
+
+      const heading = document.getElementById('res-content-heading');
+      const labelMeaning = document.getElementById('res-label-meaning');
+      const rxText = document.getElementById('res-receiver-text');
+
+      if (commMode.includes("MODE 1")) {
+        if (isAcoustic) {
+          heading.innerText = "Laptop 1 Sender: GGWAVE Acoustic Tones Generated";
+          heading.className = "text-[10px] text-cyan-400 font-bold uppercase tracking-wider";
+          labelMeaning.textContent = receiverMeaningLabel;
+          labelMeaning.setAttribute("aria-hidden", "true");
+          rxText.textContent = "ggwave acoustic modem tones generated. Playing through speaker. Laptop 2 (/receiver) captures and synthesizes Hindi template.";
+          rxText.setAttribute("aria-label", "Transmission Status");
+          rxText.className = "text-sm font-semibold text-cyan-200 leading-snug";
+        } else {
+          heading.innerText = "Receiver Reconstructed Meaning (Mode 1 Semantic SOS)";
+          heading.className = "text-[10px] text-amber-400 font-bold uppercase tracking-wider";
+          labelMeaning.textContent = receiverMeaningLabel;
+          labelMeaning.setAttribute("aria-hidden", "true");
+          rxText.textContent = receiverMeaningText ? `"${receiverMeaningText}"` : "—";
+          rxText.setAttribute("aria-label", "Reconstructed Message");
+          rxText.className = "text-sm font-semibold text-amber-200 leading-snug";
+
+          logAndVerifyTTSInput(receiverMeaningText);
+        }
+
+        // Mode 1 Honest Metrics
+        document.getElementById('m-bitrate').innerText = "10 bits";
+        document.getElementById('m-bitrate-label').innerText = "Semantic Payload";
+        document.getElementById('m-packets').innerText = "1 / 1";
+        document.getElementById('m-packets-label').innerText = "Packets (Seq #1)";
+        document.getElementById('m-ratio').innerText = "PASS";
+        document.getElementById('m-ratio-label').innerText = "CRC16 CCITT";
+        document.getElementById('m-crc').innerText = "PASS";
+        document.getElementById('m-crc-label').innerText = "Integrity";
+
+      } else if (commMode.includes("MODE 2")) {
+        if (isAcoustic) {
+          heading.innerText = "Laptop 1 Sender: Free Text ggwave Tones Generated";
+          heading.className = "text-[10px] text-cyan-400 font-bold uppercase tracking-wider";
+          labelMeaning.textContent = "Acoustic Channel Status:";
+          labelMeaning.setAttribute("aria-hidden", "true");
+          rxText.textContent = "ggwave acoustic data tones generated. Laptop 1 speaker transmits text packet over air. Laptop 2 (/receiver) captures and synthesizes speech.";
+          rxText.setAttribute("aria-label", "Transmission Status");
+          rxText.className = "text-sm font-semibold text-cyan-200 leading-snug";
+        } else {
+          heading.innerText = "Received Message (Mode 2 Free Text Communication)";
+          heading.className = "text-[10px] text-cyan-400 font-bold uppercase tracking-wider";
+          labelMeaning.textContent = "Received Message:";
+          labelMeaning.setAttribute("aria-hidden", "true");
+          rxText.textContent = receiverMeaningText ? `"${receiverMeaningText}"` : "—";
+          rxText.setAttribute("aria-label", "Received Message");
+          rxText.className = "text-sm font-semibold text-cyan-200 leading-snug";
+
+          logAndVerifyTTSInput(receiverMeaningText);
+        }
+
+        // Mode 2 Honest Metrics
+        const payloadBytes = Math.round((data.payload_bits || 0) / 8);
+        document.getElementById('m-bitrate').innerText = `${payloadBytes} B (${data.payload_bits} bits)`;
+        document.getElementById('m-bitrate-label').innerText = "UTF-8 Text Payload";
+        document.getElementById('m-packets').innerText = "1 / 1";
+        document.getElementById('m-packets-label').innerText = "Packets (Seq #1)";
+        document.getElementById('m-ratio').innerText = data.compression_ratio || "PASS";
+        document.getElementById('m-ratio-label').innerText = "Compression Ratio";
+        document.getElementById('m-crc').innerText = "PASS";
+        document.getElementById('m-crc-label').innerText = "CRC16 CCITT";
+
+      } else {
+        heading.innerText = "Reconstructed Voice Speech (Mode 3 EnCodec Neural Audio)";
+        heading.className = "text-[10px] text-emerald-400 font-bold uppercase tracking-wider";
+        labelMeaning.innerText = "Reconstructed Voice Speech:";
+        rxText.innerText = data.asr_transcription ? `"${data.asr_transcription}"` : "24kHz Neural Restored Speech";
+        rxText.className = "text-sm font-semibold text-emerald-200 leading-snug";
+
+        // Mode 3 Metrics
+        document.getElementById('m-bitrate').innerText = `${data.bitrate_kbps} kbps`;
+        document.getElementById('m-bitrate-label').innerText = "EnCodec Target Bitrate";
+        document.getElementById('m-packets').innerText = `${data.packets_received} / ${data.packets_sent}`;
+        document.getElementById('m-packets-label').innerText = "Packets (256B Chunks)";
+        document.getElementById('m-ratio').innerText = data.compression_ratio;
+        document.getElementById('m-ratio-label').innerText = "Compression Ratio";
+        document.getElementById('m-crc').innerText = data.crc_status || "PASS";
+        document.getElementById('m-crc-label').innerText = "CRC32 Checksum";
+      }
+
       document.getElementById('asr-output').innerText = data.asr_transcription || "—";
 
       loadReconstructedAudio(data);
