@@ -1,4 +1,5 @@
 import os
+import sys
 import io
 import re
 import json
@@ -13,6 +14,13 @@ import subprocess
 import torch
 import numpy as np
 import soundfile as sf
+
+if sys.stdout and hasattr(sys.stdout, 'reconfigure'):
+    try:
+        sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+        sys.stderr.reconfigure(encoding='utf-8', errors='replace')
+    except Exception:
+        pass
 from encodec import EncodecModel
 from encodec.utils import convert_audio
 from transformers import AutoModel
@@ -827,7 +835,10 @@ def process_itantra_pipeline(audio_path, target_bitrate=6.0, language="hi", mode
     )
 
     print(f"  Stage 2: ASR")
-    print(f"    - exact transcript: \"{asr_text}\"")
+    try:
+        print(f"    - exact transcript: \"{asr_text}\"")
+    except Exception:
+        print(f"    - exact transcript (encoded): \"{asr_text.encode('ascii', 'replace').decode('ascii')}\"")
     print(f"    - transcript length: {len(asr_text)}")
     print(f"    - ASR success/failure: {'FAILURE (No speech recognized)' if is_no_speech else 'SUCCESS'}")
 
@@ -909,7 +920,10 @@ def process_itantra_pipeline(audio_path, target_bitrate=6.0, language="hi", mode
 
     print(f"  Stage 3: CLASSIFIER")
     print(f"    TX ID: {tx_id}")
-    print(f"    Transcript: \"{asr_text}\"")
+    try:
+        print(f"    Transcript: \"{asr_text}\"")
+    except Exception:
+        print(f"    Transcript (encoded): \"{asr_text.encode('ascii', 'replace').decode('ascii')}\"")
     print(f"    category.label: {classification.category.label}")
     print(f"    category.typeId: {classification.category.type_id}")
     print(f"    intentId: {classification.intent_id}")

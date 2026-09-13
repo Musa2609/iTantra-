@@ -5,5 +5,7 @@ torchaudio
 encodec
 transformers
 soundfile
+sounddevice
 requests
 numpy
+openai-whisper

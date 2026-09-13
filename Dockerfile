@@ -1,8 +1,13 @@
 FROM python:3.11-slim
 
-# Install system audio libraries (libsndfile for soundfile)
+ENV PYTHONIOENCODING=utf-8
+ENV LANG=C.UTF-8
+ENV LC_ALL=C.UTF-8
+
+# Install system audio libraries (libsndfile for soundfile, libportaudio2 for sounddevice)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libsndfile1 \
+    libportaudio2 \
     ffmpeg \
     git \
     nodejs \
@@ -22,4 +27,3 @@ EXPOSE 5000
 
 # Run with Gunicorn in production
 CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--timeout", "120", "--workers", "1", "--threads", "4", "app:app"]
-
