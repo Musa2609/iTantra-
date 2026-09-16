@@ -379,6 +379,7 @@ def api_receiver_decode_acoustic():
                 pass
 
 @app.route('/api/receiver/simulate_packet', methods=['POST'])
+@app.route('/api/simulate_rx_packet', methods=['POST'])
 def api_receiver_simulate_packet():
     """
     Simulate an incoming acoustic transmission for testing the receiver station.
