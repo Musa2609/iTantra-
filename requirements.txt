@@ -3,7 +3,6 @@ https://download.pytorch.org/whl/cpu/torchaudio-2.6.0%2Bcpu-cp313-cp313-linux_x8
 flask>=3.0.0
 gunicorn>=21.2.0
 encodec
-transformers
 soundfile
 requests
 numpy

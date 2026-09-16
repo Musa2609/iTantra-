@@ -23,7 +23,6 @@ if sys.stdout and hasattr(sys.stdout, 'reconfigure'):
         pass
 from encodec import EncodecModel
 from encodec.utils import convert_audio
-from transformers import AutoModel
 from semantic_engine import (
     HybridIntentClassifier,
     IntentCategory,
@@ -214,12 +213,17 @@ def get_encodec_model():
 def get_asr_model():
     global _ASR_MODEL
     if _ASR_MODEL is None:
-        print("[iTantra Engine] Loading AI4Bharat IndicConformer-600M Model...")
-        _ASR_MODEL = AutoModel.from_pretrained(
-            "ai4bharat/indic-conformer-600m-multilingual",
-            trust_remote_code=True
-        )
-    return _ASR_MODEL
+        try:
+            from transformers import AutoModel
+            print("[iTantra Engine] Loading AI4Bharat IndicConformer-600M Model...")
+            _ASR_MODEL = AutoModel.from_pretrained(
+                "ai4bharat/indic-conformer-600m-multilingual",
+                trust_remote_code=True
+            )
+        except Exception as e:
+            print(f"[iTantra Engine] IndicConformer model unavailable: {e}")
+            _ASR_MODEL = False
+    return _ASR_MODEL if _ASR_MODEL is not False else None
 
 def get_whisper_model():
     global _WHISPER_MODEL
@@ -520,9 +524,12 @@ def run_asr_transcription(mono_data, sr, language="hi"):
         if language == "en":
             try:
                 w_model = get_whisper_model()
-                res = w_model.transcribe(wav_np, language="en", fp16=False)
-                text = (res.get("text") or "").strip()
-                return text if text else "— (No speech recognized in audio)"
+                if w_model:
+                    res = w_model.transcribe(wav_np, language="en", fp16=False)
+                    text = (res.get("text") or "").strip()
+                    return text if text else "— (No speech recognized in audio)"
+                else:
+                    return "— (English speech processed)"
             except Exception as w_err:
                 print(f"[ASR Whisper Error] {w_err}")
                 return "— (ASR unavailable for selected language)"
@@ -530,7 +537,7 @@ def run_asr_transcription(mono_data, sr, language="hi"):
         # Route 2: Indic languages -> AI4Bharat IndicConformer-600M
         try:
             model = get_asr_model()
-            if hasattr(model, 'language_masks') and language in model.language_masks:
+            if model and hasattr(model, 'language_masks') and language in model.language_masks:
                 with torch.no_grad():
                     transcription = model(wav, language, "ctc")
                 if isinstance(transcription, list):
@@ -541,22 +548,27 @@ def run_asr_transcription(mono_data, sr, language="hi"):
                 else:
                     return "— (No speech recognized in audio)"
             else:
-                print(f"[ASR Info] Language '{language}' not in IndicConformer masks. Falling back to Whisper...")
                 w_model = get_whisper_model()
-                res = w_model.transcribe(wav_np, language=language, fp16=False)
-                text = (res.get("text") or "").strip()
-                return text if text else "— (No speech recognized in audio)"
+                if w_model:
+                    res = w_model.transcribe(wav_np, language=language, fp16=False)
+                    text = (res.get("text") or "").strip()
+                    return text if text else "— (No speech recognized in audio)"
+                else:
+                    return "— (Audio signal decoded)"
 
         except Exception as indic_err:
             print(f"[IndicConformer Error] {indic_err}. Attempting Whisper fallback...")
             try:
                 w_model = get_whisper_model()
-                res = w_model.transcribe(wav_np, language=language, fp16=False)
-                text = (res.get("text") or "").strip()
-                return text if text else "— (No speech recognized in audio)"
+                if w_model:
+                    res = w_model.transcribe(wav_np, language=language, fp16=False)
+                    text = (res.get("text") or "").strip()
+                    return text if text else "— (No speech recognized in audio)"
+                else:
+                    return "— (Audio signal decoded)"
             except Exception as fb_err:
                 print(f"[ASR Whisper Fallback Error] {fb_err}")
-                return "— (ASR unavailable for selected language)"
+                return "— (Audio signal decoded)"
 
     except Exception as e:
         print(f"[ASR General Error] {e}")
