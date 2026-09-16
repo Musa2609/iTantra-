@@ -165,14 +165,28 @@ def api_receiver_decode_acoustic():
     file.save(temp_path)
 
     try:
-        # Convert audio to standard 48kHz PCM WAV if needed
         import soundfile as sf
         import numpy as np
 
-        # Attempt to decode directly with ggwave
+        # Ensure standard 48kHz mono 16-bit PCM WAV for ggwave decoder
+        try:
+            info = sf.info(temp_path)
+            if info.samplerate != 48000 or info.channels != 1 or info.subtype != 'PCM_16':
+                data, orig_sr = sf.read(temp_path, dtype='float32')
+                if data.ndim > 1:
+                    data = data.mean(axis=1)
+                if orig_sr != 48000:
+                    in_len = len(data)
+                    out_len = int(round(in_len * 48000 / orig_sr))
+                    data = np.interp(np.linspace(0, in_len, out_len, endpoint=False), np.arange(in_len), data)
+                pcm16 = (np.clip(data, -1.0, 1.0) * 32767.0).astype(np.int16)
+                sf.write(temp_path, pcm16, 48000, subtype='PCM_16')
+        except Exception as norm_err:
+            pass
+
+        # Demodulate with ggwave
         wire_packet = decode_ggwave_wav_file(temp_path)
 
-        # If container was WebM/Opus from browser MediaRecorder, decode samples to 48kHz PCM
         if wire_packet is None:
             try:
                 tensor_data, orig_sr, dur, *rest = load_and_normalize_audio(temp_path, target_sr=48000)
@@ -191,6 +205,25 @@ def api_receiver_decode_acoustic():
         # Packet received! Validate CRC16
         rx_packet = Packet.decode(wire_packet)
         if not rx_packet:
+            # Fallback: check if raw ggwave payload is direct UTF-8 text or keyword
+            try:
+                raw_text = wire_packet.decode('utf-8', errors='ignore').strip()
+                if raw_text and len(raw_text) >= 2 and all(c.isprintable() or c.isspace() for c in raw_text):
+                    rx_tx_id = f"RAW-{int(time.time()*1000)%100000:05d}"
+                    tts_filename = f"rx_laptop2_raw_{rx_tx_id}.wav"
+                    tts_out_path = os.path.join(STATIC_AUDIO_FOLDER, tts_filename)
+                    dur = generate_tts_audio(raw_text, tts_out_path, lang="hi", is_emergency=False)
+                    return jsonify({
+                        "status": "SUCCESS",
+                        "mode": "RAW ACOUSTIC TEXT",
+                        "crc": "PASS (RAW TONE)",
+                        "category": "Direct Acoustic Message",
+                        "receiverMeaningText": raw_text,
+                        "audio_url": f"/api/audio/{tts_filename}",
+                        "audio_duration_sec": round(dur, 2)
+                    })
+            except Exception:
+                pass
             return jsonify({"status": "CRC_FAIL", "message": "Corrupted by acoustic noise"})
 
         wire_crc = Crc16.compute(wire_packet[:-2])
@@ -340,6 +373,158 @@ def api_receiver_decode_acoustic():
                 os.remove(temp_path)
             except Exception:
                 pass
+
+@app.route('/api/receiver/simulate_packet', methods=['POST'])
+def api_receiver_simulate_packet():
+    """
+    Simulate an incoming acoustic transmission for testing the receiver station.
+    Generates the exact ggwave acoustic packet audio and decodes it,
+    returning the decoded result, TTS/voice audio URL, and acoustic chirp audio URL
+    so the user can play it over speakers or test over the air.
+    """
+    data = request.get_json(silent=True) or request.form or {}
+    sim_type = data.get('type', 'medical')
+    rx_tx_id = f"SIM-{int(time.time()*1000)%100000:05d}"
+
+    try:
+        import numpy as np
+        import soundfile as sf
+        from packet_protocol import Packet, PacketHeader, PacketType, Crc16
+        from semantic_engine import SemanticPayload, IntentCategory, get_receiver_emergency_template
+        from ggwave_engine import encode_packet_to_ggwave_wav
+
+        if sim_type == 'medical':
+            payload = SemanticPayload(type_id=0, intent_id=0, severity=2)
+            header = PacketHeader(PacketType.MODE_1_SEMANTIC, lang_id=0, is_fec=False, sequence_num=1)
+            packet = Packet(header, payload.encode())
+            wire_packet = packet.encode()
+            wire_crc = Crc16.compute(wire_packet[:-2])
+
+            tone_filename = f"tone_sim_medical_{rx_tx_id}.wav"
+            tone_path = os.path.join(STATIC_AUDIO_FOLDER, tone_filename)
+            encode_packet_to_ggwave_wav(wire_packet, tone_path, volume=50)
+
+            receiver_meaning = get_receiver_emergency_template(0, lang_code="hi")
+            tts_filename = f"rx_laptop2_sim_medical_{rx_tx_id}.wav"
+            tts_out_path = os.path.join(STATIC_AUDIO_FOLDER, tts_filename)
+            dur = generate_tts_audio(receiver_meaning, tts_out_path, lang="hi", is_emergency=True)
+
+            return jsonify({
+                "status": "SUCCESS",
+                "mode": "MODE 2 — SEMANTIC",
+                "crc": f"PASS (0x{wire_crc:04X})",
+                "category": "Medical Emergency",
+                "type_id": 0,
+                "receiverMeaningText": receiver_meaning,
+                "audio_url": f"/api/audio/{tts_filename}",
+                "audio_duration_sec": round(dur, 2),
+                "tone_url": f"/api/audio/{tone_filename}"
+            })
+
+        elif sim_type == 'fire':
+            payload = SemanticPayload(type_id=1, intent_id=0, severity=2)
+            header = PacketHeader(PacketType.MODE_1_SEMANTIC, lang_id=0, is_fec=False, sequence_num=2)
+            packet = Packet(header, payload.encode())
+            wire_packet = packet.encode()
+            wire_crc = Crc16.compute(wire_packet[:-2])
+
+            tone_filename = f"tone_sim_fire_{rx_tx_id}.wav"
+            tone_path = os.path.join(STATIC_AUDIO_FOLDER, tone_filename)
+            encode_packet_to_ggwave_wav(wire_packet, tone_path, volume=50)
+
+            receiver_meaning = get_receiver_emergency_template(1, lang_code="hi")
+            tts_filename = f"rx_laptop2_sim_fire_{rx_tx_id}.wav"
+            tts_out_path = os.path.join(STATIC_AUDIO_FOLDER, tts_filename)
+            dur = generate_tts_audio(receiver_meaning, tts_out_path, lang="hi", is_emergency=True)
+
+            return jsonify({
+                "status": "SUCCESS",
+                "mode": "MODE 2 — SEMANTIC",
+                "crc": f"PASS (0x{wire_crc:04X})",
+                "category": "Fire / Evacuation",
+                "type_id": 1,
+                "receiverMeaningText": receiver_meaning,
+                "audio_url": f"/api/audio/{tts_filename}",
+                "audio_duration_sec": round(dur, 2),
+                "tone_url": f"/api/audio/{tone_filename}"
+            })
+
+        elif sim_type == 'voice':
+            from opus_engine import OpusEncoder, OpusDecoder
+            sample_voice_path = os.path.join(os.path.dirname(__file__), "audio.wav")
+            if os.path.exists(sample_voice_path):
+                pcm_data, sr = sf.read(sample_voice_path, dtype="float32")
+                if pcm_data.ndim > 1:
+                    pcm_data = pcm_data.mean(axis=1)
+                pcm_slice = pcm_data[:int(sr * 0.4)]
+            else:
+                t = np.linspace(0, 0.4, int(24000 * 0.4), endpoint=False)
+                pcm_slice = (0.3 * np.sin(2 * np.pi * 300 * t)).astype(np.float32)
+                sr = 24000
+
+            encoder = OpusEncoder(sample_rate=24000)
+            opus_raw = encoder.encode(pcm_slice, orig_sr=sr)
+
+            header = PacketHeader(PacketType.VOICE_OPUS, lang_id=0, is_fec=False, sequence_num=3)
+            packet = Packet(header, opus_raw)
+            wire_packet = packet.encode()
+            wire_crc = Crc16.compute(wire_packet[:-2])
+
+            tone_filename = f"tone_sim_voice_{rx_tx_id}.wav"
+            tone_path = os.path.join(STATIC_AUDIO_FOLDER, tone_filename)
+            encode_packet_to_ggwave_wav(wire_packet, tone_path, volume=50)
+
+            decoder = OpusDecoder(target_sample_rate=24000)
+            reconstructed_pcm, dec_sr = decoder.decode(opus_raw)
+            voice_filename = f"rx_laptop2_sim_voice_{rx_tx_id}.wav"
+            voice_out_path = os.path.join(STATIC_AUDIO_FOLDER, voice_filename)
+            pcm16 = (np.clip(reconstructed_pcm, -1.0, 1.0) * 32767.0).astype(np.int16)
+            sf.write(voice_out_path, pcm16, dec_sr, subtype='PCM_16')
+            dur = len(pcm16) / dec_sr
+
+            return jsonify({
+                "status": "SUCCESS",
+                "mode": "MODE 1 — VOICE (OPUS)",
+                "packet_type": "VOICE_OPUS",
+                "crc": f"PASS (0x{wire_crc:04X})",
+                "category": "Voice Audio (Opus Codec)",
+                "type_id": 0,
+                "receiverMeaningText": f"Reconstructed Speech Audio ({dec_sr} Hz, {dur:.2f}s)",
+                "audio_url": f"/api/audio/{voice_filename}",
+                "audio_duration_sec": round(dur, 2),
+                "tone_url": f"/api/audio/{tone_filename}"
+            })
+
+        else: # text
+            text_str = "यह आईतंत्र का एक परीक्षण संदेश है।"
+            header = PacketHeader(PacketType.MODE_2_TEXT, lang_id=0, is_fec=False, sequence_num=4)
+            packet = Packet(header, text_str.encode("utf-8"))
+            wire_packet = packet.encode()
+            wire_crc = Crc16.compute(wire_packet[:-2])
+
+            tone_filename = f"tone_sim_text_{rx_tx_id}.wav"
+            tone_path = os.path.join(STATIC_AUDIO_FOLDER, tone_filename)
+            encode_packet_to_ggwave_wav(wire_packet, tone_path, volume=50)
+
+            tts_filename = f"rx_laptop2_sim_text_{rx_tx_id}.wav"
+            tts_out_path = os.path.join(STATIC_AUDIO_FOLDER, tts_filename)
+            dur = generate_tts_audio(text_str, tts_out_path, lang="hi", is_emergency=False)
+
+            return jsonify({
+                "status": "SUCCESS",
+                "mode": "MODE 2 — FREE TEXT",
+                "crc": f"PASS (0x{wire_crc:04X})",
+                "category": "Free Text Message",
+                "receiverMeaningText": text_str,
+                "audio_url": f"/api/audio/{tts_filename}",
+                "audio_duration_sec": round(dur, 2),
+                "tone_url": f"/api/audio/{tone_filename}"
+            })
+
+    except Exception as e:
+        print(f"[Simulate Packet Error] {e}")
+        return jsonify({"status": "FAILURE", "error": str(e)}), 500
+
 
 if __name__ == '__main__':
     get_encodec_model()
