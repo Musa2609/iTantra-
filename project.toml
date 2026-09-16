@@ -1,0 +1,18 @@
+[_]
+schema-version = "0.2"
+
+[[io.buildpacks.build.env]]
+name = "PIP_NO_CACHE_DIR"
+value = "1"
+
+[[io.buildpacks.build.env]]
+name = "PIP_DISABLE_PIP_VERSION_CHECK"
+value = "1"
+
+[[build.env]]
+name = "PIP_NO_CACHE_DIR"
+value = "1"
+
+[[build.env]]
+name = "PIP_DISABLE_PIP_VERSION_CHECK"
+value = "1"
