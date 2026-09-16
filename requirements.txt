@@ -1,7 +1,5 @@
---index-url https://download.pytorch.org/whl/cpu
---extra-index-url https://pypi.org/simple
-torch
-torchaudio
+https://download.pytorch.org/whl/cpu/torch-2.6.0%2Bcpu-cp313-cp313-linux_x86_64.whl
+https://download.pytorch.org/whl/cpu/torchaudio-2.6.0%2Bcpu-cp313-cp313-linux_x86_64.whl
 flask>=3.0.0
 gunicorn>=21.2.0
 encodec
