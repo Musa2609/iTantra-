@@ -11,6 +11,7 @@ import shutil
 import tempfile
 import uuid
 import subprocess
+import base64
 try:
     import torch
     HAS_TORCH = True
@@ -1331,7 +1332,6 @@ def process_itantra_pipeline(audio_path, target_bitrate=6.0, language="hi", mode
     else:
         comm_mode_name = "MODE 1 OPUS VOICE CODEC"
         try:
-            from opus_engine import OpusEncoder, OpusDecoder
             encoder = OpusEncoder(sample_rate=24000, channels=1, compression_level=10)
             decoder = OpusDecoder(target_sample_rate=24000)
             mono_np = mono_data.cpu().numpy() if (HAS_TORCH and hasattr(mono_data, 'cpu')) else np.asarray(mono_data, dtype=np.float32)
