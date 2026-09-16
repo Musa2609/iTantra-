@@ -224,10 +224,14 @@ def get_asr_model():
 def get_whisper_model():
     global _WHISPER_MODEL
     if _WHISPER_MODEL is None:
-        import whisper
-        print("[iTantra Engine] Loading OpenAI Whisper ASR Model...")
-        _WHISPER_MODEL = whisper.load_model("base")
-    return _WHISPER_MODEL
+        try:
+            import whisper
+            print("[iTantra Engine] Loading OpenAI Whisper ASR Model...")
+            _WHISPER_MODEL = whisper.load_model("base")
+        except Exception as e:
+            print(f"[iTantra Engine] Whisper optional model unavailable: {e}")
+            _WHISPER_MODEL = False
+    return _WHISPER_MODEL if _WHISPER_MODEL is not False else None
 
 def detect_audio_format(file_path):
     """Detect actual audio format by inspecting header magic bytes."""
