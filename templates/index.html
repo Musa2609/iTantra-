@@ -1978,6 +1978,45 @@
       return new Blob([view], { type: 'audio/wav' });
     }
 
+    let speechRecognizer = null;
+    let clientCapturedTranscript = "";
+
+    function startBrowserSpeechRecognition(lang) {
+      clientCapturedTranscript = "";
+      const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRec) return;
+      try {
+        speechRecognizer = new SpeechRec();
+        speechRecognizer.continuous = true;
+        speechRecognizer.interimResults = true;
+        const langMap = {
+          'hi': 'hi-IN', 'en': 'en-IN', 'ta': 'ta-IN', 'te': 'te-IN',
+          'mr': 'mr-IN', 'gu': 'gu-IN', 'bn': 'bn-IN', 'kn': 'kn-IN', 'ml': 'ml-IN'
+        };
+        speechRecognizer.lang = langMap[lang] || lang;
+        speechRecognizer.onresult = (e) => {
+          let full = "";
+          for (let i = 0; i < e.results.length; i++) {
+            full += e.results[i][0].transcript + " ";
+          }
+          clientCapturedTranscript = full.trim();
+        };
+        speechRecognizer.onerror = (e) => {
+          console.warn("[iTantra SpeechRec warning]", e.error);
+        };
+        speechRecognizer.start();
+      } catch (e) {
+        console.warn("[iTantra SpeechRec error]", e);
+      }
+    }
+
+    function stopBrowserSpeechRecognition() {
+      if (speechRecognizer) {
+        try { speechRecognizer.stop(); } catch (e) {}
+        speechRecognizer = null;
+      }
+    }
+
     async function toggleRecording() {
       const recBtn = document.getElementById('btn-record');
       const statusText = document.getElementById('recording-status');
@@ -2045,6 +2084,9 @@
           recordSourceNode.connect(recordProcessorNode);
           recordProcessorNode.connect(recordAudioContext.destination);
 
+          const selectedLang = document.getElementById('select-language') ? document.getElementById('select-language').value : 'hi';
+          startBrowserSpeechRecognition(selectedLang);
+
           isRecording = true;
           recBtn.classList.add('border-red-500', 'animate-pulse');
           statusText.innerText = "Recording... Speak into your microphone, then click to Stop";
@@ -2058,6 +2100,7 @@
         }
       } else {
         // Stop recording
+        stopBrowserSpeechRecognition();
         isRecording = false;
         recBtn.classList.remove('border-red-500', 'animate-pulse');
         statusText.innerText = "Processing Real Voice Recording...";
@@ -2362,6 +2405,9 @@
 
       if (audioBlob) {
         formData.append('audio', audioBlob, filename);
+      }
+      if (clientCapturedTranscript) {
+        formData.append('client_transcript', clientCapturedTranscript);
       }
 
       try {

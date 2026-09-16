@@ -96,6 +96,7 @@ def api_transmit():
                 }), 400
 
         channel_mode = request.form.get('channel_mode', 'software_loopback')
+        client_transcript = request.form.get('client_transcript', '').strip()
 
         # Execute full iTantra pipeline
         result = process_itantra_pipeline(
@@ -104,7 +105,8 @@ def api_transmit():
             language=language,
             mode=mode,
             channel_mode=channel_mode,
-            output_dir=STATIC_AUDIO_FOLDER
+            output_dir=STATIC_AUDIO_FOLDER,
+            client_transcript=client_transcript
         )
 
         return jsonify(result)
@@ -118,11 +120,13 @@ def api_transmit():
         }), 400
 
     except Exception as e:
+        import traceback
+        traceback.print_exc()
         print(f"[API Internal Error] {e}")
         return jsonify({
             "status": "FAILURE",
             "stage": "server_error",
-            "error": "Internal processing error encountered during transmission"
+            "error": f"Internal processing error: {str(e)}"
         }), 500
 
     finally:
