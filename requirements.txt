@@ -1,11 +1,11 @@
-flask>=3.0.0
-gunicorn>=21.2.0
+--extra-index-url https://download.pytorch.org/whl/cpu
 torch
 torchaudio
+flask>=3.0.0
+gunicorn>=21.2.0
 encodec
 transformers
 soundfile
-sounddevice
 requests
 numpy
 openai-whisper
