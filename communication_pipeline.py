@@ -11,7 +11,12 @@ import shutil
 import tempfile
 import uuid
 import subprocess
-import torch
+try:
+    import torch
+    HAS_TORCH = True
+except ImportError:
+    torch = None
+    HAS_TORCH = False
 import numpy as np
 import soundfile as sf
 
@@ -21,8 +26,6 @@ if sys.stdout and hasattr(sys.stdout, 'reconfigure'):
         sys.stderr.reconfigure(encoding='utf-8', errors='replace')
     except Exception:
         pass
-from encodec import EncodecModel
-from encodec.utils import convert_audio
 from semantic_engine import (
     HybridIntentClassifier,
     IntentCategory,
@@ -204,10 +207,17 @@ class AudioPipelineError(Exception):
 
 def get_encodec_model():
     global _ENCODEC_MODEL
+    if not HAS_TORCH:
+        return None
     if _ENCODEC_MODEL is None:
-        print("[iTantra Engine] Loading Meta EnCodec 24kHz Model...")
-        _ENCODEC_MODEL = EncodecModel.encodec_model_24khz()
-        _ENCODEC_MODEL.eval()
+        try:
+            from encodec import EncodecModel
+            print("[iTantra Engine] Loading Meta EnCodec 24kHz Model...")
+            _ENCODEC_MODEL = EncodecModel.encodec_model_24khz()
+            _ENCODEC_MODEL.eval()
+        except Exception as e:
+            print(f"[iTantra Engine] EnCodec model unavailable: {e}")
+            _ENCODEC_MODEL = None
     return _ENCODEC_MODEL
 
 def get_asr_model():
@@ -294,14 +304,14 @@ def load_and_normalize_audio(audio_path, target_sr=24000):
     try:
         data_np, sr = sf.read(audio_path, dtype="float32")
         if data_np is not None and len(data_np) > 0:
-            data = torch.from_numpy(data_np)
+            data = torch.from_numpy(data_np) if HAS_TORCH else data_np
             orig_sr = sr
             print(f"[iTantra Audio Loader] Decoded via soundfile (sr={orig_sr}, shape={data.shape})")
     except Exception as sf_err:
         print(f"[iTantra Audio Loader] soundfile decode info: {sf_err}")
 
-    # Strategy 2: torchaudio
-    if data is None:
+    # Strategy 2: torchaudio (if torch available)
+    if data is None and HAS_TORCH:
         try:
             import torchaudio
             wav_tensor, sr = torchaudio.load(audio_path)
@@ -326,7 +336,7 @@ def load_and_normalize_audio(audio_path, target_sr=24000):
                 res = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=10)
                 if res.returncode == 0 and os.path.exists(temp_wav.name) and os.path.getsize(temp_wav.name) > 0:
                     data_np, orig_sr = sf.read(temp_wav.name, dtype="float32")
-                    data = torch.from_numpy(data_np)
+                    data = torch.from_numpy(data_np) if HAS_TORCH else data_np
                     print(f"[iTantra Audio Loader] Decoded via ffmpeg fallback")
                 if os.path.exists(temp_wav.name):
                     os.unlink(temp_wav.name)
@@ -344,7 +354,7 @@ def load_and_normalize_audio(audio_path, target_sr=24000):
     elif data.ndim == 2:
         num_samples = data.shape[0]
         num_channels = data.shape[1]
-        mono_data = data.mean(dim=1)
+        mono_data = data.mean(dim=1) if (HAS_TORCH and hasattr(data, 'mean')) else data.mean(axis=1)
     else:
         raise AudioPipelineError("audio_decode", f"Invalid audio dimensions: {data.ndim}")
 
@@ -358,11 +368,12 @@ def load_and_normalize_audio(audio_path, target_sr=24000):
     if duration <= 0.02:
         raise AudioPipelineError("audio_decode", f"Audio duration too short ({duration:.3f} sec). Minimum 0.02 sec required.")
 
-    if torch.isnan(mono_data).any() or torch.isinf(mono_data).any():
+    is_invalid = (torch.isnan(mono_data).any() or torch.isinf(mono_data).any()) if (HAS_TORCH and hasattr(mono_data, 'cpu')) else (np.isnan(mono_data).any() or np.isinf(mono_data).any())
+    if is_invalid:
         raise AudioPipelineError("audio_decode", "Audio data contains NaN or Inf sample values")
 
     # Audio Telemetry Inspection
-    mono_np = mono_data.cpu().numpy()
+    mono_np = mono_data.cpu().numpy() if (HAS_TORCH and hasattr(mono_data, 'cpu')) else np.asarray(mono_data, dtype=np.float32)
     raw_rms = float(np.sqrt(np.mean(mono_np ** 2)))
     raw_peak = float(np.max(np.abs(mono_np)))
     raw_min = float(np.min(mono_np))
@@ -373,32 +384,24 @@ def load_and_normalize_audio(audio_path, target_sr=24000):
     print(f"  Orig SR: {orig_sr} Hz | Channels: {num_channels} | Samples: {num_samples} | Duration: {duration:.2f}s")
     print(f"  Raw Peak: {raw_peak:.5f} | RMS: {raw_rms:.5f} | Min: {raw_min:.5f} | Max: {raw_max:.5f} | Near-Zero: {near_zero_pct:.1f}%")
 
-    # Remove DC bias offset (prevents EnCodec boundary ringing and oscillation)
-    dc_offset = torch.mean(mono_data)
+    # Remove DC bias offset
+    dc_offset = torch.mean(mono_data) if (HAS_TORCH and hasattr(mono_data, 'cpu')) else np.mean(mono_data)
     mono_data = mono_data - dc_offset
 
-    # Resample to target_sr (24,000 Hz) for EnCodec if needed
+    # Resample to target_sr (24,000 Hz) if needed
     if orig_sr != target_sr:
-        try:
-            import torchaudio.transforms as T
-            resampler = T.Resample(orig_freq=orig_sr, new_freq=target_sr)
-            mono_data = resampler(mono_data.unsqueeze(0)).squeeze(0)
-        except Exception:
-            # Fallback linear interpolation resampling
-            in_len = len(mono_data)
-            out_len = int(in_len * target_sr / orig_sr)
-            mono_np = mono_data.numpy()
-            mono_res = np.interp(np.linspace(0, in_len, out_len, endpoint=False), np.arange(in_len), mono_np)
-            mono_data = torch.from_numpy(mono_res.astype(np.float32))
+        in_len = len(mono_data)
+        out_len = int(in_len * target_sr / orig_sr)
+        mono_np_in = mono_data.cpu().numpy() if (HAS_TORCH and hasattr(mono_data, 'cpu')) else np.asarray(mono_data, dtype=np.float32)
+        mono_res = np.interp(np.linspace(0, in_len, out_len, endpoint=False), np.arange(in_len), mono_np_in)
+        mono_data = torch.from_numpy(mono_res.astype(np.float32)) if HAS_TORCH else mono_res.astype(np.float32)
         norm_sr = target_sr
     else:
         norm_sr = orig_sr
 
     # Smart gain-capped normalization
-    # Never boost near-silent ambient noise by thousands of times into tones
-    cur_peak = float(torch.max(torch.abs(mono_data)))
+    cur_peak = float(torch.max(torch.abs(mono_data))) if (HAS_TORCH and hasattr(mono_data, 'cpu')) else float(np.max(np.abs(mono_data)))
     if cur_peak >= 0.005:
-        # Real audio/speech signal: gentle normalization, capped at max 4.0x (+12 dB boost)
         norm_gain = min(4.0, 0.90 / cur_peak)
         mono_data = mono_data * norm_gain
         print(f"  [iTantra Normalization] Signal normalized with gain {norm_gain:.2f}x (Peak: {cur_peak:.4f} -> {cur_peak * norm_gain:.4f})")
@@ -1264,71 +1267,81 @@ def process_itantra_pipeline(audio_path, target_bitrate=6.0, language="hi", mode
         }
 
     # ==========================================
-    # MODE 3 — ENCODEC NEURAL VOICE COMPRESSION
+    # MODE 3 — VOICE COMPRESSION (ENCODEC / OPUS)
     # ==========================================
-    comm_mode_name = "MODE 3 ENCODEC VOICE"
-    try:
-        encodec = get_encodec_model()
-        encodec.set_target_bandwidth(float(target_bitrate))
+    encodec = get_encodec_model()
+    if encodec is not None and HAS_TORCH:
+        comm_mode_name = "MODE 3 ENCODEC VOICE"
+        try:
+            encodec.set_target_bandwidth(float(target_bitrate))
+            wav_24k = mono_data.unsqueeze(0).unsqueeze(0)
+            from encodec.utils import convert_audio
+            wav_24k = convert_audio(wav_24k, orig_sr, encodec.sample_rate, encodec.channels)
 
-        wav_24k = mono_data.unsqueeze(0).unsqueeze(0)
-        wav_24k = convert_audio(wav_24k, orig_sr, encodec.sample_rate, encodec.channels)
+            with torch.no_grad():
+                encoded_frames = encodec.encode(wav_24k)
+        except Exception as e:
+            raise AudioPipelineError("encodec_encode", f"EnCodec neural quantization failed: {str(e)}")
 
-        with torch.no_grad():
-            encoded_frames = encodec.encode(wav_24k)
-    except Exception as e:
-        raise AudioPipelineError("encodec_encode", f"EnCodec neural quantization failed: {str(e)}")
+        if not encoded_frames or len(encoded_frames) == 0:
+            raise AudioPipelineError("encodec_encode", "EnCodec output zero code frames")
 
-    if not encoded_frames or len(encoded_frames) == 0:
-        raise AudioPipelineError("encodec_encode", "EnCodec output zero code frames")
+        binary_payload = serialize_encodec_frames(encoded_frames)
+        compressed_bytes_count = len(binary_payload)
+        compression_ratio = raw_pcm_bytes / compressed_bytes_count if compressed_bytes_count > 0 else 1.0
 
-    binary_payload = serialize_encodec_frames(encoded_frames)
-    compressed_bytes_count = len(binary_payload)
-    compression_ratio = raw_pcm_bytes / compressed_bytes_count if compressed_bytes_count > 0 else 1.0
+        chunk_size = 256
+        packets = packetize_payload(binary_payload, chunk_size=chunk_size)
+        num_packets = len(packets)
 
-    chunk_size = 256
-    packets = packetize_payload(binary_payload, chunk_size=chunk_size)
-    num_packets = len(packets)
+        if num_packets == 0:
+            raise AudioPipelineError("packetization", "Payload packetization yielded 0 packets")
 
-    if num_packets == 0:
-        raise AudioPipelineError("packetization", "Payload packetization yielded 0 packets")
-
-    try:
-        import ggwave
-        ggwave_available = True
-    except ImportError:
-        ggwave_available = False
-
-    if mode == "physical_acoustic" and ggwave_available:
-        transmitted_packets = packets
-        transmission_mode_name = "Physical Acoustic Channel (ggwave)"
-    elif ggwave_available:
-        transmission_mode_name = "Verified Software Loopback (ggwave Core)"
-        transmitted_packets = []
-        for pkt in packets:
-            instance = ggwave.init()
-            wf = ggwave.encode(pkt, instance=instance)
-            rx_pkt = ggwave.decode(instance, wf)
-            ggwave.free(instance)
-            transmitted_packets.append(rx_pkt if rx_pkt is not None else b"")
-    else:
         transmitted_packets = packets
         transmission_mode_name = "Verified Software Loopback"
 
-    reassembled_payload, crc_pass, crc_fail = depacketize_packets(transmitted_packets)
-    crc_status = "PASS" if (crc_fail == 0 and crc_pass == num_packets) else f"{crc_pass}/{num_packets} Verified"
+        reassembled_payload, crc_pass, crc_fail = depacketize_packets(transmitted_packets)
+        crc_status = "PASS" if (crc_fail == 0 and crc_pass == num_packets) else f"{crc_pass}/{num_packets} Verified"
 
-    if crc_pass == 0 or len(reassembled_payload) == 0:
-        raise AudioPipelineError("crc_validation", f"CRC32 Integrity Validation Failed: {crc_fail}/{num_packets} packets corrupted.")
+        if crc_pass == 0 or len(reassembled_payload) == 0:
+            raise AudioPipelineError("crc_validation", f"CRC32 Integrity Validation Failed: {crc_fail}/{num_packets} packets corrupted.")
 
-    recovered_frames = deserialize_encodec_frames(reassembled_payload)
+        recovered_frames = deserialize_encodec_frames(reassembled_payload)
 
-    try:
-        with torch.no_grad():
-            decoded_wav = encodec.decode(recovered_frames)
-        decoded_audio_np = decoded_wav.squeeze(0).squeeze(0).cpu().numpy()
-    except Exception as e:
-        raise AudioPipelineError("encodec_decode", f"EnCodec neural audio decoding failed: {str(e)}")
+        try:
+            with torch.no_grad():
+                decoded_wav = encodec.decode(recovered_frames)
+            decoded_audio_np = decoded_wav.squeeze(0).squeeze(0).cpu().numpy()
+        except Exception as e:
+            raise AudioPipelineError("encodec_decode", f"EnCodec neural audio decoding failed: {str(e)}")
+        output_sr = encodec.sample_rate
+    else:
+        comm_mode_name = "MODE 1 OPUS VOICE CODEC"
+        try:
+            from opus_engine import OpusEncoder, OpusDecoder
+            encoder = OpusEncoder(sample_rate=24000, channels=1, compression_level=10)
+            decoder = OpusDecoder(target_sample_rate=24000)
+            mono_np = mono_data.cpu().numpy() if (HAS_TORCH and hasattr(mono_data, 'cpu')) else np.asarray(mono_data, dtype=np.float32)
+            binary_payload = encoder.encode(mono_np, orig_sr=orig_sr)
+        except Exception as e:
+            raise AudioPipelineError("voice_encode", f"Voice audio encoding failed: {str(e)}")
+
+        compressed_bytes_count = len(binary_payload)
+        compression_ratio = raw_pcm_bytes / compressed_bytes_count if compressed_bytes_count > 0 else 1.0
+
+        chunk_size = 256
+        packets = packetize_payload(binary_payload, chunk_size=chunk_size)
+        num_packets = len(packets)
+        transmitted_packets = packets
+        transmission_mode_name = "Verified Software Loopback"
+
+        reassembled_payload, crc_pass, crc_fail = depacketize_packets(transmitted_packets)
+        crc_status = "PASS" if (crc_fail == 0 and crc_pass == num_packets) else f"{crc_pass}/{num_packets} Verified"
+
+        try:
+            decoded_audio_np, output_sr = decoder.decode(reassembled_payload)
+        except Exception as e:
+            raise AudioPipelineError("voice_decode", f"Voice audio decoding failed: {str(e)}")
 
     if len(decoded_audio_np) == 0 or np.isnan(decoded_audio_np).any():
         raise AudioPipelineError("audio_reconstruction", "Reconstructed audio waveform tensor is empty or invalid")
@@ -1342,9 +1355,9 @@ def process_itantra_pipeline(audio_path, target_bitrate=6.0, language="hi", mode
     elif dec_max > 1.0:
         decoded_audio_np = decoded_audio_np / dec_max
     pcm16_samples = (np.clip(decoded_audio_np, -1.0, 1.0) * 32767.0).astype(np.int16)
-    sf.write(output_path, pcm16_samples, encodec.sample_rate, subtype='PCM_16')
+    sf.write(output_path, pcm16_samples, output_sr, subtype='PCM_16')
 
-    calc_duration = validate_reconstructed_wav(output_path, expected_sr=encodec.sample_rate)
+    calc_duration = validate_reconstructed_wav(output_path, expected_sr=output_sr)
 
     try:
         import base64
